@@ -20,6 +20,21 @@ function formatActivityDate(value: string | null): string {
   }).format(date);
 }
 
+function dailyScore(value: string, seed: string): number {
+  const input = `${seed}:${value}`;
+  let hash = 2166136261;
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function isHiddenAchievement(visibility: string | null): boolean {
+  const normalized = visibility?.trim().toLowerCase() ?? "";
+  return normalized.includes("hidden") || normalized.includes("secret") || normalized.includes("非公開") || normalized.includes("隠し");
+}
+
 export default async function HomePage() {
   const snapshot = await getLifeOsSnapshot();
   const player = snapshot.player;
@@ -57,6 +72,22 @@ export default async function HomePage() {
         .sort((a, b) => Date.parse(b.date ?? "") - Date.parse(a.date ?? ""))
         .slice(0, 5)
     : [];
+
+  const todaySeed = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  const todayLabel = new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    month: "long",
+    day: "numeric",
+  }).format(new Date());
+  const dailyExplorationPicks = snapshot.achievements
+    .filter((achievement) => !achievement.unlocked && !isHiddenAchievement(achievement.visibility))
+    .sort((a, b) => dailyScore(a.id, todaySeed) - dailyScore(b.id, todaySeed))
+    .slice(0, 3);
 
   const level = player?.level ?? 1;
   const totalXp = player?.totalXp ?? 0;
@@ -144,6 +175,36 @@ export default async function HomePage() {
             <small>{stat.total > 0 ? `${stat.total}件中` : "データ待機中"}</small>
           </Link>
         ))}
+      </section>
+
+      <section className="recentAchievements" aria-labelledby="daily-exploration-heading">
+        <div className="recentAchievementsHeader">
+          <div>
+            <p className="eyebrow">TODAY&apos;S EXPLORATION · {todayLabel}</p>
+            <h2 id="daily-exploration-heading">今日の探索候補</h2>
+          </div>
+          <Link href="/achievements">実績を探す →</Link>
+        </div>
+
+        {dailyExplorationPicks.length > 0 ? (
+          <div className="recentAchievementList">
+            {dailyExplorationPicks.map((achievement) => (
+              <Link className="recentAchievementItem" href={`/achievements/${achievement.id}`} key={achievement.id}>
+                <div>
+                  <span>🧭 {achievement.category ?? "未分類"}</span>
+                  <strong>{achievement.name}</strong>
+                  <small>{achievement.flavorText || "まだ触れていない世界がある。"}</small>
+                </div>
+                <div className="recentAchievementMeta">
+                  <span>{achievement.tier ?? "Tier未設定"}</span>
+                  <b>+{achievement.xp} XP</b>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="recentAchievementsEmpty">いま表示できる未解除の通常実績はありません。</p>
+        )}
       </section>
 
       <section className="recentAchievements" aria-labelledby="recent-adventure-heading">
