@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   web:
-    name: Web lint and build
+    name: Web typecheck and build
     runs-on: ubuntu-latest
 
     steps:
@@ -27,8 +27,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run lint
-        run: npm run lint
+      - name: Type-check web app
+        run: npm run typecheck --workspace apps/web
 
       - name: Build web app
         run: npm run build
