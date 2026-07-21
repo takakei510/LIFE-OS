@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
 function clampProgress(value: number): number {
@@ -21,21 +23,30 @@ export default async function HomePage() {
       label: "Achievements",
       value: player?.unlockedAchievements ?? snapshot.achievements.filter((item) => item.unlocked).length,
       total: snapshot.achievements.length,
+      href: "/achievements",
     },
     {
       label: "Titles",
       value: player?.unlockedTitles ?? snapshot.titles.filter((item) => item.unlocked).length,
       total: snapshot.titles.length,
+      href: "/titles",
     },
     {
       label: "Quests",
       value: player?.completedQuests ?? snapshot.quests.filter((item) => item.completedAt).length,
       total: snapshot.quests.length,
+      href: "/quests",
     },
   ];
 
   return (
     <main>
+      <nav className="pageNav" aria-label="Primary navigation">
+        <Link className="pageNavActive" href="/">HOME</Link>
+        <Link href="/achievements">ACHIEVEMENTS</Link>
+        <Link href="/quests">QUESTS</Link>
+      </nav>
+
       <section className="hero">
         <p className="eyebrow">LIFE OS · VERSION 0</p>
         <h1>世界に触れた記録を、ゲームにする。</h1>
@@ -76,20 +87,19 @@ export default async function HomePage() {
 
       <section className="statsGrid" aria-label="Player statistics">
         {stats.map((stat) => (
-          <article className="statCard" key={stat.label}>
+          <Link className="statCard statCardLink" href={stat.href} key={stat.label}>
             <span>{stat.label}</span>
             <strong>{stat.value}</strong>
             <small>{stat.total > 0 ? `${stat.total}件中` : "データ待機中"}</small>
-          </article>
+          </Link>
         ))}
       </section>
 
       <section className="panel">
         <p className="eyebrow">NEXT ADVENTURE</p>
-        <h2>Achievements Library</h2>
-        <p className="muted">
-          次は、Notionに保存された実績をカードとして探索できるライブラリ画面を追加します。
-        </p>
+        <h2>Quest Board</h2>
+        <p className="muted">Notionに保存されたクエストから、次に触れる世界を選びます。</p>
+        <Link className="notionLink" href="/quests">OPEN QUEST BOARD →</Link>
       </section>
     </main>
   );
