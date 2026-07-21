@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./mobile-bottom-nav.css";
+import "./loading.css";
 import { MobileBottomNav } from "./mobile-bottom-nav";
 
 export const metadata: Metadata = {
