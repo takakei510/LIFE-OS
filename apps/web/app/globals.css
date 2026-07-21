@@ -62,9 +62,54 @@ h2 { margin-bottom: 10px; font-size: 1.45rem; }
 
 .playerCard, .panel { padding: 28px; border-radius: 22px; }
 
+.playerCardHeader,
+.xpRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.playerTitle {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.sourceBadge {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.sourceBadge--notion {
+  border-color: rgba(114, 235, 171, 0.36);
+  background: rgba(55, 190, 119, 0.1);
+  color: #8ce6b5;
+}
+
+.sourceBadge--fallback {
+  border-color: rgba(255, 195, 104, 0.3);
+  background: rgba(255, 172, 56, 0.08);
+  color: #ffd08a;
+}
+
+.xpRow {
+  margin-top: 30px;
+  color: var(--muted);
+}
+
+.xpRow strong {
+  color: var(--text);
+  font-size: 1.15rem;
+}
+
 .progressTrack {
   height: 9px;
-  margin-top: 24px;
+  margin-top: 12px;
   overflow: hidden;
   border-radius: 999px;
   background: #252b36;
@@ -72,10 +117,18 @@ h2 { margin-bottom: 10px; font-size: 1.45rem; }
 
 .progressValue {
   display: block;
-  width: 24%;
+  width: 0;
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, #718cff, #b1c0ff);
+  transition: width 420ms ease;
+}
+
+.syncWarning {
+  margin: 16px 0 0;
+  color: #ffd08a;
+  font-size: 0.85rem;
+  line-height: 1.6;
 }
 
 .statsGrid {
@@ -94,11 +147,16 @@ h2 { margin-bottom: 10px; font-size: 1.45rem; }
   justify-content: space-between;
 }
 
-.statCard span { color: var(--muted); }
+.statCard span,
+.statCard small { color: var(--muted); }
 .statCard strong { font-size: 2.4rem; }
+.statCard small { font-size: 0.78rem; }
 
 @media (max-width: 640px) {
   main { padding: 44px 0; }
+  .playerCardHeader,
+  .xpRow { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .sourceBadge { align-self: flex-start; }
   .statsGrid { grid-template-columns: 1fr; }
   .statCard { min-height: 110px; }
 }
