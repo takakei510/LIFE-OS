@@ -15,6 +15,7 @@ body { margin: 0; min-height: 100vh; background: radial-gradient(circle at top r
 a { color: inherit; }
 main { width: min(960px, calc(100% - 32px)); margin: 0 auto; padding: 72px 0; }
 .hero, .pageHeader { max-width: 760px; margin-bottom: 40px; }
+.compactHero { margin-bottom: 28px; }
 h1, h2, p { margin-top: 0; }
 h1 { max-width: 760px; margin-bottom: 18px; font-size: clamp(2.5rem, 7vw, 5.5rem); line-height: 0.98; letter-spacing: -0.055em; }
 h2 { margin-bottom: 10px; font-size: 1.45rem; }
@@ -62,11 +63,36 @@ h2 { margin-bottom: 10px; font-size: 1.45rem; }
 .detailFacts span, .detailFacts strong { display: block; }
 .detailFacts span { margin-bottom: 8px; color: var(--muted); font-size: .75rem; }
 .notionLink { display: inline-block; margin-top: 28px; color: var(--accent); text-decoration: none; }
+.pageNav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 42px; }
+.pageNav a { padding: 9px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-decoration: none; }
+.pageNav a:hover, .pageNavActive { border-color: var(--accent) !important; color: var(--text) !important; }
+.filterPanel { display: grid; gap: 18px; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: rgba(17, 21, 29, .82); }
+.filterLabel { display: block; margin-bottom: 10px; color: var(--muted); font-size: .7rem; font-weight: 800; letter-spacing: .14em; }
+.filterLinks { display: flex; flex-wrap: wrap; gap: 8px; }
+.filterChip { padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .72rem; font-weight: 750; text-decoration: none; }
+.filterChipActive { border-color: var(--accent); background: rgba(143, 167, 255, .12); color: var(--text); }
+.questSummary { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 18px 0; color: var(--muted); font-size: .75rem; font-weight: 800; letter-spacing: .1em; }
+.questGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.questCard { display: flex; min-height: 310px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(145deg, rgba(23, 28, 38, .96), rgba(14, 18, 25, .96)); flex-direction: column; justify-content: space-between; }
+.questCard--accepted { border-color: rgba(143, 167, 255, .56); }
+.questCard--completed { opacity: .72; }
+.questCardTop, .questReward { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.questType, .questState { padding: 7px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .66rem; font-weight: 800; letter-spacing: .08em; }
+.questCard--available .questState { color: #ffd08a; }
+.questCard--accepted .questState { color: #aebcff; }
+.questCard--completed .questState { color: #8ce6b5; }
+.questCard h2 { margin-bottom: 12px; }
+.questReward { margin: 22px 0 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.questReward span { max-width: 70%; color: var(--muted); font-size: .8rem; line-height: 1.5; }
+.questReward strong { white-space: nowrap; }
+.questCard > a { color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-decoration: none; }
 @media (max-width: 640px) {
   main { padding: 44px 0; }
   .playerCardHeader, .xpRow { align-items: flex-start; flex-direction: column; gap: 10px; }
   .sourceBadge { align-self: flex-start; }
-  .statsGrid, .filterGrid, .achievementGrid, .detailFacts { grid-template-columns: 1fr; }
+  .statsGrid, .filterGrid, .achievementGrid, .detailFacts, .questGrid { grid-template-columns: 1fr; }
   .statCard { min-height: 110px; }
   .achievementDetail { padding: 22px; }
+  .questSummary, .questCardTop, .questReward { align-items: flex-start; flex-direction: column; }
+  .questReward span { max-width: none; }
 }
