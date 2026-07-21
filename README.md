@@ -5,6 +5,12 @@
 
 LIFE OSは、人生を管理するためではなく、実績・称号・クエスト・図鑑などを通して現実世界との接触を楽しむためのゲームシステムです。
 
+## Play
+
+**Production:** https://life-os-web-m3ds.vercel.app
+
+現在のリリース：**v0.1.0**
+
 ## Architecture
 
 - **Notion** — セーブデータと公式仕様書
@@ -24,7 +30,7 @@ scripts/                Notion同期・移行スクリプト
 supabase/               DBスキーマ・マイグレーション
 ```
 
-## Version 0 Goal
+## Version 0 — Completed
 
 Notionのデータを読み取り、以下をゲーム画面として表示します。
 
@@ -32,8 +38,13 @@ Notionのデータを読み取り、以下をゲーム画面として表示し�
 - 実績ライブラリ・詳細
 - クエスト一覧
 - 称号一覧・装備中称号
+- Status
 - XP・レベル
 - 実績解除演出
+- 通常実績の探索候補表示
+- Hidden実績の秘密表示
+
+詳細は [`docs/patch-notes/v0.1.0.md`](docs/patch-notes/v0.1.0.md) を参照してください。
 
 ## Development
 
@@ -43,6 +54,18 @@ npm run dev
 ```
 
 Webアプリは `apps/web` で起動します。
+
+## Environment Variables
+
+```text
+NOTION_TOKEN
+NOTION_ACHIEVEMENTS_DATA_SOURCE_ID
+NOTION_TITLES_DATA_SOURCE_ID
+NOTION_QUESTS_DATA_SOURCE_ID
+NOTION_STATUS_DATA_SOURCE_ID
+```
+
+秘密情報はGitHubへ保存せず、Vercelまたはローカルの環境変数として管理します。
 
 ## Development Principles
 
