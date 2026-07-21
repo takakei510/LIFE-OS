@@ -97,14 +97,29 @@ h2 { margin-bottom: 10px; font-size: 1.45rem; }
 .titleCard p { color: var(--muted); line-height: 1.65; }
 .titleCard > a { color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-decoration: none; }
 .lockedHint { color: var(--muted); font-size: .72rem; }
+.statusHero { position: relative; padding: 32px; border: 1px solid var(--line); border-radius: 24px; background: radial-gradient(circle at right top, rgba(143, 167, 255, .18), transparent 42%), linear-gradient(145deg, rgba(23, 28, 38, .98), rgba(14, 18, 25, .98)); box-shadow: 0 24px 80px rgba(0, 0, 0, .28); }
+.statusIdentity { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 28px; }
+.statusIdentity h2 { margin-bottom: 8px; }
+.statusLevelLabel { display: block; color: var(--muted); font-size: .65rem; font-weight: 900; letter-spacing: .18em; }
+.statusLevel { display: block; font-size: clamp(4rem, 12vw, 7rem); line-height: .9; letter-spacing: -.08em; }
+.statusHero .sourceBadge { display: inline-block; margin-top: 22px; }
+.statusRecordGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
+.statusRecordCard { display: flex; min-height: 230px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(145deg, rgba(23, 28, 38, .96), rgba(14, 18, 25, .96)); flex-direction: column; text-decoration: none; transition: transform .18s ease, border-color .18s ease; }
+.statusRecordCard:hover { transform: translateY(-3px); border-color: var(--accent); }
+.statusRecordCard > span { color: var(--muted); font-size: .68rem; font-weight: 850; letter-spacing: .12em; }
+.statusRecordCard > strong { margin: 28px 0 10px; font-size: 2.8rem; }
+.statusRecordCard > strong small { color: var(--muted); font-size: 1rem; }
+.statusRecordCard p { flex: 1; color: var(--muted); line-height: 1.6; }
+.statusRecordCard b { color: var(--accent); font-size: .7rem; letter-spacing: .08em; }
 @media (max-width: 640px) {
   main { padding: 44px 0; }
   .playerCardHeader, .xpRow { align-items: flex-start; flex-direction: column; gap: 10px; }
   .sourceBadge { align-self: flex-start; }
-  .statsGrid, .filterGrid, .achievementGrid, .detailFacts, .questGrid, .titleGrid { grid-template-columns: 1fr; }
+  .statsGrid, .filterGrid, .achievementGrid, .detailFacts, .questGrid, .titleGrid, .statusRecordGrid { grid-template-columns: 1fr; }
   .statCard { min-height: 110px; }
   .achievementDetail { padding: 22px; }
   .questSummary, .questCardTop, .questReward, .titleSummary, .titleCardTop { align-items: flex-start; flex-direction: column; }
   .questReward span { max-width: none; }
-  .equippedTitleCard { grid-template-columns: 1fr; }
+  .equippedTitleCard, .statusIdentity { grid-template-columns: 1fr; }
+  .statusHero { padding: 24px; }
 }
