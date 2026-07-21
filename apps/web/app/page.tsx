@@ -9,8 +9,8 @@ function clampProgress(value: number): number {
   return Math.min(100, Math.max(0, percent));
 }
 
-function formatUnlockedDate(value: string | null): string {
-  if (!value) return "解除日未記録";
+function formatActivityDate(value: string | null): string {
+  if (!value) return "日付未記録";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return new Intl.DateTimeFormat("ja-JP", {
@@ -30,7 +30,33 @@ export default async function HomePage() {
         .sort((a, b) => Date.parse(b.unlockedAt ?? "") - Date.parse(a.unlockedAt ?? ""))
     : [];
   const latestUnlocked = unlockedAchievements[0] ?? null;
-  const recentUnlocked = unlockedAchievements.slice(0, 3);
+
+  const recentActivities = snapshot.source === "notion"
+    ? [
+        ...unlockedAchievements.map((achievement) => ({
+          id: `achievement-${achievement.id}`,
+          type: "achievement" as const,
+          name: achievement.name,
+          label: achievement.category ?? "未分類",
+          date: achievement.unlockedAt,
+          xp: achievement.xp,
+          href: `/achievements/${achievement.id}`,
+        })),
+        ...snapshot.quests
+          .filter((quest) => quest.completedAt)
+          .map((quest) => ({
+            id: `quest-${quest.id}`,
+            type: "quest" as const,
+            name: quest.name,
+            label: quest.questType ?? "Quest",
+            date: quest.completedAt,
+            xp: quest.rewardXp,
+            href: quest.url,
+          })),
+      ]
+        .sort((a, b) => Date.parse(b.date ?? "") - Date.parse(a.date ?? ""))
+        .slice(0, 5)
+    : [];
 
   const level = player?.level ?? 1;
   const totalXp = player?.totalXp ?? 0;
@@ -120,32 +146,44 @@ export default async function HomePage() {
         ))}
       </section>
 
-      <section className="recentAchievements" aria-labelledby="recent-achievements-heading">
+      <section className="recentAchievements" aria-labelledby="recent-adventure-heading">
         <div className="recentAchievementsHeader">
           <div>
-            <p className="eyebrow">RECENT UNLOCKS</p>
-            <h2 id="recent-achievements-heading">最近解除した実績</h2>
+            <p className="eyebrow">RECENT ADVENTURE LOG</p>
+            <h2 id="recent-adventure-heading">最近の冒険ログ</h2>
           </div>
-          <Link href="/achievements">すべて見る →</Link>
+          <Link href="/status">現在地を見る →</Link>
         </div>
 
-        {recentUnlocked.length > 0 ? (
+        {recentActivities.length > 0 ? (
           <div className="recentAchievementList">
-            {recentUnlocked.map((achievement) => (
-              <Link className="recentAchievementItem" href={`/achievements/${achievement.id}`} key={achievement.id}>
-                <div>
-                  <span>{achievement.category ?? "未分類"}</span>
-                  <strong>{achievement.name}</strong>
-                </div>
-                <div className="recentAchievementMeta">
-                  <span>{formatUnlockedDate(achievement.unlockedAt)}</span>
-                  <b>+{achievement.xp} XP</b>
-                </div>
-              </Link>
-            ))}
+            {recentActivities.map((activity) => {
+              const content = (
+                <>
+                  <div>
+                    <span>{activity.type === "achievement" ? `🏆 ${activity.label}` : `✦ ${activity.label}`}</span>
+                    <strong>{activity.name}</strong>
+                  </div>
+                  <div className="recentAchievementMeta">
+                    <span>{formatActivityDate(activity.date)}</span>
+                    <b>+{activity.xp} XP</b>
+                  </div>
+                </>
+              );
+
+              return activity.type === "achievement" ? (
+                <Link className="recentAchievementItem" href={activity.href} key={activity.id}>
+                  {content}
+                </Link>
+              ) : (
+                <a className="recentAchievementItem" href={activity.href} key={activity.id} target="_blank" rel="noreferrer">
+                  {content}
+                </a>
+              );
+            })}
           </div>
         ) : (
-          <p className="recentAchievementsEmpty">最初の実績を解除すると、ここに冒険の記録が並びます。</p>
+          <p className="recentAchievementsEmpty">実績解除やクエスト完了が、ここに冒険の記録として並びます。</p>
         )}
       </section>
 
