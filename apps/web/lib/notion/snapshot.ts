@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { unstable_noStore as noStore } from "next/cache";
 
 import { getServerEnv } from "@/lib/env";
 import { getNotionClient } from "@/lib/notion/client";
@@ -115,6 +116,8 @@ function playerStatus(page: PageObjectResponse): PlayerStatus {
 }
 
 export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
+  noStore();
+
   const env = getServerEnv();
   if (!env) {
     return {
