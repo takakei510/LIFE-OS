@@ -1,0 +1,104 @@
+:root {
+  color-scheme: dark;
+  --bg: #090b10;
+  --panel: #11151d;
+  --panel-strong: #171c26;
+  --text: #f5f7fb;
+  --muted: #9ba6b5;
+  --line: #263041;
+  --accent: #8fa7ff;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--bg); }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(143, 167, 255, 0.14), transparent 34rem),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+main {
+  width: min(960px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 72px 0;
+}
+
+.hero { max-width: 760px; margin-bottom: 40px; }
+
+h1, h2, p { margin-top: 0; }
+
+h1 {
+  max-width: 760px;
+  margin-bottom: 18px;
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+h2 { margin-bottom: 10px; font-size: 1.45rem; }
+
+.eyebrow {
+  margin-bottom: 14px;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.lead, .muted { color: var(--muted); line-height: 1.75; }
+.lead { max-width: 680px; font-size: 1.05rem; }
+
+.playerCard, .panel, .statCard {
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, rgba(23, 28, 38, 0.94), rgba(14, 18, 25, 0.94));
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.22);
+}
+
+.playerCard, .panel { padding: 28px; border-radius: 22px; }
+
+.progressTrack {
+  height: 9px;
+  margin-top: 24px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #252b36;
+}
+
+.progressValue {
+  display: block;
+  width: 24%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #718cff, #b1c0ff);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.statCard {
+  display: flex;
+  min-height: 140px;
+  padding: 22px;
+  border-radius: 18px;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.statCard span { color: var(--muted); }
+.statCard strong { font-size: 2.4rem; }
+
+@media (max-width: 640px) {
+  main { padding: 44px 0; }
+  .statsGrid { grid-template-columns: 1fr; }
+  .statCard { min-height: 110px; }
+}
