@@ -9,7 +9,7 @@ LIFE OSは、人生を管理するためではなく、実績・称号・クエ�
 
 **Production:** https://life-os-web-m3ds.vercel.app
 
-現在のリリース：**v0.2.0**
+現在のリリース：**v0.3.0**
 
 ## Architecture
 
@@ -30,27 +30,24 @@ scripts/                Notion同期・移行スクリプト
 supabase/               DBスキーマ・マイグレーション
 ```
 
-## Version 0.2 — Released
+## Version 0.3 — Released
 
-Notionの記録を、スマホから遊びやすいゲーム画面として利用できます。
+Notionの記録を、検索・振り返り・探索提案まで含むゲーム画面として利用できます。
 
-- PLAYER CARD
-- 実績ライブラリ・詳細・検索
-- クエスト一覧
-- 称号一覧・装備中称号
-- Status
-- XP・レベル
+- 実績ライブラリ・詳細・横断検索
+- クエスト検索・種類／状態フィルター
+- 称号検索・Tier／取得状態フィルター
+- Statusのカテゴリ別実績進捗
+- 最近の冒険ログ
+- 今日の探索候補
+- PLAYER CARD、XP、レベル
 - 実績解除演出
-- 最近解除した実績
 - スマホ固定下部ナビゲーション
-- 日本語UI
 - PWAとしてホーム画面へ追加
-- ローディング表示
-- エラー復旧画面
-- 通常実績の探索候補表示
-- Hidden実績の秘密表示
+- ローディング表示・エラー復旧画面
+- Hidden実績と未取得称号の秘密表示
 
-詳細は [`docs/patch-notes/v0.2.0.md`](docs/patch-notes/v0.2.0.md) を参照してください。
+詳細は [`docs/patch-notes/v0.3.0.md`](docs/patch-notes/v0.3.0.md) を参照してください。
 
 ## Development
 
