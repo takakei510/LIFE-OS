@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./mobile-bottom-nav.css";
 import { MobileBottomNav } from "./mobile-bottom-nav";
 
 export const metadata: Metadata = {
