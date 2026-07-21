@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import styles from "./achievement-unlocked.module.css";
+
 type AchievementUnlockedProps = {
   achievement: {
     id: string;
@@ -43,28 +45,28 @@ export function AchievementUnlocked({ achievement }: AchievementUnlockedProps) {
   }
 
   return (
-    <div className="unlockBackdrop" role="presentation" onClick={dismiss}>
+    <div className={styles.backdrop} role="presentation" onClick={dismiss}>
       <section
         aria-labelledby="achievement-unlocked-title"
         aria-modal="true"
-        className="unlockCard"
+        className={styles.card}
         role="dialog"
         onClick={(event) => event.stopPropagation()}
       >
-        <button aria-label="実績解除演出を閉じる" className="unlockClose" onClick={dismiss} type="button">
+        <button aria-label="実績解除演出を閉じる" className={styles.close} onClick={dismiss} type="button">
           ×
         </button>
-        <div className="unlockEmblem" aria-hidden="true">🏆</div>
-        <p className="unlockKicker">ACHIEVEMENT UNLOCKED</p>
+        <div className={styles.emblem} aria-hidden="true">🏆</div>
+        <p className={styles.kicker}>ACHIEVEMENT UNLOCKED</p>
         <h2 id="achievement-unlocked-title">{achievement.name}</h2>
-        <p className="unlockFlavor">
+        <p className={styles.flavor}>
           {achievement.flavorText || "世界は、ひとつの体験によって少しだけ広がった。"}
         </p>
-        <div className="unlockReward">
+        <div className={styles.reward}>
           <span>{achievement.tier ?? "Achievement"}</span>
           <strong>+{achievement.xp.toLocaleString()} XP</strong>
         </div>
-        <Link className="unlockLink" href={`/achievements/${achievement.id}`} onClick={dismiss}>
+        <Link className={styles.link} href={`/achievements/${achievement.id}`} onClick={dismiss}>
           実績を見る →
         </Link>
       </section>
