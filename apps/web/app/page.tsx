@@ -45,6 +45,7 @@ export default async function HomePage() {
         <Link className="pageNavActive" href="/">HOME</Link>
         <Link href="/achievements">ACHIEVEMENTS</Link>
         <Link href="/quests">QUESTS</Link>
+        <Link href="/titles">TITLES</Link>
       </nav>
 
       <section className="hero">
@@ -97,9 +98,9 @@ export default async function HomePage() {
 
       <section className="panel">
         <p className="eyebrow">NEXT ADVENTURE</p>
-        <h2>Quest Board</h2>
-        <p className="muted">Notionに保存されたクエストから、次に触れる世界を選びます。</p>
-        <Link className="notionLink" href="/quests">OPEN QUEST BOARD →</Link>
+        <h2>Title Collection</h2>
+        <p className="muted">実績の積み重ねから生まれた称号を眺め、今の冒険に合う呼び名を選びます。</p>
+        <Link className="notionLink" href="/titles">OPEN TITLE COLLECTION →</Link>
       </section>
     </main>
   );
