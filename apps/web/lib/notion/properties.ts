@@ -64,6 +64,37 @@ export function date(properties: PropertyMap, name: string): string | null {
   return typeof value?.start === "string" ? value.start : null;
 }
 
+export function files(
+  properties: PropertyMap,
+  name: string,
+): Array<{ name: string; type: "file" | "external" | "file_upload" | "unknown"; url: string | null }> {
+  const property = asRecord(properties[name]);
+  if (!Array.isArray(property?.files)) return [];
+
+  return property.files.flatMap((item) => {
+    const record = asRecord(item);
+    if (!record) return [];
+
+    const file = asRecord(record.file);
+    const external = asRecord(record.external);
+    const fileUpload = asRecord(record.file_upload);
+    const type = record.type;
+
+    return [{
+      name: typeof record.name === "string" ? record.name : "media",
+      type: type === "file" || type === "external" || type === "file_upload" ? type : "unknown",
+      url:
+        typeof file?.url === "string"
+          ? file.url
+          : typeof external?.url === "string"
+            ? external.url
+            : typeof fileUpload?.url === "string"
+              ? fileUpload.url
+              : null,
+    }];
+  });
+}
+
 export function formulaNumber(properties: PropertyMap, name: string): number {
   const property = asRecord(properties[name]);
   const formula = asRecord(property?.formula);
