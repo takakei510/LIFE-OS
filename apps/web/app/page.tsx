@@ -72,7 +72,7 @@ export default async function HomePage() {
       </nav>
 
       <section className="hero">
-        <p className="eyebrow">LIFE OS · VERSION 0</p>
+        <p className="eyebrow">LIFE OS · VERSION 0.2</p>
         <h1>世界に触れた記録を、ゲームにする。</h1>
         <p className="lead">
           LIFE OSは「何者になるか」を競うゲームではない。どれだけ世界に触れたかを楽しむゲームである。
