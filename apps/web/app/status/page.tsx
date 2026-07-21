@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import "./status-category-progress.css";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
 function clampProgress(value: number): number {
@@ -47,6 +48,26 @@ export default async function StatusPage() {
     },
   ];
 
+  const categoryProgress = Array.from(
+    snapshot.achievements.reduce((categories, achievement) => {
+      const category = achievement.category || "未分類";
+      const current = categories.get(category) ?? { total: 0, unlocked: 0, xp: 0 };
+      current.total += 1;
+      if (achievement.unlocked) {
+        current.unlocked += 1;
+        current.xp += achievement.xp;
+      }
+      categories.set(category, current);
+      return categories;
+    }, new Map<string, { total: number; unlocked: number; xp: number }>()),
+  )
+    .map(([category, values]) => ({
+      category,
+      ...values,
+      percent: values.total > 0 ? Math.round((values.unlocked / values.total) * 100) : 0,
+    }))
+    .sort((a, b) => b.unlocked - a.unlocked || b.percent - a.percent || a.category.localeCompare(b.category, "ja"));
+
   return (
     <main>
       <nav className="pageNav" aria-label="Primary navigation">
@@ -72,7 +93,7 @@ export default async function StatusPage() {
           <div>
             <p className="eyebrow">{rank}</p>
             <h2>{equippedTitle ? `👑 ${equippedTitle.name}` : "称号未装備"}</h2>
-            <p className="muted">{totalXp.toLocaleString()} XP accumulated</p>
+            <p className="muted">累計 {totalXp.toLocaleString()} XP</p>
           </div>
         </div>
 
@@ -83,7 +104,7 @@ export default async function StatusPage() {
         <div
           className="progressTrack"
           role="progressbar"
-          aria-label={`Level progress ${Math.round(progress)}%`}
+          aria-label={`レベル進捗 ${Math.round(progress)}%`}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(progress)}
@@ -92,7 +113,7 @@ export default async function StatusPage() {
         </div>
 
         <span className={`sourceBadge sourceBadge--${snapshot.source}`}>
-          {snapshot.source === "notion" ? "NOTION SYNC" : "DEMO MODE"}
+          {snapshot.source === "notion" ? "NOTION同期中" : "デモ表示"}
         </span>
         {snapshot.warning ? <p className="syncWarning">{snapshot.warning}</p> : null}
       </section>
@@ -108,6 +129,42 @@ export default async function StatusPage() {
             <b>OPEN →</b>
           </Link>
         ))}
+      </section>
+
+      <section className="categoryProgressSection" aria-labelledby="category-progress-heading">
+        <div className="categoryProgressHeader">
+          <div>
+            <p className="eyebrow">WORLD CONTACT MAP</p>
+            <h2 id="category-progress-heading">触れてきた世界</h2>
+          </div>
+          <p>達成率を競うのではなく、今までの冒険の広がりを眺めます。</p>
+        </div>
+
+        {categoryProgress.length > 0 ? (
+          <div className="categoryProgressList">
+            {categoryProgress.map((item) => (
+              <Link className="categoryProgressItem" href={`/achievements?category=${encodeURIComponent(item.category)}`} key={item.category}>
+                <div className="categoryProgressTop">
+                  <strong>{item.category}</strong>
+                  <span>{item.unlocked} / {item.total}件 · {item.xp} XP</span>
+                </div>
+                <div
+                  className="categoryProgressTrack"
+                  role="progressbar"
+                  aria-label={`${item.category} ${item.percent}%`}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={item.percent}
+                >
+                  <span style={{ width: `${item.percent}%` }} />
+                </div>
+                <small>{item.percent}%の記録に触れました</small>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="categoryProgressEmpty">実績が追加されると、ここに冒険の広がりが現れます。</p>
+        )}
       </section>
     </main>
   );
