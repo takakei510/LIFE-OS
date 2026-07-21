@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { AchievementUnlocked } from "./achievement-unlocked";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
 function clampProgress(value: number): number {
@@ -11,6 +12,11 @@ export default async function HomePage() {
   const snapshot = await getLifeOsSnapshot();
   const player = snapshot.player;
   const equippedTitle = snapshot.titles.find((title) => title.equipped);
+  const latestUnlocked = snapshot.source === "notion"
+    ? [...snapshot.achievements]
+        .filter((achievement) => achievement.unlocked && achievement.unlockedAt)
+        .sort((a, b) => Date.parse(b.unlockedAt ?? "") - Date.parse(a.unlockedAt ?? ""))[0] ?? null
+    : null;
 
   const level = player?.level ?? 1;
   const totalXp = player?.totalXp ?? 0;
@@ -41,6 +47,8 @@ export default async function HomePage() {
 
   return (
     <main>
+      <AchievementUnlocked achievement={latestUnlocked} />
+
       <nav className="pageNav" aria-label="Primary navigation">
         <Link className="pageNavActive" href="/">HOME</Link>
         <Link href="/achievements">ACHIEVEMENTS</Link>
