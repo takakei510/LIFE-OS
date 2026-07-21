@@ -3,6 +3,8 @@ import Link from "next/link";
 import { TitleCollection } from "./title-collection";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Titles | LIFE OS",
   description: "これまでの体験が形になった称号コレクション。",
