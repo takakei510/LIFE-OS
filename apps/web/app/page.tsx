@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { AchievementUnlocked } from "./achievement-unlocked";
+import "./recent-achievements.css";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
 function clampProgress(value: number): number {
@@ -8,15 +9,28 @@ function clampProgress(value: number): number {
   return Math.min(100, Math.max(0, percent));
 }
 
+function formatUnlockedDate(value: string | null): string {
+  if (!value) return "解除日未記録";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(date);
+}
+
 export default async function HomePage() {
   const snapshot = await getLifeOsSnapshot();
   const player = snapshot.player;
   const equippedTitle = snapshot.titles.find((title) => title.equipped);
-  const latestUnlocked = snapshot.source === "notion"
+  const unlockedAchievements = snapshot.source === "notion"
     ? [...snapshot.achievements]
         .filter((achievement) => achievement.unlocked && achievement.unlockedAt)
-        .sort((a, b) => Date.parse(b.unlockedAt ?? "") - Date.parse(a.unlockedAt ?? ""))[0] ?? null
-    : null;
+        .sort((a, b) => Date.parse(b.unlockedAt ?? "") - Date.parse(a.unlockedAt ?? ""))
+    : [];
+  const latestUnlocked = unlockedAchievements[0] ?? null;
+  const recentUnlocked = unlockedAchievements.slice(0, 3);
 
   const level = player?.level ?? 1;
   const totalXp = player?.totalXp ?? 0;
@@ -104,6 +118,35 @@ export default async function HomePage() {
             <small>{stat.total > 0 ? `${stat.total}件中` : "データ待機中"}</small>
           </Link>
         ))}
+      </section>
+
+      <section className="recentAchievements" aria-labelledby="recent-achievements-heading">
+        <div className="recentAchievementsHeader">
+          <div>
+            <p className="eyebrow">RECENT UNLOCKS</p>
+            <h2 id="recent-achievements-heading">最近解除した実績</h2>
+          </div>
+          <Link href="/achievements">すべて見る →</Link>
+        </div>
+
+        {recentUnlocked.length > 0 ? (
+          <div className="recentAchievementList">
+            {recentUnlocked.map((achievement) => (
+              <Link className="recentAchievementItem" href={`/achievements/${achievement.id}`} key={achievement.id}>
+                <div>
+                  <span>{achievement.category ?? "未分類"}</span>
+                  <strong>{achievement.name}</strong>
+                </div>
+                <div className="recentAchievementMeta">
+                  <span>{formatUnlockedDate(achievement.unlockedAt)}</span>
+                  <b>+{achievement.xp} XP</b>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="recentAchievementsEmpty">最初の実績を解除すると、ここに冒険の記録が並びます。</p>
+        )}
       </section>
 
       <section className="panel">
