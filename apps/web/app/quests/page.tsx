@@ -3,6 +3,8 @@ import Link from "next/link";
 import { QuestBoard } from "./quest-board";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
+export const dynamic = "force-dynamic";
+
 export default async function QuestsPage() {
   const snapshot = await getLifeOsSnapshot();
 
