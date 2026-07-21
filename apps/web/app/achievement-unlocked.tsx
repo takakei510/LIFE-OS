@@ -35,9 +35,11 @@ export function AchievementUnlocked({ achievement }: AchievementUnlockedProps) {
 
   if (!achievement || !visible) return null;
 
+  const unlockedAchievement = achievement;
+
   function dismiss() {
     try {
-      window.localStorage.setItem(STORAGE_KEY, achievement.id);
+      window.localStorage.setItem(STORAGE_KEY, unlockedAchievement.id);
     } catch {
       // The presentation can still be dismissed when storage is unavailable.
     }
@@ -58,15 +60,15 @@ export function AchievementUnlocked({ achievement }: AchievementUnlockedProps) {
         </button>
         <div className={styles.emblem} aria-hidden="true">🏆</div>
         <p className={styles.kicker}>ACHIEVEMENT UNLOCKED</p>
-        <h2 id="achievement-unlocked-title">{achievement.name}</h2>
+        <h2 id="achievement-unlocked-title">{unlockedAchievement.name}</h2>
         <p className={styles.flavor}>
-          {achievement.flavorText || "世界は、ひとつの体験によって少しだけ広がった。"}
+          {unlockedAchievement.flavorText || "世界は、ひとつの体験によって少しだけ広がった。"}
         </p>
         <div className={styles.reward}>
-          <span>{achievement.tier ?? "Achievement"}</span>
-          <strong>+{achievement.xp.toLocaleString()} XP</strong>
+          <span>{unlockedAchievement.tier ?? "Achievement"}</span>
+          <strong>+{unlockedAchievement.xp.toLocaleString()} XP</strong>
         </div>
-        <Link className={styles.link} href={`/achievements/${achievement.id}`} onClick={dismiss}>
+        <Link className={styles.link} href={`/achievements/${unlockedAchievement.id}`} onClick={dismiss}>
           実績を見る →
         </Link>
       </section>
