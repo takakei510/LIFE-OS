@@ -46,6 +46,7 @@ export default async function HomePage() {
         <Link href="/achievements">ACHIEVEMENTS</Link>
         <Link href="/quests">QUESTS</Link>
         <Link href="/titles">TITLES</Link>
+        <Link href="/status">STATUS</Link>
       </nav>
 
       <section className="hero">
@@ -84,6 +85,7 @@ export default async function HomePage() {
         </div>
 
         {snapshot.warning ? <p className="syncWarning">{snapshot.warning}</p> : null}
+        <Link className="notionLink" href="/status">VIEW FULL STATUS →</Link>
       </section>
 
       <section className="statsGrid" aria-label="Player statistics">
@@ -97,10 +99,10 @@ export default async function HomePage() {
       </section>
 
       <section className="panel">
-        <p className="eyebrow">NEXT ADVENTURE</p>
-        <h2>Title Collection</h2>
-        <p className="muted">実績の積み重ねから生まれた称号を眺め、今の冒険に合う呼び名を選びます。</p>
-        <Link className="notionLink" href="/titles">OPEN TITLE COLLECTION →</Link>
+        <p className="eyebrow">CURRENT POSITION</p>
+        <h2>Player Status</h2>
+        <p className="muted">レベルや解除記録から、いま立っている場所を眺めます。</p>
+        <Link className="notionLink" href="/status">OPEN STATUS →</Link>
       </section>
     </main>
   );
