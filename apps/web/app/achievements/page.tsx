@@ -10,7 +10,7 @@ export default async function AchievementsPage() {
   return (
     <main>
       <header className="pageHeader">
-        <p className="eyebrow">ACHIEVEMENT LIBRARY</p>
+        <p className="eyebrow">実績ライブラリ</p>
         <h1>世界に触れた記録</h1>
         <p className="lead">上手さではなく、初めて・挑戦・発見を集める実績図鑑。</p>
       </header>
