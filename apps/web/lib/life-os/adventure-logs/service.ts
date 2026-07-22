@@ -1,0 +1,57 @@
+import "server-only";
+
+import { createTextAdventureLog, findAdventureLogByRequestId } from "@/lib/notion/repositories/adventure-logs";
+import type { CreateAdventureLogInput, CreateAdventureLogResult } from "./types";
+import { validateCreateAdventureLogInput } from "./validation";
+
+function dateLabel(value: string): string {
+  const date = new Date(value);
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
+function generatedName(name: string, memo: string, location: string, loggedAt: string): string {
+  if (name) return name;
+  const icon = memo ? "📝" : location ? "📍" : "✨";
+  return `${icon} 小さな冒険｜${dateLabel(loggedAt)}`;
+}
+
+export async function createAdventureLog(input: CreateAdventureLogInput): Promise<CreateAdventureLogResult> {
+  const validated = validateCreateAdventureLogInput(input);
+  if (!validated.ok) return validated.result;
+
+  try {
+    const existing = await findAdventureLogByRequestId(validated.value.requestId);
+    if (existing) return { ok: true, pageId: existing.id, url: existing.url };
+
+    const logTypes = [
+      ...(validated.value.memo ? ["Text"] : []),
+      ...(validated.value.location ? ["Place"] : []),
+    ];
+    const created = await createTextAdventureLog({
+      requestId: validated.value.requestId,
+      name: generatedName(
+        validated.value.name,
+        validated.value.memo,
+        validated.value.location,
+        validated.value.loggedAt,
+      ),
+      memo: validated.value.memo,
+      location: validated.value.location,
+      loggedAt: validated.value.loggedAt,
+      logTypes,
+    });
+
+    return { ok: true, pageId: created.id, url: created.url };
+  } catch (error) {
+    console.error("Failed to create Adventure Log", error);
+    return {
+      ok: false,
+      message: "思い出を保存できませんでした。入力内容を残したまま、もう一度試してください。",
+    };
+  }
+}
