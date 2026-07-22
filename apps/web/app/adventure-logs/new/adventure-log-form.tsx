@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useMemo } from "react";
+import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { createAdventureLogAction } from "@/app/actions/adventure-log-actions";
@@ -21,12 +21,8 @@ function initialDateTime(): string {
   return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 }
 
-export function AdventureLogForm() {
+export function AdventureLogForm({ requestId }: { requestId: string }) {
   const [state, action] = useActionState(createAdventureLogAction, null);
-  const requestId = useMemo(
-    () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`),
-    [],
-  );
 
   if (state?.ok) {
     return (
