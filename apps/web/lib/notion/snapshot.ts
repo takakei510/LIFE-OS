@@ -110,6 +110,7 @@ function adventureLog(page: PageObjectResponse): AdventureLog {
     location: richText(p, "Location"),
     logTypes: multiSelect(p, "Log Type"),
     visibility: select(p, "Visibility"),
+    lifecycle: select(p, "Lifecycle"),
     favorite: checkbox(p, "Favorite"),
     media: files(p, "Media"),
     url: page.url,
@@ -167,7 +168,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
       quests: questPages.map(quest),
       adventureLogs: adventureLogPages
         .map(adventureLog)
-        .filter((log) => log.name.length > 0)
+        .filter((log) => log.name.length > 0 && log.lifecycle !== "Archived")
         .sort((a, b) => Date.parse(b.loggedAt ?? "") - Date.parse(a.loggedAt ?? "")),
       player: statusPages[0] ? playerStatus(statusPages[0]) : null,
       source: "notion",
