@@ -49,6 +49,16 @@ Notionの記録を、検索・振り返り・探索提案まで含むゲーム�
 
 詳細は [`docs/patch-notes/v0.3.0.md`](docs/patch-notes/v0.3.0.md) を参照してください。
 
+## Adventure Logs — In development
+
+- Notionの独立したAdventure Logs DBを管理元にする
+- HOMEと専用一覧から思い出を閲覧する
+- Memo・LocationによるテキストログをWebから任意作成する
+- ログ作成にXPを付与しない
+- 作成時はPrivate / Activeで保存する
+- requestIdで二重送信を防ぐ
+- 写真・音声アップロードは後続バージョンで追加する
+
 ## Development
 
 ```bash
