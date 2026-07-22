@@ -1,0 +1,142 @@
+.newAdventureLogHero {
+  margin: 2rem 0 1.5rem;
+  max-width: 760px;
+}
+
+.newAdventureLogHero h1 {
+  margin: 0.35rem 0 0.75rem;
+  font-size: clamp(2rem, 7vw, 4rem);
+  line-height: 1.05;
+}
+
+.newAdventureLogHero > p:last-child {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.adventureLogForm,
+.adventureLogSuccess {
+  max-width: 760px;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--panel);
+}
+
+.adventureLogForm {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.adventureLogForm label {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.adventureLogForm label > span {
+  font-weight: 700;
+}
+
+.adventureLogForm small {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.adventureLogForm input,
+.adventureLogForm textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  font: inherit;
+}
+
+.adventureLogForm textarea {
+  resize: vertical;
+}
+
+.adventureLogForm em,
+.adventureLogFormError {
+  color: #ff9a9a;
+  font-style: normal;
+  font-size: 0.9rem;
+}
+
+.adventureLogFormActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.adventureLogSubmit,
+.adventureLogFormActions a,
+.adventureLogSuccess a {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 46px;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.adventureLogSubmit {
+  border: 0;
+  background: var(--accent);
+  color: #07111e;
+  cursor: pointer;
+}
+
+.adventureLogSubmit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.adventureLogFormActions a,
+.adventureLogSuccess a {
+  border: 1px solid var(--line);
+  color: inherit;
+}
+
+.adventureLogPrivacy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.adventureLogSuccess {
+  text-align: center;
+}
+
+.adventureLogSuccess > span {
+  font-size: 3rem;
+}
+
+.adventureLogSuccess h2 {
+  margin-bottom: 0.5rem;
+}
+
+.adventureLogSuccess p {
+  color: var(--muted);
+}
+
+.adventureLogSuccess div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .adventureLogFormActions,
+  .adventureLogSuccess div {
+    display: grid;
+  }
+}
