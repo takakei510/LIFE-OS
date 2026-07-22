@@ -37,11 +37,14 @@ export default async function AdventureLogsPage() {
       </nav>
 
       <section className="adventureLogsHero">
-        <p className="eyebrow">ADVENTURE LOGS</p>
-        <h1>現実から持ち帰った、小さな思い出。</h1>
-        <p>
-          写真、音、一言、場所。残したいものだけを、冒険のあとにそっと保存します。
-        </p>
+        <div>
+          <p className="eyebrow">ADVENTURE LOGS</p>
+          <h1>現実から持ち帰った、小さな思い出。</h1>
+          <p>
+            写真、音、一言、場所。残したいものだけを、冒険のあとにそっと保存します。
+          </p>
+        </div>
+        <Link className="adventureLogsCreate" href="/adventure-logs/new">＋ 思い出を残す</Link>
       </section>
 
       <section className="adventureLogsSummary" aria-label="Adventure Logs summary">
@@ -98,7 +101,7 @@ export default async function AdventureLogsPage() {
           <span aria-hidden="true">📭</span>
           <h2>まだ冒険ログはありません</h2>
           <p>実績解除やクエスト完了のあと、残したい瞬間だけ記録できます。</p>
-          <Link href="/achievements">次の冒険を探す →</Link>
+          <Link href="/adventure-logs/new">最初の思い出を残す →</Link>
         </section>
       )}
     </main>
