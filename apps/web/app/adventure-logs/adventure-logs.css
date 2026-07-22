@@ -1,4 +1,8 @@
 .adventureLogsHero {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: flex-end;
   margin: 2.5rem 0 1.5rem;
   padding: 2rem;
   border: 1px solid var(--border);
@@ -16,6 +20,20 @@
   max-width: 680px;
   color: var(--muted);
   line-height: 1.8;
+}
+
+.adventureLogsCreate {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #07111e;
+  font-weight: 800;
+  text-decoration: none;
 }
 
 .adventureLogsSummary {
@@ -165,7 +183,14 @@
 
 @media (max-width: 720px) {
   .adventureLogsHero {
+    display: grid;
+    align-items: stretch;
     padding: 1.4rem;
+  }
+
+  .adventureLogsCreate {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .adventureLogsSummary,
