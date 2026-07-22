@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import Link from "next/link";
 
 import { AdventureLogForm } from "./adventure-log-form";
@@ -20,7 +21,7 @@ export default function NewAdventureLogPage() {
         <p>証拠ではありません。残したい一言や場所だけを、任意で保存できます。</p>
       </section>
 
-      <AdventureLogForm />
+      <AdventureLogForm requestId={randomUUID()} />
     </main>
   );
 }
