@@ -52,6 +52,7 @@ export type AdventureLog = {
   location: string;
   logTypes: string[];
   visibility: string | null;
+  lifecycle: string | null;
   favorite: boolean;
   media: AdventureLogMedia[];
   url: string;
