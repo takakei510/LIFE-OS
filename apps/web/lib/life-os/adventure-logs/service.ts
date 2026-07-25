@@ -14,10 +14,17 @@ function dateLabel(value: string): string {
   }).format(date);
 }
 
-function generatedName(name: string, memo: string, location: string, loggedAt: string): string {
+function generatedName(
+  name: string,
+  achievementName: string | undefined,
+  memo: string,
+  location: string,
+  loggedAt: string,
+): string {
   if (name) return name;
   const icon = memo ? "📝" : location ? "📍" : "✨";
-  return `${icon} 小さな冒険｜${dateLabel(loggedAt)}`;
+  const sourceName = achievementName || "小さな冒険";
+  return `${icon} ${sourceName}｜${dateLabel(loggedAt)}`;
 }
 
 export async function createAdventureLog(input: CreateAdventureLogInput): Promise<CreateAdventureLogResult> {
@@ -36,6 +43,7 @@ export async function createAdventureLog(input: CreateAdventureLogInput): Promis
       requestId: validated.value.requestId,
       name: generatedName(
         validated.value.name,
+        validated.value.achievementName,
         validated.value.memo,
         validated.value.location,
         validated.value.loggedAt,
@@ -44,6 +52,7 @@ export async function createAdventureLog(input: CreateAdventureLogInput): Promis
       location: validated.value.location,
       loggedAt: validated.value.loggedAt,
       logTypes,
+      relatedAchievementId: validated.value.relatedAchievementId,
     });
 
     return { ok: true, pageId: created.id, url: created.url };
