@@ -11,14 +11,34 @@ function pageResult(value: unknown): PageObjectResponse | null {
     : null;
 }
 
+function isConfiguredAchievement(page: PageObjectResponse, dataSourceId: string): boolean {
+  return page.parent.type === "data_source_id" && page.parent.data_source_id === dataSourceId;
+}
+
+export async function getUnlockedAchievementPage(pageId: string): Promise<PageObjectResponse> {
+  const notion = getNotionClient();
+  const env = getServerEnv();
+  if (!notion || !env) throw new Error("Notion is not configured.");
+
+  const page = pageResult(await notion.pages.retrieve({ page_id: pageId }));
+  if (!page || !isConfiguredAchievement(page, env.NOTION_ACHIEVEMENTS_DATA_SOURCE_ID)) {
+    throw new Error("Achievement was not found in the configured data source.");
+  }
+
+  const unlocked = page.properties.Unlocked;
+  if (unlocked?.type !== "checkbox" || !unlocked.checkbox) {
+    throw new Error("Adventure Logs can only be related to unlocked achievements.");
+  }
+  return page;
+}
+
 export async function unlockAchievementPage(pageId: string, unlockedAt: string): Promise<PageObjectResponse> {
   const notion = getNotionClient();
   const env = getServerEnv();
   if (!notion || !env) throw new Error("Notion is not configured.");
 
-  const page = await notion.pages.retrieve({ page_id: pageId });
-  const current = pageResult(page);
-  if (!current || current.parent.type !== "data_source_id" || current.parent.data_source_id !== env.NOTION_ACHIEVEMENTS_DATA_SOURCE_ID) {
+  const current = pageResult(await notion.pages.retrieve({ page_id: pageId }));
+  if (!current || !isConfiguredAchievement(current, env.NOTION_ACHIEVEMENTS_DATA_SOURCE_ID)) {
     throw new Error("Achievement was not found in the configured data source.");
   }
 
