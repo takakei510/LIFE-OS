@@ -10,7 +10,7 @@ function text(value: unknown): string {
 
 export function validateCreateAdventureLogInput(
   input: CreateAdventureLogInput,
-): { ok: true; value: Required<Pick<CreateAdventureLogInput, "requestId" | "name" | "memo" | "location" | "loggedAt">> & Pick<CreateAdventureLogInput, "relatedAchievementId" | "relatedQuestId"> } | { ok: false; result: CreateAdventureLogResult } {
+): { ok: true; value: Required<Pick<CreateAdventureLogInput, "requestId" | "name" | "memo" | "location" | "loggedAt">> & Pick<CreateAdventureLogInput, "relatedAchievementId" | "achievementName" | "relatedQuestId"> } | { ok: false; result: CreateAdventureLogResult } {
   const requestId = text(input.requestId);
   const name = text(input.name);
   const memo = text(input.memo);
@@ -44,6 +44,7 @@ export function validateCreateAdventureLogInput(
       location,
       loggedAt: loggedAt || new Date().toISOString(),
       relatedAchievementId: text(input.relatedAchievementId) || undefined,
+      achievementName: text(input.achievementName) || undefined,
       relatedQuestId: text(input.relatedQuestId) || undefined,
     },
   };
