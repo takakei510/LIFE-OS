@@ -16,17 +16,21 @@ export async function createAdventureLogAction(
   _previousState: AdventureLogFormState,
   formData: FormData,
 ): Promise<AdventureLogFormState> {
+  const relatedAchievementId = value(formData, "relatedAchievementId");
   const result = await createAdventureLog({
     requestId: value(formData, "requestId"),
     name: value(formData, "name"),
     memo: value(formData, "memo"),
     location: value(formData, "location"),
     loggedAt: value(formData, "loggedAt"),
+    relatedAchievementId,
+    achievementName: value(formData, "achievementName"),
   });
 
   if (result.ok) {
     revalidatePath("/");
     revalidatePath("/adventure-logs");
+    if (relatedAchievementId) revalidatePath(`/achievements/${relatedAchievementId}`);
   }
   return result;
 }
