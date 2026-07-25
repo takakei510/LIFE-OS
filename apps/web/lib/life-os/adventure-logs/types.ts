@@ -5,6 +5,7 @@ export type CreateAdventureLogInput = {
   location?: string;
   loggedAt?: string;
   relatedAchievementId?: string;
+  achievementName?: string;
   relatedQuestId?: string;
 };
 
