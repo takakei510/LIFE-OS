@@ -14,10 +14,10 @@ LIFE OSは「何者になるか」を競うゲームではない。
 
 - [x] `ROADMAP.md` を追加
 - [x] `docs/DEVELOPMENT.md` を追加
-- [ ] GitHub Issue Templateを追加
-- [ ] Pull Request Templateを追加
-- [ ] 写真アップロード機能をIssueへ分割
-- [ ] Issue運用を開始
+- [x] GitHub Issue Templateを追加
+- [x] Pull Request Templateを追加
+- [x] 写真アップロード機能をIssueへ分割
+- [x] Issue運用を開始
 
 ## Version Roadmap
 
@@ -67,6 +67,13 @@ LIFE OSは「何者になるか」を競うゲームではない。
 - [ ] Notion File Upload API
 - [ ] Adventure LogsのMediaへ保存
 - [ ] HOME・一覧で写真表示
+
+関連Issue：
+
+- #35 Photo Picker UI
+- #36 Notion File Upload Route
+- #37 Attach Photos to Media
+- #38 Display Photos on HOME and List
 
 ### v0.4.4 — Adventure Logs 音声対応
 
