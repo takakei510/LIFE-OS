@@ -15,13 +15,24 @@ function SubmitButton() {
   );
 }
 
-function initialDateTime(): string {
-  const date = new Date();
-  const offset = date.getTimezoneOffset() * 60_000;
-  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+function toLocalDateTime(value?: string): string {
+  const date = value ? new Date(value) : new Date();
+  const safeDate = Number.isNaN(date.getTime()) ? new Date() : date;
+  const offset = safeDate.getTimezoneOffset() * 60_000;
+  return new Date(safeDate.getTime() - offset).toISOString().slice(0, 16);
 }
 
-export function AdventureLogForm({ requestId }: { requestId: string }) {
+export function AdventureLogForm({
+  requestId,
+  relatedAchievementId,
+  achievementName,
+  initialLoggedAt,
+}: {
+  requestId: string;
+  relatedAchievementId?: string;
+  achievementName?: string;
+  initialLoggedAt?: string;
+}) {
   const [state, action] = useActionState(createAdventureLogAction, null);
 
   if (state?.ok) {
@@ -43,12 +54,16 @@ export function AdventureLogForm({ requestId }: { requestId: string }) {
   return (
     <form action={action} className="adventureLogForm">
       <input name="requestId" type="hidden" value={requestId} />
+      <input name="relatedAchievementId" type="hidden" value={relatedAchievementId ?? ""} />
+      <input name="achievementName" type="hidden" value={achievementName ?? ""} />
       {errors?.form ? <p className="adventureLogFormError" role="alert">{errors.form}</p> : null}
       {state && !state.ok && !state.fieldErrors ? <p className="adventureLogFormError" role="alert">{state.message}</p> : null}
 
+      {achievementName ? <p className="adventureLogPrivacy">関連実績：{achievementName}</p> : null}
+
       <label>
         <span>タイトル <small>任意</small></span>
-        <input name="name" maxLength={120} placeholder="空欄なら自動で名前を付けます" />
+        <input name="name" maxLength={120} placeholder="空欄なら実績名から自動生成します" />
         {errors?.name ? <em>{errors.name}</em> : null}
       </label>
 
@@ -66,13 +81,13 @@ export function AdventureLogForm({ requestId }: { requestId: string }) {
 
       <label>
         <span>体験した日時</span>
-        <input name="loggedAt" type="datetime-local" defaultValue={initialDateTime()} />
+        <input name="loggedAt" type="datetime-local" defaultValue={toLocalDateTime(initialLoggedAt)} />
         {errors?.loggedAt ? <em>{errors.loggedAt}</em> : null}
       </label>
 
       <div className="adventureLogFormActions">
         <SubmitButton />
-        <Link href="/adventure-logs">今回は残さない</Link>
+        <Link href={relatedAchievementId ? `/achievements/${relatedAchievementId}` : "/adventure-logs"}>今回は残さない</Link>
       </div>
       <p className="adventureLogPrivacy">作成時はPrivateで保存され、ログ作成によるXP付与はありません。</p>
     </form>
