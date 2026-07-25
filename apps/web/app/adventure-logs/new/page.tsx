@@ -4,7 +4,12 @@ import Link from "next/link";
 import { AdventureLogForm } from "./adventure-log-form";
 import "./new-adventure-log.css";
 
-export default function NewAdventureLogPage() {
+export default async function NewAdventureLogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ achievementId?: string; achievementName?: string; loggedAt?: string }>;
+}) {
+  const query = await searchParams;
   return (
     <main>
       <nav className="pageNav" aria-label="Primary navigation">
@@ -12,16 +17,26 @@ export default function NewAdventureLogPage() {
         <Link href="/achievements">ACHIEVEMENTS</Link>
         <Link href="/quests">QUESTS</Link>
         <Link href="/titles">TITLES</Link>
+        <Link href="/adventure-logs">ADVENTURE LOGS</Link>
         <Link href="/status">STATUS</Link>
       </nav>
 
       <section className="newAdventureLogHero">
         <p className="eyebrow">NEW ADVENTURE LOG</p>
         <h1>この冒険から、何を持ち帰る？</h1>
-        <p>証拠ではありません。残したい一言や場所だけを、任意で保存できます。</p>
+        <p>
+          {query.achievementName
+            ? `「${query.achievementName}」の解除記録に、残したい一言や場所を添えられます。`
+            : "証拠ではありません。残したい一言や場所だけを、任意で保存できます。"}
+        </p>
       </section>
 
-      <AdventureLogForm requestId={randomUUID()} />
+      <AdventureLogForm
+        requestId={randomUUID()}
+        relatedAchievementId={query.achievementId}
+        achievementName={query.achievementName}
+        initialLoggedAt={query.loggedAt}
+      />
     </main>
   );
 }
