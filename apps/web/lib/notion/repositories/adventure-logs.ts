@@ -12,6 +12,7 @@ type CreateTextLogRecord = {
   location: string;
   loggedAt: string;
   logTypes: string[];
+  relatedAchievementId?: string;
 };
 
 function pageResult(value: unknown): PageObjectResponse | null {
@@ -73,6 +74,10 @@ export async function createTextAdventureLog(record: CreateTextLogRecord): Promi
       Favorite: { type: "checkbox", checkbox: false },
       Lifecycle: { type: "select", select: { name: "Active" } },
       Player: { type: "relation", relation: [{ id: playerPageId }] },
+      "Related Achievement": {
+        type: "relation",
+        relation: record.relatedAchievementId ? [{ id: record.relatedAchievementId }] : [],
+      },
       "Request ID": { type: "rich_text", rich_text: [{ type: "text", text: { content: record.requestId } }] },
     },
   });
