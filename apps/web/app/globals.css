@@ -62,6 +62,14 @@ h2 { margin-bottom: 10px; font-size: 1.45rem; }
 .detailFacts div { padding: 16px; border: 1px solid var(--line); border-radius: 14px; }
 .detailFacts span, .detailFacts strong { display: block; }
 .detailFacts span { margin-bottom: 8px; color: var(--muted); font-size: .75rem; }
+.achievementUnlockForm, .achievementUnlockSuccess, .achievementUnlockedActions { margin-top: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: rgba(143, 167, 255, .06); }
+.achievementUnlockForm p, .achievementUnlockSuccess p, .achievementUnlockedActions p { color: var(--muted); line-height: 1.7; }
+.achievementUnlockButton, .achievementLogButton, .achievementSkipButton, .achievementUnlockedActions a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; border-radius: 999px; font-weight: 800; text-decoration: none; }
+.achievementUnlockButton, .achievementLogButton { border: 0; background: var(--accent); color: #07111e; cursor: pointer; }
+.achievementUnlockButton:disabled { opacity: .65; cursor: wait; }
+.achievementSkipButton, .achievementUnlockedActions a { border: 1px solid var(--line); color: var(--text); }
+.achievementUnlockSuccess div { display: flex; flex-wrap: wrap; gap: 10px; }
+.achievementUnlockError { color: #ff9a9a !important; }
 .notionLink { display: inline-block; margin-top: 28px; color: var(--accent); text-decoration: none; }
 .pageNav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 42px; }
 .pageNav a { padding: 9px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-decoration: none; }
@@ -78,48 +86,8 @@ h2 { margin-bottom: 10px; font-size: 1.45rem; }
 .questCard--completed { opacity: .72; }
 .questCardTop, .questReward, .titleCardTop { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
 .questType, .questState { padding: 7px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .66rem; font-weight: 800; letter-spacing: .08em; }
-.questCard--available .questState { color: #ffd08a; }
-.questCard--accepted .questState { color: #aebcff; }
-.questCard--completed .questState { color: #8ce6b5; }
-.questCard h2 { margin-bottom: 12px; }
-.questReward { margin: 22px 0 18px; padding-top: 18px; border-top: 1px solid var(--line); }
-.questReward span { max-width: 70%; color: var(--muted); font-size: .8rem; line-height: 1.5; }
-.questReward strong { white-space: nowrap; }
-.questCard > a { color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-decoration: none; }
-.equippedTitleCard { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 24px; margin-bottom: 18px; padding: 26px; border: 1px solid rgba(255, 211, 111, .5); border-radius: 22px; background: radial-gradient(circle at right top, rgba(255, 211, 111, .14), transparent 45%), linear-gradient(145deg, rgba(33, 29, 20, .96), rgba(14, 18, 25, .96)); }
-.equippedTitleCard > span, .equippedTitleCard > strong { color: #f6d77c; font-size: .72rem; font-weight: 900; letter-spacing: .12em; }
-.equippedTitleCard p:last-child { margin-bottom: 0; color: var(--muted); line-height: 1.65; }
-.titleCard { display: flex; min-height: 260px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(145deg, rgba(23, 28, 38, .96), rgba(14, 18, 25, .96)); flex-direction: column; justify-content: space-between; }
-.titleCard--equipped { border-color: rgba(255, 211, 111, .6); box-shadow: inset 0 0 36px rgba(255, 211, 111, .05); }
-.titleCard--locked { opacity: .58; }
-.titleCardTop { color: var(--muted); font-size: .68rem; font-weight: 850; letter-spacing: .08em; }
-.titleCard h2 { margin: 26px 0 12px; }
-.titleCard p { color: var(--muted); line-height: 1.65; }
-.titleCard > a { color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-decoration: none; }
-.lockedHint { color: var(--muted); font-size: .72rem; }
-.statusHero { position: relative; padding: 32px; border: 1px solid var(--line); border-radius: 24px; background: radial-gradient(circle at right top, rgba(143, 167, 255, .18), transparent 42%), linear-gradient(145deg, rgba(23, 28, 38, .98), rgba(14, 18, 25, .98)); box-shadow: 0 24px 80px rgba(0, 0, 0, .28); }
-.statusIdentity { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 28px; }
-.statusIdentity h2 { margin-bottom: 8px; }
-.statusLevelLabel { display: block; color: var(--muted); font-size: .65rem; font-weight: 900; letter-spacing: .18em; }
-.statusLevel { display: block; font-size: clamp(4rem, 12vw, 7rem); line-height: .9; letter-spacing: -.08em; }
-.statusHero .sourceBadge { display: inline-block; margin-top: 22px; }
-.statusRecordGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
-.statusRecordCard { display: flex; min-height: 230px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(145deg, rgba(23, 28, 38, .96), rgba(14, 18, 25, .96)); flex-direction: column; text-decoration: none; transition: transform .18s ease, border-color .18s ease; }
-.statusRecordCard:hover { transform: translateY(-3px); border-color: var(--accent); }
-.statusRecordCard > span { color: var(--muted); font-size: .68rem; font-weight: 850; letter-spacing: .12em; }
-.statusRecordCard > strong { margin: 28px 0 10px; font-size: 2.8rem; }
-.statusRecordCard > strong small { color: var(--muted); font-size: 1rem; }
-.statusRecordCard p { flex: 1; color: var(--muted); line-height: 1.6; }
-.statusRecordCard b { color: var(--accent); font-size: .7rem; letter-spacing: .08em; }
-@media (max-width: 640px) {
-  main { padding: 44px 0; }
-  .playerCardHeader, .xpRow { align-items: flex-start; flex-direction: column; gap: 10px; }
-  .sourceBadge { align-self: flex-start; }
-  .statsGrid, .filterGrid, .achievementGrid, .detailFacts, .questGrid, .titleGrid, .statusRecordGrid { grid-template-columns: 1fr; }
-  .statCard { min-height: 110px; }
-  .achievementDetail { padding: 22px; }
-  .questSummary, .questCardTop, .questReward, .titleSummary, .titleCardTop { align-items: flex-start; flex-direction: column; }
-  .questReward span { max-width: none; }
-  .equippedTitleCard, .statusIdentity { grid-template-columns: 1fr; }
-  .statusHero { padding: 24px; }
+
+@media (max-width: 720px) {
+  .detailFacts, .achievementGrid, .questGrid, .titleGrid, .statsGrid, .filterGrid { grid-template-columns: 1fr; }
+  .achievementUnlockSuccess div { display: grid; }
 }
