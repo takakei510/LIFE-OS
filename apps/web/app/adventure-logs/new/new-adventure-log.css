@@ -33,7 +33,8 @@
   gap: 0.5rem;
 }
 
-.adventureLogForm label > span {
+.adventureLogForm label > span,
+.adventureLogPhotoHeader span:first-child {
   font-weight: 700;
 }
 
@@ -63,6 +64,131 @@
   color: #ff9a9a;
   font-style: normal;
   font-size: 0.9rem;
+}
+
+.adventureLogPhotoField {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.adventureLogPhotoHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.adventureLogPhotoHeader p,
+.adventureLogPhotoEmpty {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.adventureLogPhotoCount {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.adventureLogPhotoInput {
+  position: absolute;
+  width: 1px !important;
+  height: 1px;
+  padding: 0 !important;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0 !important;
+}
+
+.adventureLogPhotoButton {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adventureLogPhotoButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.adventureLogPhotoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.adventureLogPhotoCard {
+  position: relative;
+  display: grid;
+  gap: 0.55rem;
+  overflow: hidden;
+  padding-bottom: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.adventureLogPhotoCard img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.adventureLogPhotoCard div {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+  padding: 0 0.75rem;
+}
+
+.adventureLogPhotoCard strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.adventureLogPhotoCard span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.adventureLogPhotoCard button {
+  margin: 0 0.75rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .adventureLogFormActions {
@@ -135,6 +261,14 @@
 }
 
 @media (max-width: 640px) {
+  .adventureLogPhotoButton {
+    width: 100%;
+  }
+
+  .adventureLogPhotoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .adventureLogFormActions,
   .adventureLogSuccess div {
     display: grid;
