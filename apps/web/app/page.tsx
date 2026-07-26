@@ -35,6 +35,14 @@ function isHiddenAchievement(visibility: string | null): boolean {
   return normalized.includes("hidden") || normalized.includes("secret") || normalized.includes("非公開") || normalized.includes("隠し");
 }
 
+function adventureLogIcon(logTypes: string[]): string {
+  if (logTypes.includes("Photo")) return "📸";
+  if (logTypes.includes("Audio")) return "🎤";
+  if (logTypes.includes("Text")) return "📝";
+  if (logTypes.includes("Place")) return "📍";
+  return "✨";
+}
+
 export default async function HomePage() {
   const snapshot = await getLifeOsSnapshot();
   const player = snapshot.player;
@@ -45,33 +53,7 @@ export default async function HomePage() {
         .sort((a, b) => Date.parse(b.unlockedAt ?? "") - Date.parse(a.unlockedAt ?? ""))
     : [];
   const latestUnlocked = unlockedAchievements[0] ?? null;
-
-  const recentActivities = snapshot.source === "notion"
-    ? [
-        ...unlockedAchievements.map((achievement) => ({
-          id: `achievement-${achievement.id}`,
-          type: "achievement" as const,
-          name: achievement.name,
-          label: achievement.category ?? "未分類",
-          date: achievement.unlockedAt,
-          xp: achievement.xp,
-          href: `/achievements/${achievement.id}`,
-        })),
-        ...snapshot.quests
-          .filter((quest) => quest.completedAt)
-          .map((quest) => ({
-            id: `quest-${quest.id}`,
-            type: "quest" as const,
-            name: quest.name,
-            label: quest.questType ?? "Quest",
-            date: quest.completedAt,
-            xp: quest.rewardXp,
-            href: quest.url,
-          })),
-      ]
-        .sort((a, b) => Date.parse(b.date ?? "") - Date.parse(a.date ?? ""))
-        .slice(0, 5)
-    : [];
+  const recentAdventureLogs = snapshot.adventureLogs.slice(0, 5);
 
   const todaySeed = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Tokyo",
@@ -129,7 +111,7 @@ export default async function HomePage() {
       </nav>
 
       <section className="hero">
-        <p className="eyebrow">LIFE OS · VERSION 0.2</p>
+        <p className="eyebrow">LIFE OS · VERSION 0.4</p>
         <h1>世界に触れた記録を、ゲームにする。</h1>
         <p className="lead">
           LIFE OSは「何者になるか」を競うゲームではない。どれだけ世界に触れたかを楽しむゲームである。
@@ -210,41 +192,30 @@ export default async function HomePage() {
       <section className="recentAchievements" aria-labelledby="recent-adventure-heading">
         <div className="recentAchievementsHeader">
           <div>
-            <p className="eyebrow">RECENT ADVENTURE LOG</p>
-            <h2 id="recent-adventure-heading">最近の冒険ログ</h2>
+            <p className="eyebrow">ADVENTURE LOGS</p>
+            <h2 id="recent-adventure-heading">最近の冒険</h2>
           </div>
-          <Link href="/status">現在地を見る →</Link>
+          <Link href="/adventure-logs">すべて見る →</Link>
         </div>
 
-        {recentActivities.length > 0 ? (
+        {recentAdventureLogs.length > 0 ? (
           <div className="recentAchievementList">
-            {recentActivities.map((activity) => {
-              const content = (
-                <>
-                  <div>
-                    <span>{activity.type === "achievement" ? `🏆 ${activity.label}` : `✦ ${activity.label}`}</span>
-                    <strong>{activity.name}</strong>
-                  </div>
-                  <div className="recentAchievementMeta">
-                    <span>{formatActivityDate(activity.date)}</span>
-                    <b>+{activity.xp} XP</b>
-                  </div>
-                </>
-              );
-
-              return activity.type === "achievement" ? (
-                <Link className="recentAchievementItem" href={activity.href} key={activity.id}>
-                  {content}
-                </Link>
-              ) : (
-                <a className="recentAchievementItem" href={activity.href} key={activity.id} target="_blank" rel="noreferrer">
-                  {content}
-                </a>
-              );
-            })}
+            {recentAdventureLogs.map((log) => (
+              <a className="recentAchievementItem" href={log.url} key={log.id} target="_blank" rel="noreferrer">
+                <div>
+                  <span>{adventureLogIcon(log.logTypes)} {log.logTypes.join(" · ") || "Memory"}</span>
+                  <strong>{log.name}</strong>
+                  <small>{log.memo || log.location || "この冒険の思い出が残されています。"}</small>
+                </div>
+                <div className="recentAchievementMeta">
+                  <span>{formatActivityDate(log.loggedAt)}</span>
+                  <b>{log.favorite ? "★" : `${log.media.length} media`}</b>
+                </div>
+              </a>
+            ))}
           </div>
         ) : (
-          <p className="recentAchievementsEmpty">実績解除やクエスト完了が、ここに冒険の記録として並びます。</p>
+          <p className="recentAchievementsEmpty">写真・音・一言を残した冒険が、ここに並びます。</p>
         )}
       </section>
 

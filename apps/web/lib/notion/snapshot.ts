@@ -3,11 +3,12 @@ import "server-only";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { unstable_noStore as noStore } from "next/cache";
 
-import { getServerEnv } from "@/lib/env";
+import { getOptionalServerEnv, getServerEnv } from "@/lib/env";
 import { getNotionClient } from "@/lib/notion/client";
 import {
   checkbox,
   date,
+  files,
   formulaNumber,
   formulaString,
   multiSelect,
@@ -20,6 +21,7 @@ import {
 } from "@/lib/notion/properties";
 import type {
   Achievement,
+  AdventureLog,
   LifeOsSnapshot,
   PlayerStatus,
   Quest,
@@ -98,6 +100,23 @@ function gameTitle(page: PageObjectResponse): Title {
   };
 }
 
+function adventureLog(page: PageObjectResponse): AdventureLog {
+  const p = page.properties;
+  return {
+    id: page.id,
+    name: title(p, "Name"),
+    loggedAt: date(p, "Logged At"),
+    memo: richText(p, "Memo"),
+    location: richText(p, "Location"),
+    logTypes: multiSelect(p, "Log Type"),
+    visibility: select(p, "Visibility"),
+    lifecycle: select(p, "Lifecycle"),
+    favorite: checkbox(p, "Favorite"),
+    media: files(p, "Media"),
+    url: page.url,
+  };
+}
+
 function playerStatus(page: PageObjectResponse): PlayerStatus {
   const p = page.properties;
   return {
@@ -124,6 +143,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
       achievements: [],
       quests: [],
       titles: [],
+      adventureLogs: [],
       player: null,
       source: "fallback",
       warning: "Notion environment variables are not configured.",
@@ -131,17 +151,25 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
   }
 
   try {
-    const [achievementPages, titlePages, questPages, statusPages] = await Promise.all([
+    const optionalEnv = getOptionalServerEnv();
+    const [achievementPages, titlePages, questPages, statusPages, adventureLogPages] = await Promise.all([
       queryAll(env.NOTION_ACHIEVEMENTS_DATA_SOURCE_ID),
       queryAll(env.NOTION_TITLES_DATA_SOURCE_ID),
       queryAll(env.NOTION_QUESTS_DATA_SOURCE_ID),
       queryAll(env.NOTION_STATUS_DATA_SOURCE_ID),
+      optionalEnv.NOTION_ADVENTURE_LOGS_DATA_SOURCE_ID
+        ? queryAll(optionalEnv.NOTION_ADVENTURE_LOGS_DATA_SOURCE_ID)
+        : Promise.resolve([]),
     ]);
 
     return {
       achievements: achievementPages.map(achievement),
       titles: titlePages.map(gameTitle),
       quests: questPages.map(quest),
+      adventureLogs: adventureLogPages
+        .map(adventureLog)
+        .filter((log) => log.name.length > 0 && log.lifecycle !== "Archived")
+        .sort((a, b) => Date.parse(b.loggedAt ?? "") - Date.parse(a.loggedAt ?? "")),
       player: statusPages[0] ? playerStatus(statusPages[0]) : null,
       source: "notion",
     };
@@ -151,6 +179,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
       achievements: [],
       quests: [],
       titles: [],
+      adventureLogs: [],
       player: null,
       source: "fallback",
       warning: "Notion data could not be loaded.",

@@ -38,6 +38,26 @@ export type Title = {
   url: string;
 };
 
+export type AdventureLogMedia = {
+  name: string;
+  type: "file" | "external" | "file_upload" | "unknown";
+  url: string | null;
+};
+
+export type AdventureLog = {
+  id: string;
+  name: string;
+  loggedAt: string | null;
+  memo: string;
+  location: string;
+  logTypes: string[];
+  visibility: string | null;
+  lifecycle: string | null;
+  favorite: boolean;
+  media: AdventureLogMedia[];
+  url: string;
+};
+
 export type PlayerStatus = {
   id: string;
   name: string;
@@ -56,6 +76,7 @@ export type LifeOsSnapshot = {
   achievements: Achievement[];
   quests: Quest[];
   titles: Title[];
+  adventureLogs: AdventureLog[];
   player: PlayerStatus | null;
   source: "notion" | "fallback";
   warning?: string;

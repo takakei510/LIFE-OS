@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+import { UnlockAchievement } from "./unlock-achievement";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
 export default async function AchievementDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -23,6 +25,18 @@ export default async function AchievementDetailPage({ params }: { params: Promis
           <div><span>分野</span><strong>{achievement.domains.join(" / ") || "未設定"}</strong></div>
           <div><span>解除日時</span><strong>{achievement.unlockedAt ?? "—"}</strong></div>
         </section>
+
+        {achievement.unlocked ? (
+          <section className="achievementUnlockedActions">
+            <p>この実績の思い出は、後からでも追加できます。</p>
+            <Link href={`/adventure-logs/new?achievementId=${encodeURIComponent(achievement.id)}&achievementName=${encodeURIComponent(achievement.name)}&loggedAt=${encodeURIComponent(achievement.unlockedAt ?? new Date().toISOString())}`}>
+              この実績の思い出を残す
+            </Link>
+          </section>
+        ) : (
+          <UnlockAchievement achievementId={achievement.id} achievementName={achievement.name} />
+        )}
+
         <a className="notionLink" href={achievement.url} target="_blank" rel="noreferrer">Notionの記録を開く ↗</a>
       </article>
     </main>
