@@ -7,6 +7,7 @@ const items = [
   { href: "/", label: "ホーム", icon: "⌂" },
   { href: "/achievements", label: "実績", icon: "🏆" },
   { href: "/quests", label: "クエスト", icon: "✦" },
+  { href: "/adventure-logs", label: "冒険ログ", icon: "📸" },
   { href: "/titles", label: "称号", icon: "♛" },
   { href: "/status", label: "ステータス", icon: "◉" },
 ];
