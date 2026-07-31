@@ -50,7 +50,8 @@
   flex-wrap: wrap;
 }
 
-.adventureLogSubmit {
+.adventureLogSubmit,
+.adventureLogPhotoButton {
   padding: 0.8rem 1.2rem;
   border: 0;
   border-radius: 999px;
@@ -60,10 +61,104 @@
   cursor: pointer;
 }
 
+.adventureLogPhotoField {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.adventureLogPhotoHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.adventureLogPhotoHeader p,
+.adventureLogPhotoEmpty {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+}
+
+.adventureLogPhotoCount {
+  flex: 0 0 auto;
+  font-weight: 800;
+}
+
+.adventureLogPhotoInput {
+  display: none;
+}
+
+.adventureLogPhotoButton {
+  justify-self: start;
+}
+
+.adventureLogPhotoButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.adventureLogPhotoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.adventureLogPhotoCard {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.adventureLogPhotoCard img {
+  width: 88px;
+  height: 72px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.adventureLogPhotoCard div {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.adventureLogPhotoCard strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adventureLogPhotoCard span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.adventureLogPhotoCard button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.5rem 0.7rem;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
 @media (max-width: 720px) {
   .newAdventureLogHero,
   .adventureLogForm,
   .adventureLogSuccess { padding: 1.2rem; }
   .adventureLogFormActions { align-items: stretch; flex-direction: column; }
   .adventureLogSubmit { width: 100%; }
+  .adventureLogPhotoGrid { grid-template-columns: 1fr; }
+  .adventureLogPhotoCard { grid-template-columns: 72px minmax(0, 1fr) auto; }
+  .adventureLogPhotoCard img { width: 72px; height: 64px; }
 }
