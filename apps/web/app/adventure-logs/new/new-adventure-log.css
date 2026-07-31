@@ -1,0 +1,69 @@
+.newAdventureLogHero,
+.adventureLogForm,
+.adventureLogSuccess {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--panel);
+}
+
+.newAdventureLogHero p:last-child,
+.adventureLogPrivacy {
+  color: var(--muted);
+}
+
+.adventureLogForm {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.adventureLogForm label {
+  display: grid;
+  gap: 0.5rem;
+  font-weight: 700;
+}
+
+.adventureLogForm input,
+.adventureLogForm textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(12, 16, 26, 0.72);
+  color: inherit;
+  font: inherit;
+}
+
+.adventureLogForm em,
+.adventureLogFormError {
+  color: #ff9b9b;
+  font-style: normal;
+}
+
+.adventureLogFormActions,
+.adventureLogSuccess div {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.adventureLogSubmit {
+  padding: 0.8rem 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #07111e;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .newAdventureLogHero,
+  .adventureLogForm,
+  .adventureLogSuccess { padding: 1.2rem; }
+  .adventureLogFormActions { align-items: stretch; flex-direction: column; }
+  .adventureLogSubmit { width: 100%; }
+}
