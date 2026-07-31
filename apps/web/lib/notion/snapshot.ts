@@ -18,6 +18,7 @@ import {
   status,
   title,
 } from "@/lib/notion/properties";
+import { readAdventureLogs } from "@/lib/notion/repositories/adventure-logs";
 import type {
   Achievement,
   LifeOsSnapshot,
@@ -124,6 +125,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
       achievements: [],
       quests: [],
       titles: [],
+      adventureLogs: [],
       player: null,
       source: "fallback",
       warning: "Notion environment variables are not configured.",
@@ -131,17 +133,19 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
   }
 
   try {
-    const [achievementPages, titlePages, questPages, statusPages] = await Promise.all([
+    const [achievementPages, titlePages, questPages, statusPages, adventureLogs] = await Promise.all([
       queryAll(env.NOTION_ACHIEVEMENTS_DATA_SOURCE_ID),
       queryAll(env.NOTION_TITLES_DATA_SOURCE_ID),
       queryAll(env.NOTION_QUESTS_DATA_SOURCE_ID),
       queryAll(env.NOTION_STATUS_DATA_SOURCE_ID),
+      readAdventureLogs(),
     ]);
 
     return {
       achievements: achievementPages.map(achievement),
       titles: titlePages.map(gameTitle),
       quests: questPages.map(quest),
+      adventureLogs,
       player: statusPages[0] ? playerStatus(statusPages[0]) : null,
       source: "notion",
     };
@@ -151,6 +155,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
       achievements: [],
       quests: [],
       titles: [],
+      adventureLogs: [],
       player: null,
       source: "fallback",
       warning: "Notion data could not be loaded.",
