@@ -112,6 +112,17 @@ Issue本文には、概要、背景・目的、実装範囲、対象外、完了
 原則として1 PR = 1機能または1つの明確な変更目的。
 PR本文には、概要、変更内容、動作確認、安全性・影響範囲、対象外、関連Issueを書く。
 
+### Dependency notation
+
+依存関係があるPRは、本文へ次を明記する。
+
+```text
+Depends on: #<先にマージするPR番号> または None
+Blocks: #<このPRを待つPR番号> または None
+```
+
+依存PRが未マージの間はDraftを維持する。依存先がマージされたらbaseと差分を再確認し、CI成功後にReady for Reviewへ進める。
+
 分離すべき変更：
 
 - 機能追加と大規模リファクタ
@@ -131,6 +142,8 @@ Merge条件：
 書き込み前に対象DB、Page IDまたはLIFE OS ID、Lifecycle、現在状態、Relation先、Player、重複・再送を確認する。
 既存レコードは明示的な目的がない限り変更しない。削除より`Lifecycle = Archived`を優先する。
 ブラウザからNotion Page IDを自由入力させず、サーバー側で解決・検証する。
+
+取得時点で除外できる無効データはRepositoryまたはSnapshot境界で除外し、表示層へ不要な状態を持ち込まない。
 
 ## 10. Transaction Boundaries
 
