@@ -1,0 +1,140 @@
+name: AI Developer
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  implement:
+    if: github.event.label.name == 'ai-ready'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Configure Git
+        run: |
+          git config user.name "life-os-ai-developer"
+          git config user.email "actions@users.noreply.github.com"
+
+      - name: Create implementation branch
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          BRANCH="ai/issue-${ISSUE_NUMBER}"
+          git checkout -b "$BRANCH"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+
+      - name: Run Codex Developer Agent
+        id: codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          sandbox: workspace-write
+          prompt: |
+            You are the LIFE OS implementation-only Developer Agent.
+
+            First read `.github/agents/developer.md`, `docs/DEVELOPMENT.md`, and `ROADMAP.md`.
+            Then implement GitHub Issue #${{ github.event.issue.number }}.
+
+            Issue title:
+            ${{ github.event.issue.title }}
+
+            Issue body:
+            ---
+            ${{ github.event.issue.body }}
+            ---
+
+            Work only inside this checked-out repository.
+            Follow the Issue scope exactly. Do not edit GitHub secrets, workflows, repository settings, or unrelated features.
+            Do not commit or push. The workflow will handle Git operations after you finish editing files.
+            If the task is ambiguous or requires a destructive Notion data change, do not guess; leave the code unchanged where necessary and explain the blocker in your final message.
+
+      - name: Type-check
+        run: npm run typecheck --workspace apps/web
+
+      - name: Production build
+        run: npm run build
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push implementation
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git add -A
+          git commit -m "feat: implement issue #${{ github.event.issue.number }}"
+          git push origin "$BRANCH"
+
+      - name: Open draft pull request
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          CODEX_MESSAGE: ${{ steps.codex.outputs.final-message }}
+        run: |
+          cat > /tmp/pr-body.md <<EOF
+          ## 概要
+
+          AI DeveloperがIssue #${ISSUE_NUMBER}を実装しました。
+
+          ## 関連Issue
+
+          Closes #${ISSUE_NUMBER}
+
+          ## Developer Agent report
+
+          ${CODEX_MESSAGE}
+
+          ## 自動確認
+
+          - [x] TypeScript型チェック
+          - [x] Production build
+          - [ ] 人間またはProducerによるレビュー
+          - [ ] スマホで必要な主要導線の確認
+
+          ## 安全性
+
+          - Draft PRとして作成
+          - mainへの直接pushなし
+          - 自動Mergeなし
+          EOF
+
+          gh pr create \
+            --draft \
+            --base main \
+            --head "$BRANCH" \
+            --title "${ISSUE_TITLE}" \
+            --body-file /tmp/pr-body.md
+
+      - name: Comment when no implementation was produced
+        if: steps.changes.outputs.changed == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CODEX_MESSAGE: ${{ steps.codex.outputs.final-message }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --body "AI Developerはコード変更を作成しませんでした。\n\n${CODEX_MESSAGE}"
