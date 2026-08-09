@@ -110,7 +110,7 @@ jobs:
           git -c core.hooksPath=/dev/null apply --check "$RUNNER_TEMP/codex.patch"
           git -c core.hooksPath=/dev/null apply "$RUNNER_TEMP/codex.patch"
 
-          FORBIDDEN=$(git diff --name-only | grep -E '^(\.github/workflows/|\.github/agents/)' || true)
+          FORBIDDEN=$(git status --short | awk '{print $2}' | grep -E '^(\.github/workflows/|\.github/agents/)' || true)
           if [ -n "$FORBIDDEN" ]; then
             echo "AI Developer attempted to modify protected automation files:"
             echo "$FORBIDDEN"
