@@ -28,6 +28,7 @@ Issue本文の「実装範囲」「対象外」「完了条件」を厳守して
 - 秘密情報、API key、tokenをコードやログへ出力しない
 - `main`へ直接pushしない
 - PRを自動Mergeしない
+- `.github/workflows/` と `.github/agents/` は変更しない
 
 ## Implementation workflow
 
