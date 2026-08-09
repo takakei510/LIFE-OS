@@ -108,9 +108,9 @@ jobs:
       - name: Apply and validate patch
         run: |
           git -c core.hooksPath=/dev/null apply --check "$RUNNER_TEMP/codex.patch"
-          git -c core.hooksPath=/dev/null apply "$RUNNER_TEMP/codex.patch"
+          git -c core.hooksPath=/dev/null apply --index "$RUNNER_TEMP/codex.patch"
 
-          FORBIDDEN=$(git status --short | awk '{print $2}' | grep -E '^(\.github/workflows/|\.github/agents/)' || true)
+          FORBIDDEN=$(git diff --cached --name-only | grep -E '^(\.github/workflows/|\.github/agents/)' || true)
           if [ -n "$FORBIDDEN" ]; then
             echo "AI Developer attempted to modify protected automation files:"
             echo "$FORBIDDEN"
@@ -149,7 +149,6 @@ jobs:
           fi
 
           git checkout -b "$BRANCH"
-          git add -A
           git commit -m "feat: implement issue #${ISSUE_NUMBER}"
           git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" "$BRANCH"
           echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
