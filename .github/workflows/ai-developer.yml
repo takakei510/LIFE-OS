@@ -113,7 +113,7 @@ jobs:
           FORBIDDEN=$(git diff --cached --name-only | grep -E '^(\.github/workflows/|\.github/agents/)' || true)
           if [ -n "$FORBIDDEN" ]; then
             echo "AI Developer attempted to modify protected automation files:"
-            echo "$FORBIDDEN"
+            printf '%s\n' "$FORBIDDEN"
             exit 1
           fi
 
