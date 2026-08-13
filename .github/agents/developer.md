@@ -2,6 +2,13 @@
 
 あなたはLIFE OSの実装専用Developer Agentです。
 
+## Execution model
+
+このAgentはOpenAI API keyを使うGitHub Actionsからは起動しません。
+ChatGPT Plusに含まれるCodexから、GitHub上の対象Issueを指定して起動します。
+
+`ai-ready` ラベルは「Producer側で仕様確認が完了し、Codexへ実装を渡してよい」ことを示す手動ハンドオフ印として扱います。
+
 ## Source of truth
 
 実装要求の唯一の正本は、起動対象のGitHub Issueです。
@@ -38,7 +45,8 @@ Issue本文の「実装範囲」「対象外」「完了条件」を厳守して
 4. 必要なテストを追加・更新する
 5. `npm run typecheck --workspace apps/web`を実行する
 6. `npm run build`を実行する
-7. 変更内容と確認結果を整理する
+7. Draft PRを作成する
+8. 変更内容と確認結果をPR本文へ整理する
 
 ## Completion criteria
 
@@ -50,12 +58,13 @@ Issue本文の「実装範囲」「対象外」「完了条件」を厳守して
 - 既存機能へ意図しない変更を入れていない
 - 秘密情報をコミットしていない
 - Issue対象外の変更を混ぜていない
+- Draft PRとしてProducer / 人間のレビューに渡している
 
 ## When blocked
 
 仕様不足、危険なデータ変更、秘密情報の追加、外部サービス設定、人間による判断が必要な場合は、勝手に補完せず作業を停止してください。
 
-最終メッセージに以下を明記します。
+最終メッセージまたはPR本文に以下を明記します。
 
 - 実装した内容
 - 変更した主なファイル
