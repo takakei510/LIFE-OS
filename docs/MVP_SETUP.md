@@ -37,9 +37,9 @@ Googleログイン・Google フォト選択・音声・クエスト状態の変�
 | `NOTION_TITLES_DATA_SOURCE_ID` | 称号DB。既存値を維持 |
 | `NOTION_QUESTS_DATA_SOURCE_ID` | クエストDB。既存値を維持 |
 | `NOTION_STATUS_DATA_SOURCE_ID` | PLAYERを持つStatus DB。既存値を維持 |
-| `NOTION_ADVENTURE_LOGS_DATA_SOURCE_ID` | 確認済みのAdventure Logs data source。preview設定済み、本番未設定 |
+| `NOTION_ADVENTURE_LOGS_DATA_SOURCE_ID` | 確認済みのAdventure Logs data source。preview/production設定済み |
 | `BLOB_READ_WRITE_TOKEN` | 非公開Blobの接続で自動設定。ブラウザーへ公開しない |
-| `PHOTO_UPLOADS_ENABLED` | 保護を確認した環境だけ`true`。#43 / #48 / #49のpreviewブランチに設定、本番は未設定 |
+| `PHOTO_UPLOADS_ENABLED` | 保護を確認した環境だけ`true`。#43 / #48 / #49のpreviewブランチとproductionに設定済み |
 | `CRON_SECRET` | 一時データ掃除専用の機密値。production/preview設定済み |
 
 Adventure Logsの必要プロパティ：Name（title）、Memo/Location/Request ID（rich_text）、Logged At（date）、Log Type（multi_select）、Visibility/Lifecycle（select）、Favorite（checkbox）、Player/Related Achievement（relation）、Media（files）。

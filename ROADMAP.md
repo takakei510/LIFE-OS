@@ -12,10 +12,10 @@ LIFE OSは「何者になるか」を競うゲームではない。
 
 - mainと本番の基準コミット：`14e8a68`（調査時点）
 - #39〜#42：統合済み。#34は分離元としてDraft維持
-- #47：Web依存ライブラリの安全性更新（Draft）
-- #43：元画像Upload API・非公開一時搬送（Draft、Depends on #47）
-- #48：Media添付（Draft、Depends on #43）
-- #49：HOME・一覧写真表示（Draft、Depends on #48）
+- #47：Web依存ライブラリの安全性更新（統合済み）
+- #43：元画像Upload API・非公開一時搬送（統合済み）
+- #48：Media添付・日本時間の正規化（統合済み、CI #148成功）
+- #49：HOME・一覧写真表示（統合済み、CI #150成功）
 - 初期設定・検証手順：`docs/MVP_SETUP.md`
 
 Draftの実装を本番完了とは数えない。公開前に接続・認証・保存から再表示までを検証する。Notion無料プランと元画像保持の選択により、今回のMVPは1枚5MiB以下へ変更した。Google フォトからの選択は将来の独立した連携候補とし、今回の公開条件には追加しない。
@@ -75,10 +75,10 @@ Draftの実装を本番完了とは数えない。公開前に接続・認証・
 - [x] JPEG / PNG / WebP（#42）
 - [x] 1ファイル20MB以下の選択検証（#42。無料Notion用MVPは#43で5MiB以下へ変更）
 - [x] プレビューと削除（#42）
-- [ ] 専用Upload Route Handler
-- [ ] Notion File Upload API
-- [ ] Adventure LogsのMediaへ保存
-- [ ] HOME・一覧で写真表示
+- [x] 専用Upload Route Handler
+- [x] Notion File Upload API
+- [x] Adventure LogsのMediaへ保存
+- [x] HOME・一覧で写真表示
 
 関連Issue：#35、#36、#37、#38
 
