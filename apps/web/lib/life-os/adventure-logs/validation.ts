@@ -22,6 +22,9 @@ export function validateCreateAdventureLogInput(
   const memo = text(input.memo);
   const location = text(input.location);
   const loggedAt = text(input.loggedAt);
+  // datetime-local is explicitly labelled Japan time. Normalize it here rather
+  // than depending on a browser hidden field or the server's local timezone.
+  const zonedLoggedAt = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?$/.test(loggedAt) ? `${loggedAt}+09:00` : loggedAt;
   const fieldErrors: Record<string, string> = {};
 
   if (!requestId || requestId.length > 100) {
@@ -30,7 +33,7 @@ export function validateCreateAdventureLogInput(
   if (name.length > MAX_NAME_LENGTH) fieldErrors.name = `タイトルは${MAX_NAME_LENGTH}文字以内にしてください。`;
   if (memo.length > MAX_MEMO_LENGTH) fieldErrors.memo = `Memoは${MAX_MEMO_LENGTH}文字以内にしてください。`;
   if (location.length > MAX_LOCATION_LENGTH) fieldErrors.location = `Locationは${MAX_LOCATION_LENGTH}文字以内にしてください。`;
-  if (loggedAt && Number.isNaN(Date.parse(loggedAt))) fieldErrors.loggedAt = "日時の形式が正しくありません。";
+  if (loggedAt && (!/(?:Z|[+-]\d{2}:\d{2})$/.test(zonedLoggedAt) || Number.isNaN(Date.parse(zonedLoggedAt)))) fieldErrors.loggedAt = "日時の形式が正しくありません。画面を再読み込みしてください。";
 
   if (Object.keys(fieldErrors).length > 0) {
     return { ok: false, result: { ok: false, message: "入力内容を確認してください。", fieldErrors } };
@@ -43,7 +46,7 @@ export function validateCreateAdventureLogInput(
       name,
       memo,
       location,
-      loggedAt: loggedAt || new Date().toISOString(),
+      loggedAt: zonedLoggedAt ? new Date(zonedLoggedAt).toISOString() : new Date().toISOString(),
       relatedAchievementId: text(input.relatedAchievementId) || undefined,
       achievementName: text(input.achievementName) || undefined,
     },
