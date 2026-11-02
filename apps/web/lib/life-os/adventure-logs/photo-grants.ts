@@ -1,4 +1,6 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
+
+export const photoOwnerDigest = (owner: string) => createHash("sha256").update(owner).digest("hex");
 
 export type PhotoGrant = {
   version: 1;
@@ -22,6 +24,6 @@ export function verifyPhotoGrant(token: string, owner: string, secret: string, n
   const actual = Buffer.from(signature, "base64url");
   if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) throw new Error("Invalid grant");
   const grant = JSON.parse(Buffer.from(payload, "base64url").toString()) as PhotoGrant;
-  if (grant.version !== 1 || grant.owner !== owner || !owner || grant.expiresAt <= now || !Array.isArray(grant.photos) || grant.photos.length < 1 || grant.photos.length > 5) throw new Error("Expired or invalid grant");
+  if (grant.version !== 1 || grant.owner !== photoOwnerDigest(owner) || !owner || grant.expiresAt <= now || !Array.isArray(grant.photos) || grant.photos.length < 1 || grant.photos.length > 5) throw new Error("Expired or invalid grant");
   return grant;
 }

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { transferPhotoOnce } from "./photo-transfer.ts";
-import { signPhotoGrant, verifyPhotoGrant } from "./photo-grants.ts";
+import { photoOwnerDigest, signPhotoGrant, verifyPhotoGrant } from "./photo-grants.ts";
 import { validatePhotoMetadata } from "./photo-policy.ts";
 
 const result = { id: "notion-upload", filename: "photo.jpg", contentType: "image/jpeg", size: 500 };
@@ -56,10 +56,11 @@ test("known invalid image releases its claim, without contacting Notion", async 
 });
 
 test("signed batch rejects forgery, cross-browser ownership and expiry", () => {
-  const grant = { version: 1, owner: "owner-A", requestId: "request", batchId: "batch", expiresAt: 1000, photos: [result] };
+  const grant = { version: 1, owner: photoOwnerDigest("owner-A"), requestId: "request", batchId: "batch", expiresAt: 1000, photos: [result] };
   const signed = signPhotoGrant(grant, "test-secret");
   assert.deepEqual(verifyPhotoGrant(signed, "owner-A", "test-secret", 999), grant);
   assert.throws(() => verifyPhotoGrant(signed, "owner-B", "test-secret", 999));
+  assert.throws(() => verifyPhotoGrant(signed, grant.owner, "test-secret", 999));
   assert.throws(() => verifyPhotoGrant(signed, "owner-A", "test-secret", 1000));
   assert.throws(() => verifyPhotoGrant(signed, "owner-A", "wrong-secret", 999));
   assert.throws(() => verifyPhotoGrant(signed + "x", "owner-A", "test-secret", 999));

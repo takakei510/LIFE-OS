@@ -1,7 +1,6 @@
 "use client";
 
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { put } from "@vercel/blob/client";
 import { MAX_PHOTO_COUNT, MAX_PHOTO_SIZE_BYTES, validatePhotoMetadata } from "@/lib/life-os/adventure-logs/photo-policy";
 
 const ALLOWED_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -49,10 +48,6 @@ export function PhotoPicker({ requestId, onStateChange }: { requestId: string; o
   }, [photos.length, uploads.length, uploading, onStateChange]);
 
   useEffect(() => {
-    photosRef.current = photos;
-  }, [photos]);
-
-  useEffect(() => {
     return () => {
       photosRef.current.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
     };
@@ -65,7 +60,7 @@ export function PhotoPicker({ requestId, onStateChange }: { requestId: string; o
 
     setUploads([]);
     batchRef.current = null;
-    const availableSlots = MAX_PHOTO_COUNT - photos.length;
+    const availableSlots = MAX_PHOTO_COUNT - photosRef.current.length;
     if (availableSlots <= 0) {
       setError(`写真は最大${MAX_PHOTO_COUNT}枚まで選べます。`);
       return;
@@ -87,16 +82,18 @@ export function PhotoPicker({ requestId, onStateChange }: { requestId: string; o
     });
 
     if (files.length > availableSlots) errors.push(`写真は最大${MAX_PHOTO_COUNT}枚までです。`);
-    if (accepted.length > 0) setPhotos((current) => [...current, ...accepted]);
+    if (accepted.length > 0) {
+      photosRef.current = [...photosRef.current, ...accepted];
+      setPhotos(photosRef.current);
+    }
     setError(errors.length > 0 ? errors.join(" ") : null);
   }
 
   function removePhoto(id: string) {
-    setPhotos((current) => {
-      const target = current.find((photo) => photo.id === id);
-      if (target) URL.revokeObjectURL(target.previewUrl);
-      return current.filter((photo) => photo.id !== id);
-    });
+    const target = photosRef.current.find((photo) => photo.id === id);
+    if (target) URL.revokeObjectURL(target.previewUrl);
+    photosRef.current = photosRef.current.filter((photo) => photo.id !== id);
+    setPhotos(photosRef.current);
     setUploads([]);
     batchRef.current = null;
     setError(null);
@@ -109,6 +106,7 @@ export function PhotoPicker({ requestId, onStateChange }: { requestId: string; o
     setUploads([]);
 
     try {
+      const { put } = await import("@vercel/blob/client");
       async function call(body: object) {
         const response = await fetch("/api/adventure-logs/photos", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
         const result = await response.json();
