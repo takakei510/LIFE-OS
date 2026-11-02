@@ -80,6 +80,8 @@ npm run build
 
 ## 公開順序と戻し方
 
+VercelのRoot Directoryは`apps/web`。Cron設定は`apps/web/vercel.json`に置く。リポジトリ直下の設定だけでは定期実行が登録されない。本番公開後、Settings → Cron Jobsで登録と手動実行を確認する。
+
 1. #47安全性更新 → #43 Upload → #48 Media Attach → #49表示 → 設定文書、の順にレビューする。
 2. 各依存先のマージ後にbaseをmainへ変更し、差分とCI・previewを再確認する。Draftのまま依存先を追い越さない。
 3. repository規約に従って人間のレビュー・マージを行う。mainへ直接コミットせず、強制pushしない。
