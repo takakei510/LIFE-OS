@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:photos": "node --experimental-strip-types --test lib/life-os/adventure-logs/photo-upload-validation.test.mjs"
   },
   "dependencies": {
     "@notionhq/client": "^5.22.0",
