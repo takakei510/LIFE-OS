@@ -1,6 +1,16 @@
 # Original photo upload — proposal, 2026-11-02
 
-Status: awaiting approval of external storage setup. Not implemented or deployed.
+Status: staging store approved and provisioned; Upload API implementation under Draft review. Media Attach and Photo Display remain separate PRs. Not released to production.
+
+## Accepted MVP constraints (2026-11-02)
+
+The user approved private Vercel Blob and confirmed a Free Notion workspace. The MVP therefore accepts a maximum of five **5 MiB originals**, with no compression or EXIF removal. Larger files are rejected explicitly. This supersedes the original 20 MiB limit for this workspace. Issue #36 has been updated.
+
+Created private staging store `store_YH5uMuBh8yCk3huk` (`life-os-photo-staging`, Tokyo), connected to the existing project. Upload enablement is restricted to the #43 preview branch until review and verification. No paid plan change was made.
+
+Implemented: direct upload authorization, browser-bound signed batches, MIME/extension/signature/full decoding validation, durable per-file transfer claims/results, server-to-server original transfer and deletion. Ambiguous transfer failures keep a pending claim and require result recovery or explicit reselection, never blind automatic resend. A daily authenticated cleanup removes objects older than 24 hours (normally within 24–48 hours), with a saved pagination cursor for large queues.
+
+Security boundary: Vercel Authentication for the single-player deployment. `PHOTO_UPLOADS_ENABLED` must remain unset on any unprotected deployment. A browser-bound batch is a capability, not a replacement for login. Validate anonymous denial before release. Preview and production objects have distinct prefixes in the same dedicated private store.
 
 ## Confirmed state
 

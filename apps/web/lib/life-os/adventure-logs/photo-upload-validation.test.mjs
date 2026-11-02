@@ -18,11 +18,11 @@ test("accepts all supported signatures and preserves selection order", async () 
 });
 
 test("enforces count, file values, empty files and size on the server", async () => {
-  for (const values of [[], Array.from({ length: 6 }, () => photo()), ["text"], [new File([], "empty.jpg", { type: "image/jpeg" })], [new File([new Uint8Array(20 * 1024 * 1024 + 1)], "large.jpg", { type: "image/jpeg" })]]) {
+  for (const values of [[], Array.from({ length: 6 }, () => photo()), ["text"], [new File([], "empty.jpg", { type: "image/jpeg" })], [new File([new Uint8Array(5 * 1024 * 1024 + 1)], "large.jpg", { type: "image/jpeg" })]]) {
     assert.equal((await validatePhotoUploads(values)).ok, false);
   }
   assert.equal((await validatePhotoUploads(Array.from({ length: 5 }, () => photo()))).ok, true);
-  const boundary = new Uint8Array(20 * 1024 * 1024);
+  const boundary = new Uint8Array(5 * 1024 * 1024);
   boundary.set(signatures["image/jpeg"]);
   assert.equal((await validatePhotoUploads([new File([boundary], "limit.jpg", { type: "image/jpeg" })])).ok, true);
 });

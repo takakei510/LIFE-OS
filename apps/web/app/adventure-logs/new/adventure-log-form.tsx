@@ -53,7 +53,7 @@ export function AdventureLogForm({
       {state && !state.ok ? <p className="adventureLogFormError" role="alert">{state.message}</p> : null}
       {achievementName ? <p className="adventureLogPrivacy">Related Achievement：{achievementName}</p> : null}
       <label><span>タイトル <small>任意</small></span><input name="name" maxLength={120} />{errors?.name ? <em>{errors.name}</em> : null}</label>
-      <PhotoPicker />
+      <PhotoPicker requestId={requestId} />
       <label><span>Memo <small>任意</small></span><textarea name="memo" maxLength={2000} rows={6} />{errors?.memo ? <em>{errors.memo}</em> : null}</label>
       <label><span>Location <small>任意</small></span><input name="location" maxLength={200} />{errors?.location ? <em>{errors.location}</em> : null}</label>
       <label><span>Logged At <small>任意</small></span><input name="loggedAt" type="datetime-local" defaultValue={toLocalDateTime(initialLoggedAt)} />{errors?.loggedAt ? <em>{errors.loggedAt}</em> : null}</label>

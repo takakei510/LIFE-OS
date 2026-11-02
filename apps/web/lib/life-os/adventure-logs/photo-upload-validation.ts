@@ -1,5 +1,5 @@
 const MAX_PHOTO_COUNT = 5;
-const MAX_PHOTO_SIZE_BYTES = 20 * 1024 * 1024;
+const MAX_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;
 
 const CONTENT_TYPE_BY_EXTENSION: Record<string, string> = {
   ".jpg": "image/jpeg",
@@ -47,7 +47,7 @@ export async function validatePhotoUploads(values: FormDataEntryValue[]): Promis
   for (const value of values) {
     if (!(value instanceof File)) return { ok: false, message: "不正なアップロードデータです。" };
     if (value.size <= 0) return { ok: false, message: `${value.name}：空のファイルはアップロードできません。` };
-    if (value.size > MAX_PHOTO_SIZE_BYTES) return { ok: false, message: `${value.name}：1枚20MB以下にしてください。` };
+    if (value.size > MAX_PHOTO_SIZE_BYTES) return { ok: false, message: `${value.name}：Notion無料プランでは1枚5MiB以下にしてください。` };
 
     const expectedContentType = CONTENT_TYPE_BY_EXTENSION[extension(value.name)];
     if (!expectedContentType || value.type !== expectedContentType) {
