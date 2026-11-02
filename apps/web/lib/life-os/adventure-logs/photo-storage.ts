@@ -58,7 +58,9 @@ export async function finalizeStagedPhoto(grant: PhotoGrant, index: number) {
 }
 
 export async function cleanupStagedPhotos(cursor?: string) {
-  const prefix = stagingPrefix();
+  // Vercel runs scheduled jobs only in production. Its job must also collect
+  // abandoned review uploads in this dedicated staging store.
+  const prefix = process.env.VERCEL_ENV === "production" ? "life-os-photos/" : stagingPrefix();
   const before = Date.now() - 24 * 60 * 60 * 1000;
   let deleted = 0;
   const resumePath = `life-os-photo-cleanup/${process.env.VERCEL_ENV ?? "development"}.json`;
