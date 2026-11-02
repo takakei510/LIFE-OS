@@ -1,3 +1,5 @@
+import { normalizeMediaUrl } from "./media";
+
 type RichTextItem = { plain_text?: unknown };
 type PropertyMap = Record<string, unknown>;
 
@@ -68,6 +70,8 @@ export function files(properties: PropertyMap, name: string): Array<{
   name: string;
   type: "file" | "external" | "file_upload" | "unknown";
   url: string | null;
+  mediaType: "image" | "audio" | "other";
+  displayUrl: string | null;
 }> {
   const property = asRecord(properties[name]);
   if (!Array.isArray(property?.files)) return [];
@@ -81,17 +85,13 @@ export function files(properties: PropertyMap, name: string): Array<{
     const fileUpload = asRecord(record.file_upload);
     const type = record.type;
 
+    const mediaName = typeof record.name === "string" ? record.name : "media";
+    const rawUrl = typeof file?.url === "string" ? file.url : typeof external?.url === "string" ? external.url : typeof fileUpload?.url === "string" ? fileUpload.url : null;
     return [{
-      name: typeof record.name === "string" ? record.name : "media",
+      name: mediaName,
       type: type === "file" || type === "external" || type === "file_upload" ? type : "unknown",
-      url:
-        typeof file?.url === "string"
-          ? file.url
-          : typeof external?.url === "string"
-            ? external.url
-            : typeof fileUpload?.url === "string"
-              ? fileUpload.url
-              : null,
+      url: rawUrl,
+      ...normalizeMediaUrl(mediaName, rawUrl),
     }];
   });
 }

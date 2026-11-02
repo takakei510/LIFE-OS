@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdventureLogPhoto } from "./adventure-logs/adventure-log-photo";
 
 import { AchievementUnlocked } from "./achievement-unlocked";
 import "./recent-achievements.css";
@@ -14,6 +15,7 @@ function formatActivityDate(value: string | null): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -157,6 +159,7 @@ export default async function HomePage() {
           <div className="recentAchievementList">
             {recentAdventureLogs.map((log) => (
               <a className="recentAchievementItem" href={log.url} key={log.id} target="_blank" rel="noreferrer">
+                <AdventureLogPhoto media={log.media} compact />
                 <div><span>{adventureLogIcon(log.logTypes)} {log.logTypes.join(" · ") || "Memory"}</span><strong>{log.name}</strong><small>{log.memo || log.location || "この冒険の思い出が残されています。"}</small></div>
                 <div className="recentAchievementMeta"><span>{formatActivityDate(log.loggedAt)}</span><b>{log.favorite ? "★" : `${log.media.length} media`}</b></div>
               </a>
