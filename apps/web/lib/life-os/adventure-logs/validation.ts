@@ -30,7 +30,7 @@ export function validateCreateAdventureLogInput(
   if (name.length > MAX_NAME_LENGTH) fieldErrors.name = `タイトルは${MAX_NAME_LENGTH}文字以内にしてください。`;
   if (memo.length > MAX_MEMO_LENGTH) fieldErrors.memo = `Memoは${MAX_MEMO_LENGTH}文字以内にしてください。`;
   if (location.length > MAX_LOCATION_LENGTH) fieldErrors.location = `Locationは${MAX_LOCATION_LENGTH}文字以内にしてください。`;
-  if (loggedAt && Number.isNaN(Date.parse(loggedAt))) fieldErrors.loggedAt = "日時の形式が正しくありません。";
+  if (loggedAt && (!/(?:Z|[+-]\d{2}:\d{2})$/.test(loggedAt) || Number.isNaN(Date.parse(loggedAt)))) fieldErrors.loggedAt = "日時の形式が正しくありません。画面を再読み込みしてください。";
 
   if (Object.keys(fieldErrors).length > 0) {
     return { ok: false, result: { ok: false, message: "入力内容を確認してください。", fieldErrors } };
