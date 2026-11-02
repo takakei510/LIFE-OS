@@ -9,7 +9,11 @@ LIFE OSは、人生を管理するためではなく、実績・称号・クエ�
 
 **Production:** https://life-os-web-m3ds.vercel.app
 
-現在のリリース：**v0.3.0**
+現在の公開機能：**Adventure Logs 写真対応MVP**（従来の閲覧・実績解除を含む）
+
+2026-11-02に開発を再開。任意の文章・場所・写真をNotionへ保存し、HOMEと一覧で振り返れます。写真は最大5枚・1枚5MiB以下。日本時間で入力した日時をサーバーで正規化します。
+
+初期設定と公開前の確認は [`docs/MVP_SETUP.md`](docs/MVP_SETUP.md) を参照してください。
 
 ## Architecture
 
@@ -66,9 +70,12 @@ NOTION_ACHIEVEMENTS_DATA_SOURCE_ID
 NOTION_TITLES_DATA_SOURCE_ID
 NOTION_QUESTS_DATA_SOURCE_ID
 NOTION_STATUS_DATA_SOURCE_ID
+NOTION_ADVENTURE_LOGS_DATA_SOURCE_ID  # 冒険ログを利用する場合
 ```
 
 秘密情報はGitHubへ保存せず、Vercelまたはローカルの環境変数として管理します。
+
+写真機能には、非公開Vercel Blob接続と追加設定が必要です。Notion無料プランではJPEG・PNG・WebPを最大5枚、1枚5MiB以下で扱います。画像は圧縮せず元のバイト列を保存します。
 
 ## Development Principles
 
@@ -77,5 +84,3 @@ NOTION_STATUS_DATA_SOURCE_ID
 3. 上達より体験を評価する
 4. 入力負荷を最小にする
 5. 完成ではなく継続的なアップデートを目指す
-
-test
