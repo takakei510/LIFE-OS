@@ -58,8 +58,6 @@ export function PhotoPicker({ requestId, onStateChange }: { requestId: string; o
     event.target.value = "";
     if (files.length === 0) return;
 
-    setUploads([]);
-    batchRef.current = null;
     const availableSlots = MAX_PHOTO_COUNT - photosRef.current.length;
     if (availableSlots <= 0) {
       setError(`写真は最大${MAX_PHOTO_COUNT}枚まで選べます。`);
@@ -83,6 +81,8 @@ export function PhotoPicker({ requestId, onStateChange }: { requestId: string; o
 
     if (files.length > availableSlots) errors.push(`写真は最大${MAX_PHOTO_COUNT}枚までです。`);
     if (accepted.length > 0) {
+      setUploads([]);
+      batchRef.current = null;
       photosRef.current = [...photosRef.current, ...accepted];
       setPhotos(photosRef.current);
     }
