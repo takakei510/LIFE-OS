@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
+import { AdventureLogPhoto } from "./adventure-log-photo";
 import "./adventure-logs.css";
 
 function formatDate(value: string | null): string {
@@ -41,6 +42,7 @@ export default async function AdventureLogsPage() {
           <p className="eyebrow">ADVENTURE LOGS</p>
           <h1>現実から持ち帰った、小さな思い出。</h1>
           <p>写真、音、一言、場所。残したいものだけを、冒険のあとにそっと保存します。</p>
+          <Link href="/adventure-logs/new">思い出を残す →</Link>
         </div>
       </section>
 
@@ -60,6 +62,7 @@ export default async function AdventureLogsPage() {
                 {log.favorite ? <span className="adventureLogFavorite" aria-label="Favorite">★</span> : null}
               </div>
               {log.memo ? <p className="adventureLogMemo">{log.memo}</p> : null}
+              <AdventureLogPhoto media={log.media} />
               <dl className="adventureLogMeta">
                 <div><dt>日時</dt><dd>{formatDate(log.loggedAt)}</dd></div>
                 {log.location ? <div><dt>場所</dt><dd>{log.location}</dd></div> : null}

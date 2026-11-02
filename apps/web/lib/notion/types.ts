@@ -42,6 +42,8 @@ export type AdventureLogMedia = {
   name: string;
   type: "file" | "external" | "file_upload" | "unknown";
   url: string | null;
+  mediaType: "image" | "audio" | "other";
+  displayUrl: string | null;
 };
 
 export type AdventureLog = {
