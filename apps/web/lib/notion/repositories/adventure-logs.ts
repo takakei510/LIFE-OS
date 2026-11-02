@@ -105,3 +105,25 @@ export async function createTextAdventureLog(record: CreateTextLogRecord): Promi
   if (!isPage(created)) throw new Error("Adventure Log page could not be created.");
   return created;
 }
+
+export async function attachAdventureLogPhotos(requestId: string, pageId: string, photos: { id: string; filename: string }[]): Promise<void> {
+  const notion = getNotionClient();
+  const page = await findAdventureLogByRequestId(requestId);
+  if (!notion || !page || page.id !== pageId || select(page.properties, "Lifecycle") !== "Active" || select(page.properties, "Visibility") !== "Private") throw new Error("Invalid log for attachment");
+  const playerPageId = await findPlayerPageId();
+  const player = page.properties.Player;
+  if (player?.type !== "relation" || !player.relation.some((item) => item.id === playerPageId)) throw new Error("Wrong player");
+  const current = files(page.properties, "Media");
+  // Never replace media that might have been edited independently in Notion.
+  if (current.length) {
+    if (current.length === photos.length && current.every((file, i) => file.name === photos[i].filename) && multiSelect(page.properties, "Log Type").includes("Photo")) return;
+    throw new Error("Media already exists");
+  }
+  await notion.pages.update({
+    page_id: pageId,
+    properties: {
+      Media: { type: "files", files: photos.map((photo) => ({ name: photo.filename, type: "file_upload" as const, file_upload: { id: photo.id } })) },
+      "Log Type": { type: "multi_select", multi_select: [...new Set([...multiSelect(page.properties, "Log Type"), "Photo"])].map((name) => ({ name })) },
+    },
+  });
+}

@@ -24,9 +24,10 @@ export async function createAdventureLogAction(
     loggedAt: value(formData, "loggedAt"),
     relatedAchievementId,
     achievementName: value(formData, "achievementName"),
+    photoGrant: value(formData, "photoGrant"),
   });
 
-  if (result.ok) {
+  if (result.ok || result.textSaved) {
     revalidatePath("/");
     revalidatePath("/adventure-logs");
     if (relatedAchievementId) revalidatePath(`/achievements/${relatedAchievementId}`);

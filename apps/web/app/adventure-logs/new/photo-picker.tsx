@@ -178,7 +178,7 @@ export function PhotoPicker({ requestId, onStateChange }: { requestId: string; o
         </>
       ) : <p className="adventureLogPhotoEmpty">写真はまだ選択されていません。</p>}
 
-      {uploads.length > 0 ? <p className="adventureLogPrivacy" role="status">{uploads.length}枚をNotionへアップロードしました。Adventure Logへの添付は次のPRで行います。</p> : null}
+      {uploads.length > 0 ? <p className="adventureLogPrivacy" role="status">{uploads.length}枚の準備ができました。「保存する」で思い出に添付します。</p> : null}
       <p className="adventureLogPrivacy">元画像を保存します。写真には位置情報などの個人情報が含まれる場合があります。</p>
     </section>
   );

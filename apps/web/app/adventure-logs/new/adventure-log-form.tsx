@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useCallback, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createAdventureLogAction } from "@/app/actions/adventure-log-actions";
-import { PhotoPicker } from "./photo-picker";
+import { PhotoPicker, type PhotoPickerState } from "./photo-picker";
 
-function SubmitButton() {
+function SubmitButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
-  return <button className="adventureLogSubmit" disabled={pending} type="submit">{pending ? "保存中…" : "保存する"}</button>;
+  return <button className="adventureLogSubmit" disabled={pending || disabled} type="submit">{pending ? "保存中…" : "保存する"}</button>;
 }
 
 function toLocalDateTime(value?: string): string {
@@ -31,6 +31,8 @@ export function AdventureLogForm({
   initialLoggedAt?: string;
 }) {
   const [state, action] = useActionState(createAdventureLogAction, null);
+  const [photoState, setPhotoState] = useState<PhotoPickerState>({ grant: "", count: 0, ready: true, busy: false });
+  const handlePhotoState = useCallback((next: PhotoPickerState) => setPhotoState(next), []);
 
   if (state?.ok) {
     return (
@@ -50,14 +52,17 @@ export function AdventureLogForm({
       <input name="requestId" type="hidden" value={requestId} />
       <input name="relatedAchievementId" type="hidden" value={relatedAchievementId ?? ""} />
       <input name="achievementName" type="hidden" value={achievementName ?? ""} />
+      <input name="photoGrant" type="hidden" value={photoState.count ? photoState.grant : ""} />
       {state && !state.ok ? <p className="adventureLogFormError" role="alert">{state.message}</p> : null}
       {achievementName ? <p className="adventureLogPrivacy">Related Achievement：{achievementName}</p> : null}
       <label><span>タイトル <small>任意</small></span><input name="name" maxLength={120} />{errors?.name ? <em>{errors.name}</em> : null}</label>
-      <PhotoPicker requestId={requestId} />
+      <PhotoPicker requestId={requestId} onStateChange={handlePhotoState} />
+      {photoState.count > 0 && !photoState.ready ? <p role="status">写真をアップロードしてから保存してください。写真を削除してテキストだけでも保存できます。</p> : null}
       <label><span>Memo <small>任意</small></span><textarea name="memo" maxLength={2000} rows={6} />{errors?.memo ? <em>{errors.memo}</em> : null}</label>
       <label><span>Location <small>任意</small></span><input name="location" maxLength={200} />{errors?.location ? <em>{errors.location}</em> : null}</label>
       <label><span>Logged At <small>任意</small></span><input name="loggedAt" type="datetime-local" defaultValue={toLocalDateTime(initialLoggedAt)} />{errors?.loggedAt ? <em>{errors.loggedAt}</em> : null}</label>
-      <div className="adventureLogFormActions"><SubmitButton /><Link href={skipHref}>今回は残さない</Link></div>
+      <div className="adventureLogFormActions"><SubmitButton disabled={photoState.busy || !photoState.ready} /><Link href={skipHref}>今回は残さない</Link></div>
+      {state && !state.ok && state.textSaved && state.url ? <p><a href={state.url} target="_blank" rel="noreferrer">保存された思い出をNotionで確認する</a></p> : null}
       <p className="adventureLogPrivacy">すべて任意です。作成時はPrivate / Activeで保存されます。</p>
     </form>
   );
