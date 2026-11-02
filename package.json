@@ -5,7 +5,8 @@
     "apps/*"
   ],
   "overrides": {
-    "postcss": "8.5.32"
+    "postcss": "8.5.32",
+    "@vercel/cli-config": { "zod": "4.6.7" }
   },
   "scripts": {
     "dev": "npm run dev --workspace apps/web",
