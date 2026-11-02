@@ -17,6 +17,8 @@ LIFE OSは、人生を管理するためではなく、実績・称号・クエ�
 
 ## Architecture
 
+実績を増やすための新しい設計案：[実績・クエスト作成基準 — 気づく・挑む・会得する（Notion）](https://app.notion.com/p/40c391a354a9816987f0f4d92dcc6cc7)。設計の正本はNotionで管理します。
+
 - **Notion** — セーブデータと公式仕様書
 - **AI Game Master** — 実績判定、提案、ゲーム運営
 - **Web App** — プレイヤーが触れるゲーム画面
