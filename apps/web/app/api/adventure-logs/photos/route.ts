@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { generateClientTokenFromReadWriteToken } from "@vercel/blob/client";
 import { MAX_PHOTO_COUNT, validatePhotoMetadata } from "@/lib/life-os/adventure-logs/photo-policy";
-import { signPhotoGrant, verifyPhotoGrant, type PhotoGrant } from "@/lib/life-os/adventure-logs/photo-grants";
+import { photoOwnerDigest, signPhotoGrant, verifyPhotoGrant, type PhotoGrant } from "@/lib/life-os/adventure-logs/photo-grants";
 import { finalizeStagedPhoto, stagingPrefix } from "@/lib/life-os/adventure-logs/photo-storage";
 
 export const runtime = "nodejs";
@@ -41,11 +41,11 @@ export async function POST(request: Request) {
   const owner = jar.get(COOKIE)?.value;
 
   if (body.operation === "prepare") {
-    if (!/^[0-9a-f-]{36}$/i.test(body.requestId ?? "") || !Array.isArray(body.photos) || body.photos.length < 1 || body.photos.length > MAX_PHOTO_COUNT || !body.photos.every(validatePhotoMetadata)) return json({ ok: false, message: "写真はJPEG・PNG・WebP、1枚5MiB以下、最大5枚です。" }, 400);
+    if (typeof body.requestId !== "string" || !/^[0-9a-f-]{36}$/i.test(body.requestId) || !Array.isArray(body.photos) || body.photos.length < 1 || body.photos.length > MAX_PHOTO_COUNT || !body.photos.every(validatePhotoMetadata)) return json({ ok: false, message: "写真はJPEG・PNG・WebP、1枚5MiB以下、最大5枚です。" }, 400);
     const session = owner && /^[0-9a-f]{64}$/.test(owner) ? owner : randomBytes(32).toString("hex");
     const batchId = randomUUID();
     const grant: PhotoGrant = {
-      version: 1, batchId, owner: session, requestId: body.requestId,
+      version: 1, batchId, owner: photoOwnerDigest(session), requestId: body.requestId,
       expiresAt: Date.now() + 45 * 60 * 1000,
       photos: body.photos.map((photo: { filename: string; contentType: string; size: number }, i: number) => ({
         ...photo, pathname: `${stagingPrefix()}${batchId}/${i}${photo.filename.slice(photo.filename.lastIndexOf(".")).toLowerCase()}`,
