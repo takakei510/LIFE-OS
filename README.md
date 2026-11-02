@@ -11,6 +11,10 @@ LIFE OSは、人生を管理するためではなく、実績・称号・クエ�
 
 現在のリリース：**v0.3.0**
 
+2026-11-02に開発を再開。Adventure Logsの読み取り・テキスト作成・写真選択はmainへ統合済みです。写真のアップロード・添付・表示はDraft PRで検証中で、本番利用可能とはまだ扱いません。
+
+初期設定と公開前の確認は [`docs/MVP_SETUP.md`](docs/MVP_SETUP.md) を参照してください。
+
 ## Architecture
 
 - **Notion** — セーブデータと公式仕様書
@@ -66,9 +70,12 @@ NOTION_ACHIEVEMENTS_DATA_SOURCE_ID
 NOTION_TITLES_DATA_SOURCE_ID
 NOTION_QUESTS_DATA_SOURCE_ID
 NOTION_STATUS_DATA_SOURCE_ID
+NOTION_ADVENTURE_LOGS_DATA_SOURCE_ID  # 冒険ログを利用する場合
 ```
 
 秘密情報はGitHubへ保存せず、Vercelまたはローカルの環境変数として管理します。
+
+写真機能には、非公開Vercel Blob接続と追加設定が必要です。Notion無料プランではJPEG・PNG・WebPを最大5枚、1枚5MiB以下で扱います。画像は圧縮せず元のバイト列を保存します。
 
 ## Development Principles
 
@@ -77,5 +84,3 @@ NOTION_STATUS_DATA_SOURCE_ID
 3. 上達より体験を評価する
 4. 入力負荷を最小にする
 5. 完成ではなく継続的なアップデートを目指す
-
-test
