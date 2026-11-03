@@ -92,14 +92,6 @@ export default async function HomePage() {
     <main>
       <AchievementUnlocked achievement={latestUnlocked} />
 
-      <nav className="pageNav" aria-label="Primary navigation">
-        <Link className="pageNavActive" href="/">HOME</Link>
-        <Link href="/achievements">ACHIEVEMENTS</Link>
-        <Link href="/quests">QUESTS</Link>
-        <Link href="/titles">TITLES</Link>
-        <Link href="/status">STATUS</Link>
-      </nav>
-
       <section className="hero">
         <p className="eyebrow">LIFE OS · VERSION 0.4</p>
         <h1>世界に触れた記録を、ゲームにする。</h1>

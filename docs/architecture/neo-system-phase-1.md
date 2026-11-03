@@ -29,6 +29,8 @@ Existing `--bg`, `--panel`, `--panel-strong`, `--text`, `--muted`, `--line`, `--
 - `NeoIcon`: shared currentColor SVG paths. Decorative by default; standalone meaningful icons accept a title. No emoji substitution of database names or player-generated content.
 - Existing navigation component: same six routes. Desktop top navigation and mobile six-column bottom navigation, safe-area support, active text/icon/border and `aria-current`. No dead tree or collections routes.
 
+The redundant page-level primary navigation rows on HOME, Quests, Titles and Status are replaced by the shared navigation. Content sections and data binding stay the same. Contextual back links remain intact.
+
 Usage example:
 
 ```tsx
@@ -47,3 +49,7 @@ Keyboard focus uses a visible cyan outline; a skip link targets the content wrap
 ## Verification and follow-up
 
 Verify TypeScript, production build, Vercel preview and keyboard/navigation/search/form controls without mutating Notion. Permanent fake test records are not needed. Page-specific visual adoption can be expanded in Phase 2; HOME redesign, list redesign, trees, badge artwork and unlock effects are outside this PR. PR #57 remains a separate Draft and may require resolving its small import overlap in the unlock-button file when integrating later.
+
+Initial verification (2026-11-03): CI #167, local TypeScript/build and 17 existing photo tests passed. Preview confirmed Notion-backed 262 achievements and two logs, existing photo decoding, search narrowing to 1/262, submit attributes and enabled state, active navigation, and skip-link keyboard focus reaching `main-content`. At viewport 390px (375px content) and 320px (305px content), no horizontal overflow; all six mobile targets are at least 44px wide and 58px high. Reduced-motion rules were verified in the delivered stylesheet; OS-level reduced-motion emulation was not available in the browser tool.
+
+Token contrast against surface: text 15.66:1, muted 9.00:1, cyan 10.04:1, purple 6.32:1; primary button text 10.75:1 and control border 4.67:1. Final preview will include the branch-scoped photo feature flag; production environment settings were not changed.
