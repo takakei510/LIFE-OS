@@ -109,7 +109,7 @@
   .homeHero { min-height: 320px; }
   .homeHeroCopy { padding: 30px 20px 80px; }
   .homeHero::before { background: rgb(11 18 32 / 53%); }
-  .homeHero h1 { font-size: clamp(1.4rem, 7.2vw, 2.25rem); letter-spacing: 0; margin: 16px 0; white-space: nowrap; }
+  .homeHero h1 { font-size: clamp(1.4rem, 7.2vw, 2.25rem); letter-spacing: 0; margin: 16px 0; }
   .homeHeroLead { font-size: .88rem; }
   .homeHeroNote { font-size: .68rem; }
   .homeHero .homeKicker { font-size: .5rem; }
@@ -123,7 +123,7 @@
   .homeSectionHeader > a { gap: 4px; font-size: .61rem; }
   .homeSectionHeader > a svg { width: 14px; }
   .homeSectionHeader .homeKicker { font-size: .46rem; letter-spacing: .07em; }
-  .homeSectionTitle { font-size: 1.04rem; letter-spacing: 0; }
+  .homeSectionTitle { font-size: 1.16rem; letter-spacing: 0; }
   .homeCollectionGrid { gap: 8px; }
   .homeCollection { padding: 14px 6px; gap: 7px; }
   .homeCollectionBadge { width: 52px; height: 52px; }
@@ -132,9 +132,9 @@
   .homeRecentItem { grid-template-columns: 44px minmax(0, 1fr); padding: 16px; gap: 8px 12px; align-items: start; }
   .homeRecentItem > .achievementBadge { width: 44px; height: 44px; }
   .homeItemMeta { grid-column: 2; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; }
-  .homeItemCopy h3, .homeDiscovery h3 { font-size: .88rem; }
-  .homeItemCopy p, .homeDiscoveryCopy p { font-size: .73rem; }
-  .homeSectionIntro { font-size: .73rem; }
+  .homeItemCopy h3, .homeDiscovery h3 { font-size: .95rem; }
+  .homeItemCopy p, .homeDiscoveryCopy p { font-size: .82rem; }
+  .homeSectionIntro { font-size: .8rem; }
   .homeDiscoveryGrid { grid-template-columns: 1fr; gap: 10px; }
   .homeDiscovery { display: grid; grid-template-columns: 86px minmax(0, 1fr); }
   .homeDiscoveryArt { padding: 12px 8px; justify-content: center; flex-direction: column; border-bottom: 0; border-right: 1px solid var(--home-line); gap: 8px; }
