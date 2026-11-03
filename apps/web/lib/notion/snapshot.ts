@@ -148,7 +148,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
     ]);
 
     return {
-      achievements: (() => { const all = achievementPages.filter((page) => page.properties.Lifecycle?.type !== "select" || page.properties.Lifecycle.select?.name === "Active").map(achievement); return all.map((item) => publicAchievement(item, all)); })(),
+      achievements: (() => { const all = achievementPages.map(achievement); return achievementPages.filter((page) => page.properties.Lifecycle?.type !== "select" || page.properties.Lifecycle.select?.name === "Active").map(achievement).map((item) => publicAchievement(item, all)); })(),
       titles: titlePages.map(gameTitle),
       quests: questPages.map(quest),
       adventureLogs,
