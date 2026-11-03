@@ -39,6 +39,19 @@ export async function unlockAchievementPage(pageId: string, unlockedAt: string):
   }
   const unlocked = current.properties.Unlocked;
   if (unlocked?.type === "checkbox" && unlocked.checkbox) return current;
+  const lifecycle = current.properties.Lifecycle;
+  if (lifecycle?.type === "select" && lifecycle.select?.name !== "Active") throw new Error("Achievement is not active.");
+  const prerequisites = current.properties.Prerequisites;
+  if (prerequisites?.type === "relation") {
+    if ("has_more" in prerequisites && prerequisites.has_more) throw new Error("Prerequisite relation is incomplete.");
+    for (const prerequisite of prerequisites.relation) {
+      if (prerequisite.id === pageId) throw new Error("Self-referencing achievement chain.");
+      const parent = pageResult(await notion.pages.retrieve({ page_id: prerequisite.id }));
+      if (!parent || !isConfiguredAchievement(parent, env.NOTION_ACHIEVEMENTS_DATA_SOURCE_ID) || parent.properties.Unlocked?.type !== "checkbox" || !parent.properties.Unlocked.checkbox) {
+        throw new Error("Prerequisite achievement is not unlocked.");
+      }
+    }
+  }
   const updated = await notion.pages.update({
     page_id: pageId,
     properties: {

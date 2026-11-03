@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Test achievement chains
+        run: node --experimental-strip-types --test apps/web/lib/life-os/tests/achievement-chains.test.mjs
+
       - name: Type-check web app
         run: npm run typecheck --workspace apps/web
 

@@ -62,9 +62,9 @@ export function AchievementLibrary({ achievements, source }: { achievements: Ach
         {filtered.map((achievement) => (
           <Link className={`achievementCard ${achievement.unlocked ? "isUnlocked" : "isLocked"}`} href={`/achievements/${achievement.id}`} key={achievement.id}>
             <div className="achievementMeta"><span>{achievement.category ?? "未分類"}</span><span>{achievement.tier ?? "Tier未設定"}</span></div>
-            <h2>{achievement.name}</h2>
-            <p>{achievement.flavorText || "まだ触れていない世界がある。"}</p>
-            <div className="achievementFooter"><strong>{achievement.xp} XP</strong><span>{achievement.unlocked ? "解除済み" : "未解除"}</span></div>
+            <h2>{achievement.lockedByChain ? "🔒 ？？？" : achievement.name}</h2>
+            <p>{achievement.lockedByChain ? "前提実績を解除すると公開されます。" : achievement.flavorText || "まだ触れていない世界がある。"}</p>
+            <div className="achievementFooter"><strong>{achievement.lockedByChain ? "🔒" : `${achievement.xp} XP`}</strong><span>{achievement.unlocked ? "解除済み" : achievement.lockedByChain ? "未発見" : "未解除"}</span></div>
           </Link>
         ))}
       </section>

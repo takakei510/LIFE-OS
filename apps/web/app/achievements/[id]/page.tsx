@@ -15,7 +15,7 @@ export default async function AchievementDetailPage({ params }: { params: Promis
     <main>
       <Link className="backLink" href="/achievements">← 実績ライブラリへ戻る</Link>
       <article className="achievementDetail">
-        <div className="detailTopline"><span>{achievement.category ?? "未分類"}</span><span>{achievement.tier ?? "Tier未設定"}</span></div>
+        {achievement.lockedByChain ? <section className="detailSection"><h1>🔒 ？？？</h1><p>前提となる実績を解除すると、この冒険の内容が明らかになります。</p></section> : <><div className="detailTopline"><span>{achievement.category ?? "未分類"}</span><span>{achievement.tier ?? "Tier未設定"}</span></div>
         <p className="eyebrow">{achievement.unlocked ? "実績解除済み" : "未解除"}</p>
         <h1>{achievement.name}</h1>
         <blockquote>{achievement.flavorText || "世界のどこかに、まだ触れていない景色がある。"}</blockquote>
@@ -35,7 +35,8 @@ export default async function AchievementDetailPage({ params }: { params: Promis
         ) : (
           <UnlockAchievement achievementId={achievement.id} achievementName={achievement.name} />
         )}
-        <a className="notionLink" href={achievement.url} target="_blank" rel="noreferrer">Notionの記録を開く ↗</a>
+        {achievement.evidenceHeadline && achievement.evidenceNote ? <section className="detailSection" aria-label="冒険の豆知識"><p className="eyebrow">💡 冒険の豆知識</p><h2>{achievement.evidenceHeadline}</h2><p>{achievement.evidenceNote}</p>{achievement.evidenceStrength && <p>研究の根拠：{achievement.evidenceStrength === "Mixed" ? "結果は混在" : achievement.evidenceStrength === "Emerging" ? "研究途上" : "研究による支持あり"}</p>}{achievement.evidenceSource.startsWith("https://") && <a href={achievement.evidenceSource} target="_blank" rel="noopener noreferrer">出典を読む ↗</a>}</section> : null}
+        <a className="notionLink" href={achievement.url} target="_blank" rel="noreferrer">Notionの記録を開く ↗</a></> }
       </article>
     </main>
   );

@@ -13,6 +13,12 @@ export type Achievement = {
   unlockedAt: string | null;
   visibility: string | null;
   url: string;
+  prerequisites: string[];
+  lockedByChain?: boolean;
+  evidenceHeadline: string;
+  evidenceNote: string;
+  evidenceSource: string;
+  evidenceStrength: string | null;
 };
 
 export type Quest = {

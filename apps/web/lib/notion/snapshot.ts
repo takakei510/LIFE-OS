@@ -4,6 +4,7 @@ import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoint
 import { unstable_noStore as noStore } from "next/cache";
 
 import { getServerEnv } from "@/lib/env";
+import { publicAchievement } from "@/lib/life-os/achievement-chains";
 import { getNotionClient } from "@/lib/notion/client";
 import {
   checkbox,
@@ -67,6 +68,11 @@ function achievement(page: PageObjectResponse): Achievement {
     unlockedAt: date(p, "Unlocked At"),
     visibility: select(p, "Visibility"),
     url: page.url,
+    prerequisites: (() => { const value = p["Prerequisites"]; return value?.type === "relation" ? [...value.relation.map((item) => item.id), ...(("has_more" in value && value.has_more) ? ["__incomplete_relation__"] : [])] : []; })(),
+    evidenceHeadline: richText(p, "Evidence Headline"),
+    evidenceNote: richText(p, "Evidence Note"),
+    evidenceSource: p["Evidence Source"]?.type === "url" ? (p["Evidence Source"].url ?? "") : "",
+    evidenceStrength: select(p, "Evidence Strength"),
   };
 }
 
@@ -142,7 +148,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
     ]);
 
     return {
-      achievements: achievementPages.map(achievement),
+      achievements: (() => { const all = achievementPages.map(achievement); return achievementPages.filter((page) => page.properties.Lifecycle?.type !== "select" || page.properties.Lifecycle.select?.name === "Active").map(achievement).map((item) => publicAchievement(item, all)); })(),
       titles: titlePages.map(gameTitle),
       quests: questPages.map(quest),
       adventureLogs,
