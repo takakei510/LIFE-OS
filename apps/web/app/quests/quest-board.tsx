@@ -16,8 +16,8 @@ function stateKey(state: string | null): string {
   return AVAILABLE;
 }
 
-export function QuestBoard({ quests, source }: { quests: Quest[]; source: "notion" | "fallback" }) {
-  const [query, setQuery] = useState("");
+export function QuestBoard({ quests, source, initialQuery = "" }: { quests: Quest[]; source: "notion" | "fallback"; initialQuery?: string }) {
+  const [query, setQuery] = useState(initialQuery);
   const [type, setType] = useState(ALL);
   const [state, setState] = useState(ALL);
 

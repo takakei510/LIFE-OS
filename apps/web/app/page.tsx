@@ -95,6 +95,7 @@ export default async function HomePage() {
         <Link href="/quests">QUESTS</Link>
         <Link href="/titles">TITLES</Link>
         <Link href="/status">STATUS</Link>
+        <Link href="/guide">探索案内人に相談</Link>
       </nav>
 
       <section className="hero">

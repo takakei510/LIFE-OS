@@ -7,11 +7,13 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test:photos": "node --experimental-strip-types --test lib/life-os/adventure-logs/*.test.mjs"
+    "test:photos": "node --experimental-strip-types --test lib/life-os/adventure-logs/*.test.mjs",
+    "test:guide": "node --experimental-strip-types --test lib/life-os/guide/*.test.mjs"
   },
   "dependencies": {
     "@notionhq/client": "^5.22.0",
     "@vercel/blob": "2.8.2",
+    "ai": "^7.0.162",
     "next": "15.5.28",
     "react": "19.1.0",
     "react-dom": "19.1.0",
