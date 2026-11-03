@@ -57,6 +57,9 @@ test("only exact registered categories change; unknown labels and query values r
   assert.deepEqual(categoryPresentation("🌿 日常"), { label: "日常", motif: "life-nature" });
   assert.equal(categoryLabel("🎨 創作"), "創作");
   assert.equal(categoryLabel("🧪 探索"), "探索");
+  assert.deepEqual(categoryPresentation("🎸 育成"), { label: "育成", motif: "life-growth" });
+  assert.deepEqual(categoryPresentation("💪 身体"), { label: "身体", motif: "life-body" });
+  assert.equal(categoryPresentation("💪 私の身体メモ").motif, "life-general");
   for (const value of ["🧠 内面", "💪 身体", "🎸 育成"]) assert.ok(!/^\p{Extended_Pictographic}/u.test(categoryLabel(value)));
   assert.equal(categoryLabel("🌿 私のカテゴリ"), "🌿 私のカテゴリ");
   assert.equal(categoryLabel(null), "未分類");
@@ -70,7 +73,12 @@ test("all 28 approved symbols retain their supplied paths and small variants", (
   assert.equal(ids.length, 28);
   for (const id of ids) assert.ok(implementation.includes(`id="${id}"`), id);
   const paths = text => [...text.matchAll(/\bd="([^"]+)"/g)].map(m => m[1]);
-  assert.deepEqual(paths(implementation), paths(approved));
+  const symbol = (text, id) => text.match(new RegExp(`<symbol id="${id}"[^>]*>([\\s\\S]*?)</symbol>`))?.[1];
+  for (const id of ids) assert.deepEqual(paths(symbol(implementation, id)), paths(symbol(approved, id)), id);
+  const additions = readFileSync(new URL("../../../../docs/design/category-icons-v1/sprite.svg", import.meta.url), "utf8");
+  for (const id of ["life-growth", "life-growth-small", "life-body", "life-body-small"]) {
+    assert.equal(symbol(implementation, id)?.replaceAll("strokeWidth", "stroke-width").replaceAll("strokeLinecap", "stroke-linecap").replaceAll("strokeLinejoin", "stroke-linejoin"), symbol(additions, id), id);
+  }
   const component = readFileSync(new URL("./life-icon.tsx", import.meta.url), "utf8");
   assert.ok(component.includes('size <= 20 ? "-small" : ""'));
 });

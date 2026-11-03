@@ -1,6 +1,6 @@
 import { badgeTier } from "../brand/badge-policy";
 import { achievementDecorations } from "./decoration-registry";
-export type LifeMotif = "life-music" | "life-discovery" | "life-window" | "life-nature" | "life-cafe" | "life-cooking" | "life-photo" | "life-reading" | "life-journey" | "life-creation" | "life-research" | "life-connection" | "life-general";
+export type LifeMotif = "life-music" | "life-discovery" | "life-window" | "life-nature" | "life-cafe" | "life-cooking" | "life-photo" | "life-reading" | "life-journey" | "life-creation" | "life-research" | "life-connection" | "life-general" | "life-growth" | "life-body";
 export type LifeIconId = LifeMotif | "life-rank-beginner";
 export type IconAchievement = { id: string; name: string; domains: readonly string[] };
 // Existing normalized Domain identifiers; never inferred from Japanese display names.
@@ -31,8 +31,8 @@ export function achievementPresentation(achievement: IconAchievement) {
 const categories: Readonly<Record<string, { label: string; motif: LifeMotif }>> = {
   "🧪 探索": { label: "探索", motif: "life-journey" },
   "🌿 日常": { label: "日常", motif: "life-nature" },
-  "🎸 育成": { label: "育成", motif: "life-general" },
-  "💪 身体": { label: "身体", motif: "life-general" },
+  "🎸 育成": { label: "育成", motif: "life-growth" },
+  "💪 身体": { label: "身体", motif: "life-body" },
   "🎨 創作": { label: "創作", motif: "life-creation" },
   "🧠 内面": { label: "内面", motif: "life-discovery" },
 };

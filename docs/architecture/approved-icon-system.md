@@ -14,6 +14,10 @@ Tracks: #64 / Depends on: #63 / Blocks: アイコン更新の本番承認
 
 ## 対応表
 
+2026-11-04追加：カテゴリ「🎸 育成」は `life-growth`（重なった輪郭）、「💪 身体」は `life-body`（動く人）を使う。追加原本とサイズ比較は `docs/design/category-icons-v1` に保持。既存Domain対応や保存値は変更しない。
+
+HOMEコレクションの大きなカテゴリ枠も、この2つの完全一致カテゴリだけ同じ標準モチーフへ揃える。共通の中立色の枠を維持し、Tier/ランクの意味は付加しない。他のカテゴリは既存表示を維持する。
+
 RepositoryのmultiSelectで正規化済みの既存Domain識別子を使う。日本語の実績名やカテゴリ名から推測しない。複数Domainは登録順の最初の対応を採用し、未対応はlife-general。
 
 |Domain|モチーフ|
