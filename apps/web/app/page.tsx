@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AchievementName, TierName, PlayerRank } from "@/components/life-icons/life-icon";
+import { AchievementName, TierName, PlayerRank, LifeIcon } from "@/components/life-icons/life-icon";
 import { NeoIcon } from "@/components/ui/neo-icon";
 import { AdventureLogPhoto } from "./adventure-logs/adventure-log-photo";
 
@@ -41,12 +41,9 @@ function dailyScore(value: string, seed: string): number {
   return hash >>> 0;
 }
 
-function adventureLogIcon(logTypes: string[]): string {
-  if (logTypes.includes("Photo")) return "📸";
-  if (logTypes.includes("Audio")) return "🎤";
-  if (logTypes.includes("Text")) return "📝";
-  if (logTypes.includes("Place")) return "📍";
-  return "✨";
+function adventureLogIcon(logTypes: string[]) {
+  const name = logTypes.includes("Photo") ? "life-photo" : logTypes.includes("Audio") ? "life-music" : logTypes.includes("Place") ? "life-journey" : "life-general";
+  return <LifeIcon name={name} size={16}/>;
 }
 
 export default async function HomePage() {
