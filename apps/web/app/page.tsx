@@ -1,11 +1,17 @@
 import Link from "next/link";
-import { NeoCard } from "@/components/ui/neo-card";
-import { NeoLink } from "@/components/ui/neo-button";
 import { NeoIcon } from "@/components/ui/neo-icon";
 import { AdventureLogPhoto } from "./adventure-logs/adventure-log-photo";
 
 import { AchievementUnlocked } from "./achievement-unlocked";
-import "./recent-achievements.css";
+import "@fontsource/dela-gothic-one/400.css";
+import "@fontsource/train-one/400.css";
+import "./home/home.css";
+import { HomeHero } from "./home/home-hero";
+import { CollectionBadge } from "./home/collection-badge";
+import { getCollections, isHiddenAchievement } from "./home/collections";
+import { AchievementBadge } from "@/components/brand/achievement-badge";
+import { badgeTier } from "@/components/brand/badge-policy";
+import { StellarCompass } from "@/components/brand/stellar-compass";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
 function clampProgress(value: number): number {
@@ -33,11 +39,6 @@ function dailyScore(value: string, seed: string): number {
     hash = Math.imul(hash, 16777619);
   }
   return hash >>> 0;
-}
-
-function isHiddenAchievement(visibility: string | null): boolean {
-  const normalized = visibility?.trim().toLowerCase() ?? "";
-  return normalized.includes("hidden") || normalized.includes("secret") || normalized.includes("非公開") || normalized.includes("隠し");
 }
 
 function adventureLogIcon(logTypes: string[]): string {
@@ -82,6 +83,9 @@ export default async function HomePage() {
   const progress = clampProgress(player?.progress ?? 0);
   const rank = player?.playerRank ?? "Explorer";
 
+  const collections = getCollections(snapshot.achievements);
+  const recentAchievements = unlockedAchievements.slice(0, 3);
+
   const stats = [
     { label: "Achievements", value: player?.unlockedAchievements ?? snapshot.achievements.filter((item) => item.unlocked).length, total: snapshot.achievements.length, href: "/achievements" },
     { label: "Titles", value: player?.unlockedTitles ?? snapshot.titles.filter((item) => item.unlocked).length, total: snapshot.titles.length, href: "/titles" },
@@ -89,83 +93,80 @@ export default async function HomePage() {
   ];
 
   return (
-    <main>
+    <main className="homePage">
       <AchievementUnlocked achievement={latestUnlocked} />
 
-      <section className="hero">
-        <p className="eyebrow">Life OS · VERSION 0.4</p>
-        <h1>世界に触れた記録を、ゲームにする。</h1>
-        <p className="lead">LIFE OSは「何者になるか」を競うゲームではない。どれだけ世界に触れたかを楽しむゲームである。</p>
+      <section className="homePlayer" aria-label="プレイヤー情報">
+        <div className="homePlayerIdentity">
+          <span className="homePlayerEmblem"><StellarCompass size={32}/></span>
+          <div><p className="homeKicker">PLAYER</p><h2>{player?.name || "プレイヤー"}</h2><p className="homePlayerTitle">{equippedTitle?.name ?? "称号未装備"}</p></div>
+        </div>
+        <div className="homePlayerProgress">
+          <div className="homeXpRow"><strong><small>Lv.</small> {level}</strong><span>{totalXp.toLocaleString()} XP</span></div>
+          <div className="homeProgressTrack" aria-label="レベルの進み具合" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}><span style={{ width: `${progress}%` }}/></div>
+          <p>次のレベルまで {Math.max(0, nextLevelXp).toLocaleString()} XP</p>
+        </div>
+        <Link className="homeStatusLink" href="/status"><span>{rank}</span><NeoIcon name="arrow" size={18}/><span className="homeSrOnly">ステータスを見る</span></Link>
+        {snapshot.warning ? <p className="homeSyncWarning">{snapshot.warning}</p> : null}
       </section>
 
-      <NeoCard tone="cyan" className="playerCard" aria-label="Player card">
-        <div className="playerCardHeader">
-          <div>
-            <p className="eyebrow">PLAYER CARD</p>
-            <h2>Lv. {level} {rank}</h2>
-            <p className="playerTitle">{equippedTitle ? `👑 ${equippedTitle.name}` : "称号未装備"}</p>
-          </div>
-          <span className={`sourceBadge sourceBadge--${snapshot.source}`}>
-            {snapshot.source === "notion" ? "NOTION SYNC" : "DEMO MODE"}
-          </span>
-        </div>
-        <div className="xpRow">
-          <strong>{totalXp.toLocaleString()} XP</strong>
-          <span>次のレベルまで {Math.max(0, nextLevelXp).toLocaleString()} XP</span>
-        </div>
-        <div className="progressTrack" aria-label={`Level progress ${Math.round(progress)}%`} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
-          <span className="progressValue" style={{ width: `${progress}%` }} />
-        </div>
-        {snapshot.warning ? <p className="syncWarning">{snapshot.warning}</p> : null}
-        <Link className="notionLink" href="/status">VIEW FULL STATUS →</Link>
-      </NeoCard>
+      <HomeHero/>
 
-      <section className="statsGrid" aria-label="Player statistics">
-        {stats.map((stat) => (
-          <Link className="statCard statCardLink" href={stat.href} key={stat.label}>
-            <span>{stat.label}</span><strong>{stat.value}</strong><small>{stat.total > 0 ? `${stat.total}件中` : "データ待機中"}</small>
-          </Link>
-        ))}
+      <section className="homeSection" aria-labelledby="collection-heading">
+        <div className="homeSectionHeader"><div><p className="homeKicker">ACHIEVEMENT COLLECTION</p><h2 className="homeSectionTitle" id="collection-heading">実績コレクション</h2></div><Link href="/achievements">すべて見る <NeoIcon name="arrow" size={16}/></Link></div>
+        <div className="homeCollectionGrid">
+          {collections.map((collection) => (
+            <Link className="homeCollection" href={collection.category ? `/achievements?category=${encodeURIComponent(collection.category)}` : "/achievements"} key={collection.category ?? "uncategorized"}>
+              <CollectionBadge category={collection.category ?? "未分類"}/>
+              <strong>{collection.category?.replace(/^[^\p{L}\p{N}]+/u, "") || "未分類"}</strong>
+              <span><b>{collection.unlocked}</b> / {collection.total}<small>解除済み</small></span>
+            </Link>
+          ))}
+        </div>
+        {collections.length === 0 ? <p className="homeEmpty">表示できる実績はまだありません。</p> : null}
+        <p className="homeCollectionNote">{snapshot.source === "notion" ? "Notionの記録から表示しています。" : "接続設定を確認するためのデモ表示です。"} 隠し実績は解除後に加わります。</p>
       </section>
 
-      <section className="recentAchievements" aria-labelledby="daily-exploration-heading">
-        <div className="recentAchievementsHeader">
-          <div><p className="eyebrow">TODAY&apos;S EXPLORATION · {todayLabel}</p><h2 id="daily-exploration-heading">今日の探索候補</h2></div>
-          <Link href="/achievements">実績を探す →</Link>
-        </div>
-        {dailyExplorationPicks.length > 0 ? (
-          <div className="recentAchievementList">
-            {dailyExplorationPicks.map((achievement) => (
-              <Link className="recentAchievementItem" href={`/achievements/${achievement.id}`} key={achievement.id}>
-                <div><span>🧭 {achievement.category ?? "未分類"}</span><strong>{achievement.name}</strong><small>{achievement.flavorText || "まだ触れていない世界がある。"}</small></div>
-                <div className="recentAchievementMeta"><span>{achievement.tier ?? "Tier未設定"}</span><b>+{achievement.xp} XP</b></div>
-              </Link>
-            ))}
-          </div>
-        ) : <p className="recentAchievementsEmpty">いま表示できる未解除の通常実績はありません。</p>}
+      <section className="homeSection" aria-labelledby="recent-unlocked-heading">
+        <div className="homeSectionHeader"><div><p className="homeKicker">RECENTLY UNLOCKED</p><h2 className="homeSectionTitle" id="recent-unlocked-heading">最近解除した実績</h2></div><Link href="/achievements">実績を見る <NeoIcon name="arrow" size={16}/></Link></div>
+        {recentAchievements.length > 0 ? <div className="homeRecentList">
+          {recentAchievements.map((achievement) => (
+            <Link className="homeRecentItem" href={`/achievements/${achievement.id}`} key={achievement.id}>
+              <AchievementBadge tier={achievement.tier} domains={achievement.domains} size={60}/>
+              <div className="homeItemCopy"><p className="homeItemDate">{formatActivityDate(achievement.unlockedAt)}</p><h3>{achievement.name}</h3><p>{achievement.requirement || achievement.flavorText || "この体験が、あなたの記録に加わりました。"}</p></div>
+              <div className="homeItemMeta"><span className="homeTier" data-tier={badgeTier(achievement.tier)}>{achievement.tier ?? "Tier未設定"}</span><strong>+{achievement.xp} XP</strong></div>
+            </Link>
+          ))}
+        </div> : <p className="homeEmpty">解除日時のある実績が、ここに並びます。記録は自分のペースで。</p>}
       </section>
 
-      <section className="recentAchievements" aria-labelledby="recent-adventure-heading">
-        <div className="recentAchievementsHeader">
-          <div><p className="eyebrow">ADVENTURE LOGS</p><h2 id="recent-adventure-heading">最近の冒険</h2></div>
-          <Link href="/adventure-logs">すべて見る →</Link>
-        </div>
-        {recentAdventureLogs.length > 0 ? (
-          <div className="recentAchievementList">
-            {recentAdventureLogs.map((log) => (
-              <a className="recentAchievementItem" href={log.url} key={log.id} target="_blank" rel="noreferrer">
-                <AdventureLogPhoto media={log.media} compact />
-                <div><span>{adventureLogIcon(log.logTypes)} {log.logTypes.join(" · ") || "Memory"}</span><strong>{log.name}</strong><small>{log.memo || log.location || "この冒険の思い出が残されています。"}</small></div>
-                <div className="recentAchievementMeta"><span>{formatActivityDate(log.loggedAt)}</span><b>{log.favorite ? "★" : `${log.media.length} media`}</b></div>
-              </a>
-            ))}
-          </div>
-        ) : <p className="recentAchievementsEmpty">写真・音・一言を残した冒険が、ここに並びます。</p>}
+      <section className="homeSection" aria-labelledby="daily-exploration-heading">
+        <div className="homeSectionHeader"><div><p className="homeKicker">DISCOVER SOMETHING NEW · {todayLabel}</p><h2 className="homeSectionTitle" id="daily-exploration-heading">次に出会う体験</h2></div><Link href="/quests">クエストへ <NeoIcon name="arrow" size={16}/></Link></div>
+        <p className="homeSectionIntro">まだ触れていない世界から、今日の3つ。気になったときに、ひとつだけでも。</p>
+        {dailyExplorationPicks.length > 0 ? <div className="homeDiscoveryGrid">
+          {dailyExplorationPicks.map((achievement) => (
+            <Link className="homeDiscovery" href={`/achievements/${achievement.id}`} key={achievement.id}>
+              <div className="homeDiscoveryArt"><AchievementBadge tier={achievement.tier} domains={achievement.domains} size={80}/><span>{achievement.category ?? "未分類"}</span></div>
+              <div className="homeDiscoveryCopy"><h3>{achievement.name}</h3><p>{achievement.flavorText || achievement.requirement || "まだ触れていない世界がある。"}</p><span className="homeDiscoveryLink">体験をのぞく <NeoIcon name="arrow" size={16}/></span></div>
+            </Link>
+          ))}
+        </div> : <p className="homeEmpty">いま表示できる未解除の通常実績はありません。</p>}
       </section>
 
-      <NeoCard tone="purple">
-        <p className="eyebrow">CURRENT POSITION</p><h2>Player Status</h2><p className="muted">レベルや解除記録から、いま立っている場所を眺めます。</p><NeoLink variant="secondary" href="/status">OPEN STATUS <NeoIcon name="arrow" size={18} /></NeoLink>
-      </NeoCard>
+      <section className="homeSection" aria-labelledby="recent-adventure-heading">
+        <div className="homeSectionHeader"><div><p className="homeKicker">ADVENTURE LOGS</p><h2 className="homeSectionTitle" id="recent-adventure-heading">最近の冒険</h2></div><Link href="/adventure-logs">すべて見る <NeoIcon name="arrow" size={16}/></Link></div>
+        {recentAdventureLogs.length > 0 ? <div className="homeMemoryList">
+          {recentAdventureLogs.map((log) => (
+            <a className="homeMemory" href={log.url} key={log.id} target="_blank" rel="noreferrer">
+              <AdventureLogPhoto media={log.media} compact/>
+              <div className="homeItemCopy"><p className="homeItemDate">{formatActivityDate(log.loggedAt)} · {adventureLogIcon(log.logTypes)} {log.logTypes.join(" · ") || "Memory"}</p><h3>{log.name}</h3><p>{log.memo || log.location || "この冒険の思い出が残されています。"}</p></div>
+              <NeoIcon name="arrow" size={18}/><span className="homeSrOnly">Notionで開く（新しいタブ）</span>
+            </a>
+          ))}
+        </div> : <p className="homeEmpty">写真・音・一言。残したくなった冒険だけが、ここに並びます。</p>}
+      </section>
+
+      <footer className="homeFooter"><span className="homeSyncState">{snapshot.source === "notion" ? "NOTION SYNC" : "DEMO MODE"}</span><div>{stats.map((stat) => <Link href={stat.href} key={stat.label}>{stat.label} <b>{stat.value}</b><span> / {stat.total}</span></Link>)}</div></footer>
     </main>
   );
 }

@@ -1,0 +1,150 @@
+.homePage {
+  --home-text: #e6f2ff;
+  --home-muted: #a8bbd2;
+  --home-blue: #7ce1ff;
+  --home-line: #293a50;
+  --home-heading: "Dela Gothic One", "Noto Sans JP Variable", sans-serif;
+  color: var(--home-text);
+  font-family: "Sora Variable", "Noto Sans JP Variable", system-ui, sans-serif;
+  width: min(1080px, calc(100% - 40px));
+}
+.homePage p { line-height: 1.75; }
+.homePage a { text-decoration: none; }
+.homePage h2, .homePage h3 { overflow-wrap: anywhere; }
+.homeKicker { color: var(--home-muted); font: 500 .61rem/1.5 "Sora Variable", sans-serif; letter-spacing: .13em; margin: 0 0 8px; }
+.homePlayer { display: grid; grid-template-columns: 1.1fr 1fr auto; align-items: center; gap: 28px; padding: 20px 24px; background: #111b2e; border: 1px solid var(--home-line); border-radius: 12px; margin-bottom: 20px; }
+.homePlayerIdentity { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.homePlayerIdentity > div { min-width: 0; }
+.homePlayerEmblem { width: 52px; height: 52px; flex-shrink: 0; display: grid; place-items: center; background: #1b2a40; color: var(--home-blue); border-radius: 12px; }
+.homePlayerIdentity h2 { font-size: 1.1rem; margin: 0; line-height: 1.45; }
+.homePlayerIdentity .homeKicker { margin-bottom: 3px; }
+.homePlayerTitle { margin: 4px 0 0; color: var(--home-muted); font-size: .72rem; }
+.homeXpRow { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-size: .78rem; }
+.homeXpRow strong { font-size: 1.5rem; font-weight: 650; }
+.homeXpRow small { font-size: .8rem; font-weight: 500; color: var(--home-muted); }
+.homeXpRow > span { color: var(--home-text); }
+.homeProgressTrack { height: 6px; margin-top: 8px; background: #2a3b50; border-radius: 3px; overflow: hidden; }
+.homeProgressTrack > span { display: block; height: 100%; background: var(--neo-primary); border-radius: inherit; }
+.homePlayerProgress > p { font-size: .65rem; margin: 7px 0 0; color: var(--home-muted); }
+.homeStatusLink { display: inline-flex; gap: 10px; min-height: 44px; align-items: center; color: var(--home-muted); font-size: .7rem; }
+.homeStatusLink:hover { color: var(--home-blue); }
+.homeSyncWarning { grid-column: 1 / -1; color: var(--home-text); margin: 0; font-size: .8rem; }
+.homeHero { position: relative; isolation: isolate; min-height: 340px; border-radius: 12px; overflow: hidden; background: #13253a; border: 1px solid var(--home-line); }
+.homeLandscape { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; }
+.homeHero::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, #102033 5%, rgb(16 32 51 / 93%) 34%, rgb(16 32 51 / 20%) 75%); }
+.homeHeroCopy { position: relative; padding: 64px 40px 74px; }
+.homeHero .homeKicker { color: var(--home-muted); font-size: .62rem; }
+.homeHero h1 { margin: 16px 0 18px; font-family: var(--home-heading); font-weight: 400; font-size: clamp(1.65rem, 4.1vw, 2.8rem); color: var(--home-blue); line-height: 1.5; letter-spacing: .015em; max-width: none; }
+.homeHero h1[data-font="train"] { font-family: "Train One", "Noto Sans JP Variable", sans-serif; }
+.homeHeroLead { color: var(--home-text); font-size: 1.05rem; margin: 0 0 10px; font-weight: 500; }
+.homeHeroNote { font-size: .75rem; color: var(--home-muted); margin-bottom: 0; }
+.homeMobileBreak { display: none; }
+.homeFontCompare { position: absolute; bottom: 12px; left: 40px; z-index: 1; color: var(--home-muted); font-size: .65rem; }
+.homeFontCompare summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; }
+.homeFontCompare[open] { padding: 0 12px 12px; left: 28px; background: #111b2e; border: 1px solid var(--home-line); border-radius: 8px; }
+.homeFontCompare fieldset { display: flex; flex-wrap: wrap; gap: 4px 16px; border: 0; padding: 0; margin: 0; }
+.homeFontCompare legend { margin-bottom: 4px; }
+.homeFontCompare label { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; cursor: pointer; }
+.homeFontCompare input { accent-color: var(--neo-primary); }
+.homeSection { margin-top: 40px; }
+.homeSectionHeader { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 18px; }
+.homeSectionTitle { font-family: var(--home-heading); font-size: clamp(1.05rem, 2.5vw, 1.35rem); font-weight: 400; letter-spacing: .025em; margin: 0; line-height: 1.6; }
+.homeSectionHeader > a { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; min-height: 44px; flex-shrink: 0; font-size: .72rem; color: var(--home-muted); }
+.homeSectionHeader > a:hover { color: var(--home-blue); }
+.homeSectionHeader .homeKicker { font-size: .56rem; margin-bottom: 6px; }
+.homeCollectionGrid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.homeCollection { display: flex; align-items: center; flex-direction: column; gap: 10px; padding: 20px 8px 16px; border: 1px solid var(--home-line); border-radius: 10px; background: #111b2e; text-align: center; }
+.homeCollectionBadge { color: #a8bbd2; flex-shrink: 0; }
+.homeCollection strong { font-size: .85rem; font-weight: 600; }
+.homeCollection > span { color: var(--home-muted); font-size: .72rem; }
+.homeCollection b { font-size: 1rem; color: var(--home-text); font-weight: 600; }
+.homeCollection small { display: block; font-size: .6rem; margin-top: 4px; }
+.homeCollectionNote { font-size: .65rem; color: var(--home-muted); margin: 10px 0 0; }
+.homeRecentList, .homeMemoryList { display: grid; gap: 8px; }
+.homeRecentItem { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 20px; align-items: center; padding: 20px; border: 1px solid var(--home-line); border-radius: 10px; background: #111b2e; }
+.homeItemCopy { min-width: 0; }
+.homeItemCopy h3, .homeDiscovery h3 { margin: 0 0 8px; font-size: .95rem; line-height: 1.65; font-weight: 600; }
+.homeItemCopy p { font-size: .76rem; color: var(--home-muted); margin-bottom: 0; overflow-wrap: anywhere; }
+.homeItemCopy .homeItemDate { font-size: .62rem; margin: 0 0 4px; }
+.homeItemMeta { display: grid; text-align: right; gap: 12px; font-size: .67rem; }
+.homeItemMeta strong { font-size: .8rem; font-weight: 600; }
+.homeTier { color: var(--neo-tier-common); }
+.homeTier[data-tier="uncommon"] { color: var(--neo-tier-uncommon); }
+.homeTier[data-tier="rare"] { color: var(--neo-tier-rare); }
+.homeTier[data-tier="epic"] { color: var(--neo-tier-epic); }
+.homeTier[data-tier="legendary"] { color: var(--neo-tier-legendary); }
+.homeTier[data-tier="unknown"] { color: var(--home-muted); }
+.homeSectionIntro { color: var(--home-muted); font-size: .78rem; margin: -4px 0 18px; }
+.homeDiscoveryGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.homeDiscovery { overflow: hidden; border: 1px solid var(--home-line); border-radius: 10px; background: #111b2e; display: flex; flex-direction: column; }
+.homeDiscoveryArt { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 132px; padding: 20px 24px; background: #19283c; border-bottom: 1px solid var(--home-line); }
+.homeDiscoveryArt > span { font-size: .65rem; color: var(--home-muted); }
+.homeDiscoveryCopy { display: flex; flex: 1; flex-direction: column; padding: 20px; }
+.homeDiscoveryCopy p { flex: 1; color: var(--home-muted); font-size: .76rem; margin-bottom: 18px; }
+.homeDiscoveryLink { color: var(--home-blue); font-size: .7rem; display: flex; align-items: center; gap: 8px; }
+.homeMemory { display: flex; align-items: center; gap: 20px; padding: 16px 20px; background: #111b2e; border: 1px solid var(--home-line); border-radius: 10px; }
+.homeMemory > .homeItemCopy { flex: 1; }
+.homeMemory > svg { flex-shrink: 0; color: var(--home-muted); }
+.homeEmpty { font-size: .8rem; padding: 28px 20px; background: #111b2e; border: 1px solid var(--home-line); border-radius: 10px; color: var(--home-muted); }
+.homeFooter { display: flex; justify-content: space-between; gap: 16px; align-items: center; border-top: 1px solid var(--home-line); padding-top: 18px; margin-top: 36px; color: var(--home-muted); font-size: .6rem; }
+.homeFooter > div { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.homeFooter a { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; }
+.homeFooter b { color: var(--home-text); }
+.homeSyncState { letter-spacing: .06em; }
+.homeCollection:hover, .homeRecentItem:hover, .homeDiscovery:hover, .homeMemory:hover { border-color: #617c99; }
+.homeSrOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 880px) {
+  .homePlayer { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .homeStatusLink { grid-column: 1 / -1; justify-content: flex-end; min-height: 24px; }
+  .homeCollectionGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .homePage { width: calc(100% - 32px); padding-top: 16px; }
+  .homePlayer { padding: 16px; gap: 16px; grid-template-columns: 1fr; margin-bottom: 16px; }
+  .homePlayerIdentity { gap: 12px; }
+  .homePlayerIdentity h2 { font-size: 1rem; }
+  .homePlayerEmblem { width: 44px; height: 44px; }
+  .homePlayerProgress { padding-top: 12px; border-top: 1px solid var(--home-line); }
+  .homeStatusLink { min-height: 44px; justify-content: space-between; margin-top: -8px; margin-bottom: -8px; }
+  .homeHero { min-height: 320px; }
+  .homeHeroCopy { padding: 30px 20px 80px; }
+  .homeHero::before { background: rgb(11 18 32 / 53%); }
+  .homeHero h1 { font-size: clamp(1.2rem, 5.4vw, 2rem); letter-spacing: 0; margin: 16px 0; white-space: nowrap; }
+  .homeHeroLead { font-size: .88rem; }
+  .homeHeroNote { font-size: .68rem; }
+  .homeHero .homeKicker { font-size: .5rem; }
+  .homeMobileBreak { display: initial; }
+  .homeFontCompare { left: 20px; }
+  .homeFontCompare[open] { left: 8px; right: 8px; }
+  .homeFontCompare fieldset { gap: 0 12px; }
+  .homeFontCompare label { font-size: .63rem; }
+  .homeSection { margin-top: 30px; }
+  .homeSectionHeader { gap: 8px; margin-bottom: 14px; }
+  .homeSectionHeader > a { gap: 4px; font-size: .61rem; }
+  .homeSectionHeader > a svg { width: 14px; }
+  .homeSectionHeader .homeKicker { font-size: .46rem; letter-spacing: .07em; }
+  .homeSectionTitle { font-size: 1.04rem; letter-spacing: 0; }
+  .homeCollectionGrid { gap: 8px; }
+  .homeCollection { padding: 14px 6px; gap: 7px; }
+  .homeCollectionBadge { width: 52px; height: 52px; }
+  .homeCollection strong { font-size: .76rem; }
+  .homeCollectionNote { font-size: .6rem; }
+  .homeRecentItem { grid-template-columns: 44px minmax(0, 1fr); padding: 16px; gap: 8px 12px; align-items: start; }
+  .homeRecentItem > .achievementBadge { width: 44px; height: 44px; }
+  .homeItemMeta { grid-column: 2; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; }
+  .homeItemCopy h3, .homeDiscovery h3 { font-size: .88rem; }
+  .homeItemCopy p, .homeDiscoveryCopy p { font-size: .73rem; }
+  .homeSectionIntro { font-size: .73rem; }
+  .homeDiscoveryGrid { grid-template-columns: 1fr; gap: 10px; }
+  .homeDiscovery { display: grid; grid-template-columns: 86px minmax(0, 1fr); }
+  .homeDiscoveryArt { padding: 12px 8px; justify-content: center; flex-direction: column; border-bottom: 0; border-right: 1px solid var(--home-line); gap: 8px; }
+  .homeDiscoveryArt .achievementBadge { width: 56px; height: 56px; }
+  .homeDiscoveryArt > span { font-size: .58rem; }
+  .homeDiscoveryCopy { padding: 16px 12px; }
+  .homeDiscoveryCopy p { margin-bottom: 12px; }
+  .homeMemory { gap: 12px; flex-wrap: wrap; padding: 16px; }
+  .homeMemory .adventurePhoto { flex-basis: 100%; width: 100%; height: 150px; }
+  .homeFooter { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .homeFooter > div { gap: 8px 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .homePage * { scroll-behavior: auto; } }
