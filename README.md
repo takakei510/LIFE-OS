@@ -17,6 +17,8 @@ LIFE OSは、人生を管理するためではなく、実績・称号・クエ�
 
 ブランド更新（プレビュー段階）の仕様は [`Stellar Compass ブランド設計`](docs/architecture/stellar-compass-brand.md) を参照してください。
 
+HOME更新（プレビュー段階）の構成・フォント比較・データ境界は [`HOMEデザイン仕様`](docs/architecture/home-experience-design.md) を参照してください。
+
 ## Architecture
 
 - **Notion** — セーブデータと公式仕様書

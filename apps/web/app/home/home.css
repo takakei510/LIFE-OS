@@ -109,7 +109,7 @@
   .homeHero { min-height: 320px; }
   .homeHeroCopy { padding: 30px 20px 80px; }
   .homeHero::before { background: rgb(11 18 32 / 53%); }
-  .homeHero h1 { font-size: clamp(1.2rem, 5.4vw, 2rem); letter-spacing: 0; margin: 16px 0; white-space: nowrap; }
+  .homeHero h1 { font-size: clamp(1.4rem, 7.2vw, 2.25rem); letter-spacing: 0; margin: 16px 0; white-space: nowrap; }
   .homeHeroLead { font-size: .88rem; }
   .homeHeroNote { font-size: .68rem; }
   .homeHero .homeKicker { font-size: .5rem; }
