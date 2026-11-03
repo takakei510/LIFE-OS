@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { tierLabel } from "@/components/life-icons/presentation";
-import { AchievementName, TierName } from "@/components/life-icons/life-icon";
+import { categoryLabel, tierLabel } from "@/components/life-icons/presentation";
+import { AchievementName, TierName, CategoryName } from "@/components/life-icons/life-icon";
 import { AchievementBadge } from "@/components/brand/achievement-badge";
 import { useMemo, useState } from "react";
 import type { Achievement } from "@/lib/notion/types";
@@ -57,14 +57,14 @@ export function AchievementLibrary({ achievements, source, initialCategory = ALL
         />
       </label>
       <div className="filterGrid">
-        <label>カテゴリ<select value={category} onChange={(e) => setCategory(e.target.value)}>{categories.map((v) => <option key={v}>{v}</option>)}</select></label>
+        <label>カテゴリ<select value={category} onChange={(e) => setCategory(e.target.value)}>{categories.map((v) => <option key={v} value={v}>{v === ALL ? ALL : categoryLabel(v)}</option>)}</select></label>
         <label>Tier<select value={tier} onChange={(e) => setTier(e.target.value)}>{tiers.map((v) => <option key={v} value={v}>{v === ALL ? ALL : tierLabel(v)}</option>)}</select></label>
         <label>解除状態<select value={state} onChange={(e) => setState(e.target.value)}><option>{ALL}</option><option>{UNLOCKED}</option><option>{UNDISCOVERED}</option></select></label>
       </div>
       <section className="achievementGrid">
         {filtered.map((achievement) => (
           <Link className={`achievementCard ${achievement.unlocked ? "isUnlocked" : "isLocked"}`} href={`/achievements/${achievement.id}`} key={achievement.id}>
-            <div className="achievementMeta"><span>{achievement.category ?? "未分類"}</span><span><TierName tier={achievement.tier}/></span></div>
+            <div className="achievementMeta"><CategoryName category={achievement.category}/><span><TierName tier={achievement.tier}/></span></div>
             <div className="achievementIdentity"><AchievementBadge tier={achievement.tier} domains={achievement.domains} achievementId={achievement.id} achievementName={achievement.name}/><h2><AchievementName achievement={achievement} size={20}/></h2></div>
             <p>{achievement.flavorText || "まだ触れていない世界がある。"}</p>
             <div className="achievementFooter"><strong>{achievement.xp} XP</strong><span>{achievement.unlocked ? "解除済み" : "未解除"}</span></div>

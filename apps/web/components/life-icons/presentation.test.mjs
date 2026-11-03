@@ -3,9 +3,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 // Resolve the extensionless production import for the Node TS test runner.
 import ts from "typescript";
-const source = readFileSync(new URL("./presentation.ts", import.meta.url), "utf8").replace('import { badgeTier } from "../brand/badge-policy";', `import { badgeTier } from "${new URL("../brand/badge-policy.ts", import.meta.url).href}";`);
+const source = readFileSync(new URL("./presentation.ts", import.meta.url), "utf8")
+  .replace('import { badgeTier } from "../brand/badge-policy";', `import { badgeTier } from "${new URL("../brand/badge-policy.ts", import.meta.url).href}";`)
+  .replace('from "./decoration-registry"', `from "${new URL("./decoration-registry.ts", import.meta.url).href}"`);
 const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText;
-const { domainMotif, achievementPresentation, tierLabel, beginnerLabel } = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
+const { domainMotif, achievementPresentation, tierLabel, beginnerLabel, categoryPresentation, categoryLabel } = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
+import { achievementDecorations } from "./decoration-registry.ts";
 
 test("only registered Domain identifiers resolve, in registration order", () => {
   assert.equal(domainMotif(["Unknown", "Photography", "Cafe"]), "life-photo");
@@ -36,6 +39,28 @@ test("Tier and Beginner presentation do not invent classifications or strip arbi
   assert.equal(beginnerLabel("🌱 Beginner"), "Beginner");
   assert.equal(beginnerLabel("Beginner"), "Beginner");
   assert.equal(beginnerLabel("🌱 My Beginner story"), null);
+});
+
+test("all 111 confirmed IDs remove only their exact prefix and preserve interior emoji", () => {
+  assert.equal(Object.keys(achievementDecorations).length, 111);
+  for (const [id, { prefix }] of Object.entries(achievementDecorations)) {
+    const name = prefix + "名前の中の ☕ は残す";
+    const item = { id, name, domains: ["Cafe"] };
+    assert.equal(achievementPresentation(item).name, "名前の中の ☕ は残す");
+    assert.equal(item.name, name);
+    assert.equal(achievementPresentation({ ...item, name: "🐈 新しい名前" }).name, "🐈 新しい名前");
+  }
+  assert.equal(achievementPresentation({ id: "new-record", name: "☕ ユーザーの名前", domains: [] }).name, "☕ ユーザーの名前");
+});
+
+test("only exact registered categories change; unknown labels and query values remain untouched", () => {
+  assert.deepEqual(categoryPresentation("🌿 日常"), { label: "日常", motif: "life-nature" });
+  assert.equal(categoryLabel("🎨 創作"), "創作");
+  assert.equal(categoryLabel("🧪 探索"), "探索");
+  for (const value of ["🧠 内面", "💪 身体", "🎸 育成"]) assert.ok(!/^\p{Extended_Pictographic}/u.test(categoryLabel(value)));
+  assert.equal(categoryLabel("🌿 私のカテゴリ"), "🌿 私のカテゴリ");
+  assert.equal(categoryLabel(null), "未分類");
+  assert.equal(categoryLabel("__proto__"), "__proto__");
 });
 
 test("all 28 approved symbols retain their supplied paths and small variants", () => {

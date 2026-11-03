@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { LifeIcon } from "@/components/life-icons/life-icon";
 import { MAX_PHOTO_COUNT, MAX_PHOTO_SIZE_BYTES, validatePhotoMetadata } from "@/lib/life-os/adventure-logs/photo-policy";
 
 const ALLOWED_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -154,7 +155,7 @@ export function PhotoPicker({ requestId, onStateChange }: { requestId: string; o
 
       <input ref={fileInputRef} disabled={uploading} className="adventureLogPhotoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={handleSelection} />
       <button className="adventureLogPhotoButton" type="button" disabled={photos.length >= MAX_PHOTO_COUNT || uploading} onClick={() => fileInputRef.current?.click()}>
-        <span aria-hidden="true">📷</span>{photos.length === 0 ? "写真を選ぶ" : "写真を追加する"}
+        <LifeIcon name="life-photo" size={20}/>{photos.length === 0 ? "写真を選ぶ" : "写真を追加する"}
       </button>
 
       {error ? <p className="adventureLogFormError" role="alert">{error}</p> : null}

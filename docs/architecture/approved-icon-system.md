@@ -29,7 +29,7 @@ RepositoryのmultiSelectで正規化済みの既存Domain識別子を使う。�
 |Research|life-research|
 |Communication / Relationship|life-connection|
 
-ユーザーが本チャットで承認した次のIDと接頭辞が一致する場合のみ、接頭辞を画面上で差し替える。本文・メモ・達成条件などの絵文字は処理しない。IDが違う同名実績や接頭辞が変わった実績には適用しない。
+全件展開の承認を受け、2026-11-04（JST）にNotionを読み取りで確認した実績262件のうち、装飾接頭辞のある111件を`decoration-registry.ts`へ登録した。IDと接頭辞だけを保持し、名前や説明文は複製しない。登録IDと接頭辞が一致する場合のみ画面上で差し替える。本文・メモ・達成条件などの絵文字は処理しない。IDが違う同名実績や接頭辞が変わった実績には適用しない。次の3件は個別のモチーフ指定も維持する。
 
 |実績ID|接頭辞|モチーフ|
 |---|---|---|
@@ -40,5 +40,11 @@ RepositoryのmultiSelectで正規化済みの既存Domain識別子を使う。�
 解除演出も同じ表示部品を使用する。既存ロゴ・ナビSVG、Notionデータ/スキーマ/API/XP/Level計算は維持。デザインボードの見本名は登録しない。既存カテゴリの六角アイコンは分類表示用として維持し、実績のDomainモチーフとは混同しない。
 
 ## 検証
+
+全件展開では、既存Category6種類も完全一致の対応表で表示する。option valueとリンクのクエリー値は元値を維持し、ラベルだけを変更する。HOMEのカテゴリ名から絵文字を一律に除去していた正規表現も廃止した。未登録カテゴリはそのまま表示する。
+
+称号27件とクエスト115件の名前には装飾接頭辞がないことを確認したため名前は変更しない。クエスト・ステータスのカテゴリ、冒険ログ種別・写真選択・空表示・エラー表示のアプリ装飾もSVGへ揃える。冒険ログの名前・本文・写真名・説明文・メモは処理しない。関連実績の案内は表示名を使い、hidden inputと保存処理には元名を渡す。
+
+今後追加されたIDや、既存IDでも接頭辞が変わった名前は保持する。将来の追加も対応表へ明示的に登録する。未対応モチーフはlife-general。
 
 `node --experimental-strip-types --test apps/web/components/life-icons/presentation.test.mjs apps/web/components/brand/badge-policy.test.mjs apps/web/app/home/collections.test.mjs`でID＋接頭辞限定、元値保持、Domain順序、未知Tier、Beginner、提供28symbolとpath一致を検証する。既存写真テスト、型チェック、ビルド、VercelプレビューでPC/スマホの小サイズ、一覧/詳細のモチーフとTierの一致、読み上げ重複がないことを確認する。本番は別途承認まで未反映。

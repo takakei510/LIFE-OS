@@ -4,6 +4,7 @@
 .lifeBadgeMotif { color: #a8bbd2; }
 .achievementBadge[data-tier="unknown"] { color: #a8bbd2; }
 .lifePlayerRank { display: inline-flex; align-items: center; gap: 6px; color: #a8bbd2; }
+.lifeCategoryName { display: inline-flex; align-items: center; gap: 6px; color: #a8bbd2; }
 .lifeTierName { color: #a8bbd2; }
 .lifeTierName[data-tier="common"] { color: var(--neo-tier-common); }
 .lifeTierName[data-tier="uncommon"] { color: var(--neo-tier-uncommon); }

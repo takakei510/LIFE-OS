@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { NeoIcon } from "@/components/ui/neo-icon";
-import { PlayerRank } from "@/components/life-icons/life-icon";
+import { categoryLabel } from "@/components/life-icons/presentation";
+import { PlayerRank, CategoryName } from "@/components/life-icons/life-icon";
 
 import "./status-category-progress.css";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
@@ -139,13 +140,13 @@ export default async function StatusPage() {
             {categoryProgress.map((item) => (
               <Link className="categoryProgressItem" href={`/achievements?category=${encodeURIComponent(item.category)}`} key={item.category}>
                 <div className="categoryProgressTop">
-                  <strong>{item.category}</strong>
+                  <strong><CategoryName category={item.category}/></strong>
                   <span>{item.unlocked} / {item.total}件 · {item.xp} XP</span>
                 </div>
                 <div
                   className="categoryProgressTrack"
                   role="progressbar"
-                  aria-label={`${item.category} ${item.percent}%`}
+                  aria-label={`${categoryLabel(item.category)} ${item.percent}%`}
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={item.percent}
