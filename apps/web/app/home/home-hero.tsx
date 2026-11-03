@@ -19,7 +19,7 @@ function QuietLandscape() {
 }
 
 export function HomeHero() {
-  const [font, setFont] = useState<"dela" | "train">("dela");
+  const [font, setFont] = useState<"noto" | "dela" | "train">("noto");
   return <section className="homeHero" aria-labelledby="home-heading">
     <QuietLandscape/>
     <div className="homeHeroCopy">
@@ -31,6 +31,7 @@ export function HomeHero() {
     <details className="homeFontCompare">
       <summary>見出しフォントを比較</summary>
       <fieldset><legend>メイン見出し</legend>
+        <label><input type="radio" name="home-heading-font" value="noto" checked={font === "noto"} onChange={() => setFont("noto")}/>Noto Sans JP</label>
         <label><input type="radio" name="home-heading-font" value="dela" checked={font === "dela"} onChange={() => setFont("dela")}/>Dela Gothic One</label>
         <label><input type="radio" name="home-heading-font" value="train" checked={font === "train"} onChange={() => setFont("train")}/>Train One</label>
       </fieldset>

@@ -3,7 +3,7 @@
   --home-muted: #a8bbd2;
   --home-blue: #7ce1ff;
   --home-line: #293a50;
-  --home-heading: "Dela Gothic One", "Noto Sans JP Variable", sans-serif;
+  --home-heading: "Sora Variable", "Noto Sans JP Variable", sans-serif;
   color: var(--home-text);
   font-family: "Sora Variable", "Noto Sans JP Variable", system-ui, sans-serif;
   width: min(1080px, calc(100% - 40px));
@@ -34,8 +34,9 @@
 .homeHero::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, #102033 5%, rgb(16 32 51 / 93%) 34%, rgb(16 32 51 / 20%) 75%); }
 .homeHeroCopy { position: relative; padding: 64px 40px 74px; }
 .homeHero .homeKicker { color: var(--home-muted); font-size: .62rem; }
-.homeHero h1 { margin: 16px 0 18px; font-family: var(--home-heading); font-weight: 400; font-size: clamp(1.65rem, 4.1vw, 2.8rem); color: var(--home-blue); line-height: 1.5; letter-spacing: .015em; max-width: none; }
-.homeHero h1[data-font="train"] { font-family: "Train One", "Noto Sans JP Variable", sans-serif; }
+.homeHero h1 { margin: 16px 0 18px; font-family: var(--home-heading); font-weight: 600; font-size: clamp(1.65rem, 4.1vw, 2.8rem); color: var(--home-blue); line-height: 1.5; letter-spacing: .04em; max-width: none; }
+.homeHero h1[data-font="dela"] { font-family: "Dela Gothic One", "Noto Sans JP Variable", sans-serif; font-weight: 400; }
+.homeHero h1[data-font="train"] { font-family: "Train One", "Noto Sans JP Variable", sans-serif; font-weight: 400; }
 .homeHeroLead { color: var(--home-text); font-size: 1.05rem; margin: 0 0 10px; font-weight: 500; }
 .homeHeroNote { font-size: .75rem; color: var(--home-muted); margin-bottom: 0; }
 .homeMobileBreak { display: none; }
@@ -48,7 +49,7 @@
 .homeFontCompare input { accent-color: var(--neo-primary); }
 .homeSection { margin-top: 40px; }
 .homeSectionHeader { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 18px; }
-.homeSectionTitle { font-family: var(--home-heading); font-size: clamp(1.05rem, 2.5vw, 1.35rem); font-weight: 400; letter-spacing: .025em; margin: 0; line-height: 1.6; }
+.homeSectionTitle { font-family: var(--home-heading); font-size: clamp(1.05rem, 2.5vw, 1.35rem); font-weight: 600; letter-spacing: .04em; margin: 0; line-height: 1.6; }
 .homeSectionHeader > a { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; min-height: 44px; flex-shrink: 0; font-size: .72rem; color: var(--home-muted); }
 .homeSectionHeader > a:hover { color: var(--home-blue); }
 .homeSectionHeader .homeKicker { font-size: .56rem; margin-bottom: 6px; }
@@ -109,7 +110,7 @@
   .homeHero { min-height: 320px; }
   .homeHeroCopy { padding: 30px 20px 80px; }
   .homeHero::before { background: rgb(11 18 32 / 53%); }
-  .homeHero h1 { font-size: clamp(1.4rem, 7.2vw, 2.25rem); letter-spacing: 0; margin: 16px 0; }
+  .homeHero h1 { font-size: clamp(1.4rem, 7.2vw, 2.25rem); letter-spacing: .025em; margin: 16px 0; }
   .homeHeroLead { font-size: .88rem; }
   .homeHeroNote { font-size: .68rem; }
   .homeHero .homeKicker { font-size: .5rem; }
@@ -123,7 +124,7 @@
   .homeSectionHeader > a { gap: 4px; font-size: .61rem; }
   .homeSectionHeader > a svg { width: 14px; }
   .homeSectionHeader .homeKicker { font-size: .46rem; letter-spacing: .07em; }
-  .homeSectionTitle { font-size: 1.16rem; letter-spacing: 0; }
+  .homeSectionTitle { font-size: 1.16rem; letter-spacing: .025em; }
   .homeCollectionGrid { gap: 8px; }
   .homeCollection { padding: 14px 6px; gap: 7px; }
   .homeCollectionBadge { width: 52px; height: 52px; }
