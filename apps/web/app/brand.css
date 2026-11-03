@@ -1,0 +1,23 @@
+.brandLogo { display: inline-flex; align-items: center; gap: 10px; color: var(--neo-text); font: 650 1.25rem/1.2 var(--neo-font-display); letter-spacing: -.04em; white-space: nowrap; }
+.brandLogo svg { flex-shrink: 0; }
+.brandMobileHeader { display: none; }
+.achievementBadge { flex: 0 0 auto; color: var(--neo-tier-common); }
+.achievementBadge[data-tier="uncommon"] { color: var(--neo-tier-uncommon); }
+.achievementBadge[data-tier="rare"] { color: var(--neo-tier-rare); }
+.achievementBadge[data-tier="epic"] { color: var(--neo-tier-epic); }
+.achievementBadge[data-tier="legendary"] { color: var(--neo-tier-legendary); }
+.achievementBadge[data-tier="unknown"] { color: var(--neo-muted); stroke-dasharray: 3 2; }
+.achievementIdentity { display: flex; align-items: center; gap: 16px; margin-top: 24px; }
+.achievementCard .achievementIdentity h2 { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.achievementDetailIdentity { display: flex; align-items: center; gap: 24px; margin-block: 24px; }
+.achievementDetailIdentity h1, .achievementDetailIdentity .eyebrow { margin: 0; }
+.achievementDetailIdentity h1 { margin-top: 8px; overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+  .brandMobileHeader { display: block; padding: 20px 16px 0; }
+  .brandMobileHeader a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
+  .achievementIdentity { gap: 12px; }
+  .achievementIdentity .achievementBadge { width: 48px; height: 48px; }
+  .achievementDetailIdentity { gap: 16px; align-items: flex-start; }
+  .achievementDetailIdentity .achievementBadge { width: 64px; height: 64px; }
+  .achievementDetailIdentity > div { min-width: 0; }
+}

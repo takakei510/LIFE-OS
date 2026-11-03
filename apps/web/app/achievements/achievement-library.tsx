@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AchievementBadge } from "@/components/brand/achievement-badge";
 import { useMemo, useState } from "react";
 import type { Achievement } from "@/lib/notion/types";
 
@@ -62,7 +63,7 @@ export function AchievementLibrary({ achievements, source }: { achievements: Ach
         {filtered.map((achievement) => (
           <Link className={`achievementCard ${achievement.unlocked ? "isUnlocked" : "isLocked"}`} href={`/achievements/${achievement.id}`} key={achievement.id}>
             <div className="achievementMeta"><span>{achievement.category ?? "未分類"}</span><span>{achievement.tier ?? "Tier未設定"}</span></div>
-            <h2>{achievement.name}</h2>
+            <div className="achievementIdentity"><AchievementBadge tier={achievement.tier} domains={achievement.domains}/><h2>{achievement.name}</h2></div>
             <p>{achievement.flavorText || "まだ触れていない世界がある。"}</p>
             <div className="achievementFooter"><strong>{achievement.xp} XP</strong><span>{achievement.unlocked ? "解除済み" : "未解除"}</span></div>
           </Link>
