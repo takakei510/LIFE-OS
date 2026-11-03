@@ -43,7 +43,7 @@ export async function unlockAchievementPage(pageId: string, unlockedAt: string):
   if (lifecycle?.type === "select" && lifecycle.select?.name !== "Active") throw new Error("Achievement is not active.");
   const prerequisites = current.properties.Prerequisites;
   if (prerequisites?.type === "relation") {
-    if (prerequisites.has_more) throw new Error("Prerequisite relation is incomplete.");
+    if ("has_more" in prerequisites && prerequisites.has_more) throw new Error("Prerequisite relation is incomplete.");
     for (const prerequisite of prerequisites.relation) {
       if (prerequisite.id === pageId) throw new Error("Self-referencing achievement chain.");
       const parent = pageResult(await notion.pages.retrieve({ page_id: prerequisite.id }));
