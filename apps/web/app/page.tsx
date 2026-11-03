@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { NeoCard } from "@/components/ui/neo-card";
+import { NeoLink } from "@/components/ui/neo-button";
+import { NeoIcon } from "@/components/ui/neo-icon";
 import { AdventureLogPhoto } from "./adventure-logs/adventure-log-photo";
 
 import { AchievementUnlocked } from "./achievement-unlocked";
@@ -103,7 +106,7 @@ export default async function HomePage() {
         <p className="lead">LIFE OSは「何者になるか」を競うゲームではない。どれだけ世界に触れたかを楽しむゲームである。</p>
       </section>
 
-      <section className="playerCard" aria-label="Player card">
+      <NeoCard tone="cyan" className="playerCard" aria-label="Player card">
         <div className="playerCardHeader">
           <div>
             <p className="eyebrow">PLAYER CARD</p>
@@ -123,7 +126,7 @@ export default async function HomePage() {
         </div>
         {snapshot.warning ? <p className="syncWarning">{snapshot.warning}</p> : null}
         <Link className="notionLink" href="/status">VIEW FULL STATUS →</Link>
-      </section>
+      </NeoCard>
 
       <section className="statsGrid" aria-label="Player statistics">
         {stats.map((stat) => (
@@ -168,9 +171,9 @@ export default async function HomePage() {
         ) : <p className="recentAchievementsEmpty">写真・音・一言を残した冒険が、ここに並びます。</p>}
       </section>
 
-      <section className="panel">
-        <p className="eyebrow">CURRENT POSITION</p><h2>Player Status</h2><p className="muted">レベルや解除記録から、いま立っている場所を眺めます。</p><Link className="notionLink" href="/status">OPEN STATUS →</Link>
-      </section>
+      <NeoCard tone="purple">
+        <p className="eyebrow">CURRENT POSITION</p><h2>Player Status</h2><p className="muted">レベルや解除記録から、いま立っている場所を眺めます。</p><NeoLink variant="secondary" href="/status">OPEN STATUS <NeoIcon name="arrow" size={18} /></NeoLink>
+      </NeoCard>
     </main>
   );
 }

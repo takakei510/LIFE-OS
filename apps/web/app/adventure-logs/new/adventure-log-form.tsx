@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { NeoButton } from "@/components/ui/neo-button";
 import { useActionState, useCallback, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createAdventureLogAction } from "@/app/actions/adventure-log-actions";
@@ -9,7 +10,7 @@ import { toJstLocalDateTime } from "@/lib/life-os/adventure-logs/date-time";
 
 function SubmitButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
-  return <button className="adventureLogSubmit" disabled={pending || disabled} type="submit">{pending ? "保存中…" : "保存する"}</button>;
+  return <NeoButton className="adventureLogSubmit" disabled={pending || disabled} type="submit">{pending ? "保存中…" : "保存する"}</NeoButton>;
 }
 
 export function AdventureLogForm({

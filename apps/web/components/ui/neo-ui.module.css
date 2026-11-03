@@ -1,0 +1,13 @@
+.card { min-width: 0; padding: var(--neo-space-6); border: 1px solid var(--neo-line); border-radius: var(--neo-radius-lg); background: var(--neo-panel-fill); box-shadow: var(--neo-shadow); }
+.neutral { border-color: var(--neo-line); }
+.card.cyan { border-color: rgb(0 217 245 / 55%); box-shadow: var(--neo-shadow), var(--neo-glow-cyan); }
+.card.purple { border-color: rgb(167 139 250 / 60%); box-shadow: var(--neo-shadow), var(--neo-glow-purple); }
+.button { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; gap: var(--neo-space-2); padding: 12px 18px; border: 1px solid transparent; border-radius: var(--neo-radius-sm); font: 700 .9rem/1.5 var(--neo-font-body); text-decoration: none; cursor: pointer; transition: background var(--neo-duration) var(--neo-ease), box-shadow var(--neo-duration) var(--neo-ease), border-color var(--neo-duration) var(--neo-ease); }
+.primary { color: var(--neo-on-primary); background: var(--neo-primary); box-shadow: inset 0 1px 0 rgb(255 255 255 / 35%); }
+.primary:hover:not(:disabled) { background: #74edff; box-shadow: var(--neo-glow-cyan); }
+.secondary { color: var(--neo-purple); border-color: var(--neo-purple); background: rgb(167 139 250 / 8%); }
+.secondary:hover:not(:disabled) { background: rgb(167 139 250 / 16%); }
+.ghost { color: var(--neo-text); border-color: var(--neo-line); background: transparent; }
+.ghost:hover:not(:disabled) { border-color: var(--neo-primary); background: rgb(0 217 245 / 6%); }
+.button:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+@media (max-width: 640px) { .card { padding: var(--neo-space-4); } }
