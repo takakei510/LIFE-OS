@@ -1,5 +1,6 @@
 
 
+import { TierName } from "@/components/life-icons/life-icon";
 import { TitleCollection } from "./title-collection";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
@@ -30,7 +31,7 @@ export default async function TitlesPage() {
             <h2>{equipped.name}</h2>
             <p>{equipped.description || "この称号が、いまの冒険を彩っています。"}</p>
           </div>
-          <strong>{equipped.tier ?? "Tier未設定"}</strong>
+          <strong><TierName tier={equipped.tier}/></strong>
         </section>
       ) : null}
 

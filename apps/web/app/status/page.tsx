@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { NeoIcon } from "@/components/ui/neo-icon";
+import { PlayerRank } from "@/components/life-icons/life-icon";
 
 import "./status-category-progress.css";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
@@ -83,8 +85,8 @@ export default async function StatusPage() {
             <strong className="statusLevel">{level}</strong>
           </div>
           <div>
-            <p className="eyebrow">{rank}</p>
-            <h2>{equippedTitle ? `👑 ${equippedTitle.name}` : "称号未装備"}</h2>
+            <p className="eyebrow"><PlayerRank rank={rank}/></p>
+            <h2>{equippedTitle ? <><NeoIcon name="title" size={20}/> {equippedTitle.name}</> : "称号未装備"}</h2>
             <p className="muted">累計 {totalXp.toLocaleString()} XP</p>
           </div>
         </div>

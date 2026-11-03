@@ -6,6 +6,8 @@ import "./globals.css";
 import "./mobile-bottom-nav.css";
 import "./loading.css";
 import "./brand.css";
+import "@/components/life-icons/life-icons.css";
+import { LifeIconSprite } from "@/components/life-icons/icon-sprite";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand/stellar-compass";
 import { MobileBottomNav } from "./mobile-bottom-nav";
@@ -35,6 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="ja">
       <body>
+        <LifeIconSprite/>
         <a className="skipLink" href="#main-content">本文へ移動</a>
         <MobileBottomNav />
         <header className="brandMobileHeader"><Link href="/" aria-label="Life OS ホーム"><BrandLogo/></Link></header>

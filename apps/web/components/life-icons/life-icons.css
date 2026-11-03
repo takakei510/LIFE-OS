@@ -1,0 +1,16 @@
+.lifeIcon { display: inline-block; flex: 0 0 auto; color: #a8bbd2; margin: 2px; vertical-align: middle; }
+.lifeAchievementName { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; }
+.lifeAchievementName > span { min-width: 0; overflow-wrap: anywhere; }
+.lifeBadgeMotif { color: #a8bbd2; }
+.achievementBadge[data-tier="unknown"] { color: #a8bbd2; }
+.lifePlayerRank { display: inline-flex; align-items: center; gap: 6px; color: #a8bbd2; }
+.lifeTierName { color: #a8bbd2; }
+.lifeTierName[data-tier="common"] { color: var(--neo-tier-common); }
+.lifeTierName[data-tier="uncommon"] { color: var(--neo-tier-uncommon); }
+.lifeTierName[data-tier="rare"] { color: var(--neo-tier-rare); }
+.lifeTierName[data-tier="epic"] { color: var(--neo-tier-epic); }
+.lifeTierName[data-tier="legendary"] { color: var(--neo-tier-legendary); }
+.achievementDetailIdentity .achievementBadge { width: 64px; height: 64px; }
+.achievementIdentity .achievementBadge { width: 48px; height: 48px; }
+.homeRecentItem > .achievementBadge { width: 48px; height: 48px; }
+.homeDiscoveryArt .achievementBadge { width: 64px; height: 64px; }

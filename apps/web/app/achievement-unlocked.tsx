@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { AchievementName, TierName } from "@/components/life-icons/life-icon";
+import { AchievementBadge } from "@/components/brand/achievement-badge";
 import { useEffect, useState } from "react";
 
 import styles from "./achievement-unlocked.module.css";
@@ -9,6 +11,7 @@ type AchievementUnlockedProps = {
   achievement: {
     id: string;
     name: string;
+    domains: string[];
     tier: string | null;
     xp: number;
     flavorText: string;
@@ -58,14 +61,14 @@ export function AchievementUnlocked({ achievement }: AchievementUnlockedProps) {
         <button aria-label="実績解除演出を閉じる" className={styles.close} onClick={dismiss} type="button">
           ×
         </button>
-        <div className={styles.emblem} aria-hidden="true">🏆</div>
+        <div className={styles.emblem} aria-hidden="true"><AchievementBadge achievementId={unlockedAchievement.id} achievementName={unlockedAchievement.name} domains={unlockedAchievement.domains} tier={unlockedAchievement.tier} size={64}/></div>
         <p className={styles.kicker}>ACHIEVEMENT UNLOCKED</p>
-        <h2 id="achievement-unlocked-title">{unlockedAchievement.name}</h2>
+        <h2 id="achievement-unlocked-title"><AchievementName achievement={unlockedAchievement} size={20}/></h2>
         <p className={styles.flavor}>
           {unlockedAchievement.flavorText || "世界は、ひとつの体験によって少しだけ広がった。"}
         </p>
         <div className={styles.reward}>
-          <span>{unlockedAchievement.tier ?? "Achievement"}</span>
+          <span><TierName tier={unlockedAchievement.tier}/></span>
           <strong>+{unlockedAchievement.xp.toLocaleString()} XP</strong>
         </div>
         <Link className={styles.link} href={`/achievements/${unlockedAchievement.id}`} onClick={dismiss}>
