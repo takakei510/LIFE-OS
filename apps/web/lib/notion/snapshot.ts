@@ -68,7 +68,7 @@ function achievement(page: PageObjectResponse): Achievement {
     unlockedAt: date(p, "Unlocked At"),
     visibility: select(p, "Visibility"),
     url: page.url,
-    prerequisites: (() => { const value = p["Prerequisites"]; return value?.type === "relation" ? [...value.relation.map((item) => item.id), ...(value.has_more ? ["__incomplete_relation__"] : [])] : []; })(),
+    prerequisites: (() => { const value = p["Prerequisites"]; return value?.type === "relation" ? [...value.relation.map((item) => item.id), ...(("has_more" in value && value.has_more) ? ["__incomplete_relation__"] : [])] : []; })(),
     evidenceHeadline: richText(p, "Evidence Headline"),
     evidenceNote: richText(p, "Evidence Note"),
     evidenceSource: p["Evidence Source"]?.type === "url" ? (p["Evidence Source"].url ?? "") : "",
