@@ -9,9 +9,9 @@ const ALL = "すべて";
 const UNLOCKED = "解除済み";
 const UNDISCOVERED = "未解除";
 
-export function AchievementLibrary({ achievements, source }: { achievements: Achievement[]; source: "notion" | "fallback" }) {
+export function AchievementLibrary({ achievements, source, initialCategory = ALL }: { achievements: Achievement[]; source: "notion" | "fallback"; initialCategory?: string }) {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState(ALL);
+  const [category, setCategory] = useState(initialCategory);
   const [tier, setTier] = useState(ALL);
   const [state, setState] = useState(ALL);
 
