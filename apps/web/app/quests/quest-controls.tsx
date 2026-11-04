@@ -49,7 +49,7 @@ export function QuestControls({ quest, enabled, completionEnabled = false, compa
       </fieldset>
       {result && !result.ok ? <NeoButton variant="secondary" onClick={() => router.refresh()}>最新の状態を確認する</NeoButton> : null}
       {quest.state === "Completed" ? <div className="questCompletionResult">
-        <p>{quest.earnedXp === null ? "報酬XPを集計中です。" : `獲得済み：${quest.earnedXp} XP`}</p>
+        <p>{quest.earnedXp === null || quest.earnedXp !== quest.rewardXp ? "報酬XPを集計中です。" : `獲得済み：${quest.earnedXp} XP`}</p>
         <Link href="/status">ステータスを見る →</Link>
         <NeoButton variant="ghost" onClick={() => router.refresh()}>集計を更新する</NeoButton>
       </div> : null}

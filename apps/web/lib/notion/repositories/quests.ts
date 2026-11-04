@@ -2,7 +2,7 @@ import "server-only";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { getServerEnv } from "@/lib/env";
 import { getNotionClient } from "@/lib/notion/client";
-import { date, formulaNumber, number, richText, select, title } from "@/lib/notion/properties";
+import { date, number, richText, select, title } from "@/lib/notion/properties";
 import { canAcceptQuest, isOwnedActiveQuest } from "@/lib/life-os/quests/policy";
 import type { QuestRecord } from "@/lib/life-os/quests/policy";
 import type { QuestRepository } from "@/lib/life-os/quests/service";
@@ -59,7 +59,7 @@ export async function readQuests(): Promise<Quest[]> {
       revision: r.revision, canAccept: r.state === "Available" && !r.completedAt && canAcceptQuest(r, now),
       canRelease: r.state === "Accepted" && !r.completedAt,
       canComplete: r.state === "Accepted" && !r.completedAt && r.completionCondition.trim().length > 0 && r.rewardXp !== null && Number.isFinite(r.rewardXp) && r.rewardXp >= 0,
-      earnedXp: p["Earned XP"]?.type === "formula" && p["Earned XP"].formula.type === "number" ? formulaNumber(p, "Earned XP") : null,
+      earnedXp: p["Earned XP"]?.type === "formula" && p["Earned XP"].formula.type === "number" && typeof p["Earned XP"].formula.number === "number" ? p["Earned XP"].formula.number : null,
       relatedAchievementIds: p["Related Achievements"]?.type === "relation" ? p["Related Achievements"].relation.map((item) => item.id) : [],
     }];
   });

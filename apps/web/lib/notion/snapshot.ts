@@ -95,8 +95,8 @@ function playerStatus(page: PageObjectResponse): PlayerStatus {
     unlockedAchievements: rollupNumber(p, "Unlocked Achievements"),
     unlockedTitles: rollupNumber(p, "Unlocked Titles"),
     completedQuests: rollupNumber(p, "Completed Quests"),
-    achievementXp: p["Achievement XP"]?.type === "rollup" && p["Achievement XP"].rollup.type === "number" ? rollupNumber(p, "Achievement XP") : null,
-    questXp: p["Quest XP"]?.type === "rollup" && p["Quest XP"].rollup.type === "number" ? rollupNumber(p, "Quest XP") : null,
+    achievementXp: p["Achievement XP"]?.type === "rollup" && p["Achievement XP"].rollup.type === "number" && typeof p["Achievement XP"].rollup.number === "number" ? p["Achievement XP"].rollup.number : null,
+    questXp: p["Quest XP"]?.type === "rollup" && p["Quest XP"].rollup.type === "number" && typeof p["Quest XP"].rollup.number === "number" ? p["Quest XP"].rollup.number : null,
     url: page.url,
   };
 }

@@ -360,3 +360,11 @@ test("unexpected reward schema is refused before write and releases the fence", 
   assert.equal(client.calls.some((call) => call.properties), false);
   assert.equal(mutex.locks.size, 0);
 });
+
+test("unfinished reward formulas remain unknown rather than being coerced to zero", async () => {
+  for (const [value, expected] of [[null, null], [0, 0], [25, 25]]) {
+    transport.use(sdk([page({ "Earned XP": { type: "formula", formula: { type: "number", number: value } } })]));
+    const quests = await readQuests();
+    assert.equal(quests[0].earnedXp, expected);
+  }
+});
