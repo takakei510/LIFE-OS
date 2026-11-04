@@ -15,6 +15,8 @@ LIFE OSは、人生を管理するためではなく、実績・称号・クエ�
 
 初期設定と公開前の確認は [`docs/MVP_SETUP.md`](docs/MVP_SETUP.md) を参照してください。
 
+ブランド更新（プレビュー段階）の仕様は [`Stellar Compass ブランド設計`](docs/architecture/stellar-compass-brand.md) を参照してください。
+
 ## Architecture
 
 - **Notion** — セーブデータと公式仕様書

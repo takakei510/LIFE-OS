@@ -6,6 +6,8 @@ Approved source: [デザインコンセプト比較](https://chatgpt.com/c/6ae9b
 
 This phase adds the shared vocabulary: calm navy panels, restrained cyan/purple edges, a consistent outline SVG family, self-hosted fonts and responsive navigation. Existing HOME sections and achievement list layout remain in place. Notion repositories, actions, validation, APIs and database data are unchanged. No PR #57 code is included.
 
+> 採用ブランドの更新仕様は [Stellar Compass ブランド設計](stellar-compass-brand.md) を参照。以下のPhase 1初期仕様から、フォントはSora、Legendaryは#FF5C7Aへ更新します。
+
 ## Tokens
 
 `apps/web/app/design-tokens.css` owns colors, surface gradient, radii, spacing, fonts, shadows and interaction timing.

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand/stellar-compass";
 import { usePathname } from "next/navigation";
 import { NeoIcon, type NeoIconName } from "@/components/ui/neo-icon";
 
@@ -18,7 +19,7 @@ export function MobileBottomNav() {
 
   return (
     <nav className="mobileBottomNav" aria-label="メインナビゲーション">
-      <Link href="/" className="neoBrand" aria-label="LIFE OS ホーム"><NeoIcon name="planet" size={30} /><span>LIFE OS</span></Link>
+      <Link href="/" className="neoBrand" aria-label="Life OS ホーム"><BrandLogo/></Link>
       <div className="neoNavItems">
       {items.map((item) => {
         const active = item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(`${item.href}/`);
