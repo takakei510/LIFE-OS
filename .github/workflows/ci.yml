@@ -29,5 +29,8 @@ jobs:
       - name: Type-check web app
         run: npm run typecheck --workspace apps/web
 
+      - name: Test quest state transitions and repository boundaries
+        run: npm run test:quests --workspace apps/web
+
       - name: Build web app
         run: npm run build
