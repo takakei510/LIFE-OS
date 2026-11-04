@@ -10,7 +10,7 @@ import type { Quest } from "@/lib/notion/types";
 function SubmitButton({ release }: { release: boolean }) {
   const { pending } = useFormStatus();
   return <NeoButton type="submit" variant={release ? "secondary" : "primary"} disabled={pending}>
-    {pending ? "更新中…" : release ? "受注を取り消す" : "このクエストを受注する"}
+    {pending ? "更新中…" : release ? "受注を取り消す" : "受注する"}
   </NeoButton>;
 }
 
@@ -30,7 +30,7 @@ export function QuestControls({ quest, enabled }: { quest: Quest; enabled: boole
         <SubmitButton release={release} />
       </form> : <p className="muted">{!enabled ? "Webからの受注は準備中です。" : quest.state === "Completed" ? "このクエストは完了しています。" : "現在の状態では受注できません。"}</p>}
       {result && !result.ok ? <NeoButton variant="secondary" onClick={() => router.refresh()}>最新の状態を確認する</NeoButton> : null}
-      <p className="muted">今回は受注・取り消しに対応しています。達成・報酬は変更しません。</p>
+      <p className="muted">達成の記録はNotionで行えます。実績の解除は、ご自身で条件を確認して選べます。</p>
     </section>
   );
 }
