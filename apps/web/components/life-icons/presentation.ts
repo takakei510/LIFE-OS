@@ -1,6 +1,7 @@
 import { badgeTier } from "../brand/badge-policy";
 import { achievementDecorations } from "./decoration-registry";
-export type LifeMotif = "life-music" | "life-discovery" | "life-window" | "life-nature" | "life-cafe" | "life-cooking" | "life-photo" | "life-reading" | "life-journey" | "life-creation" | "life-research" | "life-connection" | "life-general" | "life-growth" | "life-body";
+import { achievementMotifs } from "./achievement-motifs";
+export type LifeMotif = "life-music" | "life-discovery" | "life-window" | "life-nature" | "life-cafe" | "life-cooking" | "life-photo" | "life-reading" | "life-journey" | "life-creation" | "life-research" | "life-connection" | "life-general" | "life-growth" | "life-body" | "life-code" | "life-rest" | "life-video" | "life-ai" | "life-home";
 export type LifeIconId = LifeMotif | "life-rank-beginner";
 export type IconAchievement = { id: string; name: string; domains: readonly string[] };
 // Existing normalized Domain identifiers; never inferred from Japanese display names.
@@ -24,7 +25,8 @@ export function achievementPresentation(achievement: IconAchievement) {
   const entry = Object.hasOwn(achievementDecorations, id) ? achievementDecorations[id] : undefined;
   const matches = entry && achievement.name.startsWith(entry.prefix);
   const override = Object.hasOwn(approved, id) ? approved[id] : undefined;
-  return { name: matches ? achievement.name.slice(entry.prefix.length) : achievement.name, motif: matches && override?.prefix === entry.prefix ? override.motif : domainMotif(achievement.domains) };
+  const assignedMotif = Object.hasOwn(achievementMotifs, id) ? achievementMotifs[id] : undefined;
+  return { name: matches ? achievement.name.slice(entry.prefix.length) : achievement.name, motif: assignedMotif ?? (matches && override?.prefix === entry.prefix ? override.motif : domainMotif(achievement.domains)) };
 }
 
 // Exact existing Category identifiers. Unknown categories remain verbatim.

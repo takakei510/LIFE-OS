@@ -5,10 +5,12 @@ import { readFileSync } from "node:fs";
 import ts from "typescript";
 const source = readFileSync(new URL("./presentation.ts", import.meta.url), "utf8")
   .replace('import { badgeTier } from "../brand/badge-policy";', `import { badgeTier } from "${new URL("../brand/badge-policy.ts", import.meta.url).href}";`)
-  .replace('from "./decoration-registry"', `from "${new URL("./decoration-registry.ts", import.meta.url).href}"`);
+  .replace('from "./decoration-registry"', `from "${new URL("./decoration-registry.ts", import.meta.url).href}"`)
+  .replace('from "./achievement-motifs"', `from "${new URL("./achievement-motifs.ts", import.meta.url).href}"`);
 const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText;
 const { domainMotif, achievementPresentation, tierLabel, beginnerLabel, categoryPresentation, categoryLabel } = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
 import { achievementDecorations } from "./decoration-registry.ts";
+import { achievementMotifs } from "./achievement-motifs.ts";
 
 test("only registered Domain identifiers resolve, in registration order", () => {
   assert.equal(domainMotif(["Unknown", "Photography", "Cafe"]), "life-photo");
@@ -64,6 +66,50 @@ test("only exact registered categories change; unknown labels and query values r
   assert.equal(categoryLabel("🌿 私のカテゴリ"), "🌿 私のカテゴリ");
   assert.equal(categoryLabel(null), "未分類");
   assert.equal(categoryLabel("__proto__"), "__proto__");
+});
+
+test("approved ID assignments are independent of names, prefixes and Domain inference", () => {
+  assert.equal(Object.keys(achievementMotifs).length, 109);
+  const counts = {};
+  for (const [id, motif] of Object.entries(achievementMotifs)) {
+    counts[motif] = (counts[motif] ?? 0) + 1;
+    const item = { id, name: "🐈 改名したユーザー文章 ☕", domains: ["Cafe"] };
+    assert.deepEqual(achievementPresentation(item), { name: item.name, motif });
+    assert.deepEqual(item.domains, ["Cafe"]);
+  }
+  assert.equal(counts["life-code"], 12);
+  assert.equal(counts["life-rest"], 6);
+  assert.equal(counts["life-video"], 4);
+  assert.equal(counts["life-ai"], 3);
+  assert.equal(counts["life-body"], 11);
+  assert.equal(counts["life-home"], 2);
+  assert.equal(counts["life-growth"], undefined);
+  assert.equal(achievementMotifs["40c391a354a9810ab1e7cf523e0e11e9"], "life-research");
+  assert.equal(achievementMotifs["3a4391a354a981e0a3dee2f2d2d6a816"], "life-window");
+  const codeIds = ["3a4391a354a981088a4fcb296bb4b142", "3a4391a354a981ec8075e478233791fe"];
+  for (const id of codeIds) assert.equal(achievementPresentation({ id: id.toUpperCase(), name: "同名でもIDは別", domains: [] }).motif, "life-code");
+  assert.deepEqual(achievementPresentation({ id: "unregistered", name: "🧩 コードの中を歩く", domains: ["Programming"] }), { name: "🧩 コードの中を歩く", motif: "life-general" });
+  assert.equal(achievementPresentation({ id: "__proto__", name: "名前", domains: [] }).motif, "life-general");
+});
+
+test("priority and reused home symbols match source artwork and use unique IDs", () => {
+  const implementation = readFileSync(new URL("./icon-sprite.tsx", import.meta.url), "utf8");
+  const symbol = (text, id) => text.match(new RegExp(`<symbol id="${id}"[^>]*>([\\s\\S]*?)</symbol>`))?.[1];
+  const normalize = text => text?.replaceAll("strokeWidth", "stroke-width").replaceAll("strokeLinecap", "stroke-linecap").replaceAll("strokeLinejoin", "stroke-linejoin").replace(/<([a-z]+)([^>]*?)\/>/g, "<$1$2></$1>");
+  for (const folder of ["priority-icons-v1", "home-motif-reuse"]) {
+    const original = readFileSync(new URL(`../../../../docs/design/${folder}/sprite.svg`, import.meta.url), "utf8");
+    for (const [, id] of original.matchAll(/<symbol id="([^"]+)"/g)) assert.equal(normalize(symbol(implementation, id)), normalize(symbol(original, id)), id);
+  }
+  const ids = [...implementation.matchAll(/<symbol id="([^"]+)"/g)].map(x=>x[1]);
+  assert.equal(ids.length, 42);
+  assert.equal(new Set(ids).size, 42);
+  const code = symbol(implementation, "life-code-small");
+  assert.equal(code, symbol(implementation, "life-code"));
+  assert.notEqual(symbol(implementation, "life-ai-small"), symbol(implementation, "life-ai"));
+  const home = symbol(implementation, "life-home");
+  const nav = readFileSync(new URL("../ui/neo-icon.tsx", import.meta.url), "utf8");
+  const navPaths = nav.match(/home: <>(.*?)<\/>/)?.[1];
+  for (const [, path] of navPaths.matchAll(/\bd="([^"]+)"/g)) assert.ok(home.includes(`d="${path}"`));
 });
 
 test("all 28 approved symbols retain their supplied paths and small variants", () => {

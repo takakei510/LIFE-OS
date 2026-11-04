@@ -2,6 +2,8 @@
 
 Tracks: #64 / Depends on: #63 / Blocks: アイコン更新の本番承認
 
+優先4モチーフ25件と既存素材84件の採用内容・bodyの用途拡張は[優先モチーフ実装仕様](priority-icon-implementation.md)を参照。この追加では実績IDによる割り当てを採用し、モチーフの登録と名前の接頭辞処理を独立させる。
+
 デザインの正本は[提供SPEC](../design/life-os-icons-v1/SPEC.md)と[manifest](../design/life-os-icons-v1/manifest.json)。原本の28SVGとspriteを`docs/design/life-os-icons-v1`へ保持し、pathを変更せずReact用の属性名に変換したspriteをRootLayoutへ一度だけ配置する。JavaScript・外部参照・画像依存を加えない。
 
 ## 表示

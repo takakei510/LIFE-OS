@@ -1,7 +1,7 @@
 .lifeIcon { display: inline-block; flex: 0 0 auto; color: #a8bbd2; margin: 2px; vertical-align: middle; }
 .lifeAchievementName { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; }
 .lifeAchievementName > span { min-width: 0; overflow-wrap: anywhere; }
-.lifeBadgeMotif { color: #a8bbd2; }
+.lifeBadgeMotif { color: #e6f2ff; }
 .achievementBadge[data-tier="unknown"] { color: #a8bbd2; }
 .lifePlayerRank { display: inline-flex; align-items: center; gap: 6px; color: #a8bbd2; }
 .lifeCategoryName { display: inline-flex; align-items: center; gap: 6px; color: #a8bbd2; }
