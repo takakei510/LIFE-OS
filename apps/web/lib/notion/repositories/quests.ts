@@ -2,7 +2,7 @@ import "server-only";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { getServerEnv } from "@/lib/env";
 import { getNotionClient } from "@/lib/notion/client";
-import { date, number, richText, select, title } from "@/lib/notion/properties";
+import { date, formulaNumber, number, richText, select, title } from "@/lib/notion/properties";
 import { canAcceptQuest, isOwnedActiveQuest } from "@/lib/life-os/quests/policy";
 import type { QuestRecord } from "@/lib/life-os/quests/policy";
 import type { QuestRepository } from "@/lib/life-os/quests/service";
@@ -23,6 +23,8 @@ function record(page: PageObjectResponse): QuestRecord {
     state: p.State?.type === "select" ? select(p, "State") : null,
     revision: page.last_edited_time, completedAt: date(p, "Completed At"),
     availableFrom: date(p, "Available From"), dueAt: date(p, "Due At"),
+    rewardXp: p["Reward XP"]?.type === "number" ? p["Reward XP"].number : null,
+    completionCondition: richText(p, "Completion Condition"),
   };
 }
 
@@ -56,6 +58,9 @@ export async function readQuests(): Promise<Quest[]> {
       completionCondition: richText(p, "Completion Condition"), completedAt: r.completedAt, url: page.url,
       revision: r.revision, canAccept: r.state === "Available" && !r.completedAt && canAcceptQuest(r, now),
       canRelease: r.state === "Accepted" && !r.completedAt,
+      canComplete: r.state === "Accepted" && !r.completedAt && r.completionCondition.trim().length > 0 && r.rewardXp !== null && Number.isFinite(r.rewardXp) && r.rewardXp >= 0,
+      earnedXp: p["Earned XP"]?.type === "formula" && p["Earned XP"].formula.type === "number" ? formulaNumber(p, "Earned XP") : null,
+      relatedAchievementIds: p["Related Achievements"]?.type === "relation" ? p["Related Achievements"].relation.map((item) => item.id) : [],
     }];
   });
 }
@@ -68,8 +73,18 @@ export const questRepository: QuestRepository = {
     return { record: record(page), dataSourceId, playerId };
   },
   async setState(id, state) {
+    if (state !== "Available" && state !== "Accepted") throw new Error("Unsupported quest transition.");
     const notion = getNotionClient();
     if (!notion) throw new Error("Notionが設定されていません。");
     await notion.pages.update({ page_id: id, properties: { State: { type: "select", select: { name: state } } } });
+  },
+  async complete(id, completedAt) {
+    const notion = getNotionClient();
+    if (!notion) throw new Error("Notionが設定されていません。");
+    const updated = await notion.pages.update({ page_id: id, properties: {
+      State: { type: "select", select: { name: "Completed" } },
+      "Completed At": { type: "date", date: { start: completedAt } },
+    } });
+    if (!isPage(updated) || select(updated.properties, "State") !== "Completed" || date(updated.properties, "Completed At") === null) throw new Error("Quest completion response could not be confirmed.");
   },
 };
