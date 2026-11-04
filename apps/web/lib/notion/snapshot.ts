@@ -15,15 +15,14 @@ import {
   richText,
   rollupNumber,
   select,
-  status,
   title,
 } from "@/lib/notion/properties";
+import { readQuests } from "@/lib/notion/repositories/quests";
 import { readAdventureLogs } from "@/lib/notion/repositories/adventure-logs";
 import type {
   Achievement,
   LifeOsSnapshot,
   PlayerStatus,
-  Quest,
   Title,
 } from "@/lib/notion/types";
 
@@ -66,22 +65,6 @@ function achievement(page: PageObjectResponse): Achievement {
     unlocked: checkbox(p, "Unlocked"),
     unlockedAt: date(p, "Unlocked At"),
     visibility: select(p, "Visibility"),
-    url: page.url,
-  };
-}
-
-function quest(page: PageObjectResponse): Quest {
-  const p = page.properties;
-  return {
-    id: page.id,
-    name: title(p, "Name"),
-    category: select(p, "Category"),
-    questType: select(p, "Quest Type"),
-    state: status(p, "State") ?? select(p, "State"),
-    rewardXp: number(p, "Reward XP"),
-    description: richText(p, "Description"),
-    completionCondition: richText(p, "Completion Condition"),
-    completedAt: date(p, "Completed At"),
     url: page.url,
   };
 }
@@ -133,10 +116,10 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
   }
 
   try {
-    const [achievementPages, titlePages, questPages, statusPages, adventureLogs] = await Promise.all([
+    const [achievementPages, titlePages, quests, statusPages, adventureLogs] = await Promise.all([
       queryAll(env.NOTION_ACHIEVEMENTS_DATA_SOURCE_ID),
       queryAll(env.NOTION_TITLES_DATA_SOURCE_ID),
-      queryAll(env.NOTION_QUESTS_DATA_SOURCE_ID),
+      readQuests(),
       queryAll(env.NOTION_STATUS_DATA_SOURCE_ID),
       readAdventureLogs(),
     ]);
@@ -144,7 +127,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
     return {
       achievements: achievementPages.map(achievement),
       titles: titlePages.map(gameTitle),
-      quests: questPages.map(quest),
+      quests,
       adventureLogs,
       player: statusPages[0] ? playerStatus(statusPages[0]) : null,
       source: "notion",

@@ -25,6 +25,9 @@ export type Quest = {
   description: string;
   completionCondition: string;
   completedAt: string | null;
+  revision: string;
+  canAccept: boolean;
+  canRelease: boolean;
   url: string;
 };
 

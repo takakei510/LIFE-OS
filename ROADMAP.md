@@ -114,6 +114,13 @@ Adventure Logs完成後に正式設計する大型アップデート候補。
 
 ## Future
 
+### Quest acceptance（プレビュー）
+
+- [x] 詳細画面・受注中の絞り込み・Available/Acceptedの切り替え
+- [x] State限定更新、所有者/Lifecycle/再送/古い画面のサーバー検証
+- [ ] ユーザーが選んだ実クエストの受注・取り消し確認と本番承認
+- [ ] クエスト完了・報酬と実績解除の関係を別PRで整理
+
 ### Collections
 
 - カフェ図鑑
