@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LifeIcon, LogTypeIcon } from "@/components/life-icons/life-icon";
 
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 import { AdventureLogPhoto } from "./adventure-log-photo";
@@ -16,13 +17,6 @@ function formatDate(value: string | null): string {
   }).format(date);
 }
 
-function logIcon(logTypes: string[]): string {
-  if (logTypes.includes("Photo")) return "📸";
-  if (logTypes.includes("Audio")) return "🎤";
-  if (logTypes.includes("Text")) return "📝";
-  if (logTypes.includes("Place")) return "📍";
-  return "✨";
-}
 
 export default async function AdventureLogsPage() {
   const snapshot = await getLifeOsSnapshot();
@@ -58,7 +52,7 @@ export default async function AdventureLogsPage() {
           {logs.map((log) => (
             <a className="adventureLogCard" href={log.url} key={log.id} target="_blank" rel="noreferrer">
               <div className="adventureLogCardTop">
-                <span className="adventureLogIcon" aria-hidden="true">{logIcon(log.logTypes)}</span>
+                <span className="adventureLogIcon" aria-hidden="true"><LogTypeIcon logTypes={log.logTypes} size={24}/></span>
                 <div><p>{log.logTypes.join(" · ") || "Memory"}</p><h2>{log.name}</h2></div>
                 {log.favorite ? <span className="adventureLogFavorite" aria-label="Favorite">★</span> : null}
               </div>
@@ -74,7 +68,7 @@ export default async function AdventureLogsPage() {
         </section>
       ) : (
         <section className="adventureLogsEmpty">
-          <span aria-hidden="true">📭</span>
+          <LifeIcon name="life-general" size={24}/>
           <h2>まだ冒険ログはありません</h2>
           <p>残したい瞬間が記録されると、ここに並びます。</p>
         </section>

@@ -1,5 +1,7 @@
 
 
+import { NeoIcon } from "@/components/ui/neo-icon";
+import { TierName } from "@/components/life-icons/life-icon";
 import { TitleCollection } from "./title-collection";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
@@ -26,11 +28,11 @@ export default async function TitlesPage() {
         <section className="equippedTitleCard" aria-label="装備中の称号">
           <span>装備中</span>
           <div>
-            <p className="eyebrow">👑 CURRENT TITLE</p>
+            <p className="eyebrow"><NeoIcon name="title" size={16}/> CURRENT TITLE</p>
             <h2>{equipped.name}</h2>
             <p>{equipped.description || "この称号が、いまの冒険を彩っています。"}</p>
           </div>
-          <strong>{equipped.tier ?? "Tier未設定"}</strong>
+          <strong><TierName tier={equipped.tier}/></strong>
         </section>
       ) : null}
 

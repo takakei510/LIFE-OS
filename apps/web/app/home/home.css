@@ -130,8 +130,8 @@
   .homeCollectionBadge { width: 52px; height: 52px; }
   .homeCollection strong { font-size: .76rem; }
   .homeCollectionNote { font-size: .6rem; }
-  .homeRecentItem { grid-template-columns: 44px minmax(0, 1fr); padding: 16px; gap: 8px 12px; align-items: start; }
-  .homeRecentItem > .achievementBadge { width: 44px; height: 44px; }
+  .homeRecentItem { grid-template-columns: 48px minmax(0, 1fr); padding: 16px; gap: 8px 12px; align-items: start; }
+  .homeRecentItem > .achievementBadge { width: 48px; height: 48px; }
   .homeItemMeta { grid-column: 2; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; }
   .homeItemCopy h3, .homeDiscovery h3 { font-size: .95rem; }
   .homeItemCopy p, .homeDiscoveryCopy p { font-size: .82rem; }
@@ -139,7 +139,7 @@
   .homeDiscoveryGrid { grid-template-columns: 1fr; gap: 10px; }
   .homeDiscovery { display: grid; grid-template-columns: 86px minmax(0, 1fr); }
   .homeDiscoveryArt { padding: 12px 8px; justify-content: center; flex-direction: column; border-bottom: 0; border-right: 1px solid var(--home-line); gap: 8px; }
-  .homeDiscoveryArt .achievementBadge { width: 56px; height: 56px; }
+  .homeDiscoveryArt .achievementBadge { width: 64px; height: 64px; }
   .homeDiscoveryArt > span { font-size: .58rem; }
   .homeDiscoveryCopy { padding: 16px 12px; }
   .homeDiscoveryCopy p { margin-bottom: 12px; }

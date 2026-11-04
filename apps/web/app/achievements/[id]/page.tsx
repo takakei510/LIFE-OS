@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AchievementName, TierName, CategoryName } from "@/components/life-icons/life-icon";
 import { AchievementBadge } from "@/components/brand/achievement-badge";
 import { notFound } from "next/navigation";
 
@@ -16,9 +17,9 @@ export default async function AchievementDetailPage({ params }: { params: Promis
     <main>
       <Link className="backLink" href="/achievements">← 実績ライブラリへ戻る</Link>
       <article className="achievementDetail">
-        <div className="detailTopline"><span>{achievement.category ?? "未分類"}</span><span>{achievement.tier ?? "Tier未設定"}</span></div>
-        <div className="achievementDetailIdentity"><AchievementBadge tier={achievement.tier} domains={achievement.domains} size={88}/><div><p className="eyebrow">{achievement.unlocked ? "実績解除済み" : "未解除"}</p>
-        <h1>{achievement.name}</h1></div></div>
+        <div className="detailTopline"><CategoryName category={achievement.category}/><span><TierName tier={achievement.tier}/></span></div>
+        <div className="achievementDetailIdentity"><AchievementBadge tier={achievement.tier} domains={achievement.domains} size={64} achievementId={achievement.id} achievementName={achievement.name}/><div><p className="eyebrow">{achievement.unlocked ? "実績解除済み" : "未解除"}</p>
+        <h1><AchievementName achievement={achievement} size={24}/></h1></div></div>
         <blockquote>{achievement.flavorText || "世界のどこかに、まだ触れていない景色がある。"}</blockquote>
         <section className="detailSection"><h2>達成条件</h2><p>{achievement.requirement || "達成条件未設定"}</p></section>
         <section className="detailFacts">

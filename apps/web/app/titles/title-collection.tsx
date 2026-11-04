@@ -1,5 +1,8 @@
 "use client";
 
+import { NeoIcon } from "@/components/ui/neo-icon";
+import { tierLabel } from "@/components/life-icons/presentation";
+import { TierName } from "@/components/life-icons/life-icon";
 import { useMemo, useState } from "react";
 import type { Title } from "@/lib/notion/types";
 
@@ -54,7 +57,7 @@ export function TitleCollection({ titles, source }: { titles: Title[]; source: "
         <label style={{ display: "grid", gap: 8, color: "var(--muted)", fontSize: ".78rem", fontWeight: 700 }}>
           Tier
           <select value={tier} onChange={(event) => setTier(event.target.value)} style={{ width: "100%", padding: 12, border: "1px solid var(--line)", borderRadius: 12, background: "var(--panel)", color: "var(--text)" }}>
-            {[ALL, ...tiers].map((value) => <option key={value}>{value}</option>)}
+            {[ALL, ...tiers].map((value) => <option key={value} value={value}>{value === ALL ? ALL : tierLabel(value)}</option>)}
           </select>
         </label>
       </section>
@@ -65,7 +68,7 @@ export function TitleCollection({ titles, source }: { titles: Title[]; source: "
         <section className="titleGrid" aria-label="称号コレクション">
           {filtered.map((title) => (
             <article className={`titleCard ${title.equipped ? "titleCard--equipped" : title.unlocked ? "titleCard--unlocked" : "titleCard--locked"}`} key={title.id}>
-              <div className="titleCardTop"><span>{title.equipped ? "👑 装備中" : title.unlocked ? "取得済み" : "未取得"}</span><strong>{title.tier ?? "Tier未設定"}</strong></div>
+              <div className="titleCardTop"><span>{title.equipped ? <><NeoIcon name="title" size={16}/> 装備中</> : title.unlocked ? "取得済み" : "未取得"}</span><strong><TierName tier={title.tier}/></strong></div>
               <div><h2>{title.unlocked ? title.name : "未発見の称号"}</h2><p>{title.unlocked ? (title.description || "体験の積み重ねから生まれた称号。") : "まだ名前のない物語が、次の体験を待っています。"}</p></div>
               {title.unlocked ? <a href={title.url} target="_blank" rel="noreferrer">Notionの記録を開く →</a> : <span className="lockedHint">実績を重ねることで解除</span>}
             </article>

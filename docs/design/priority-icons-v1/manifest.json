@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "status": "design-proposal-not-integrated",
+  "date": "2026-11-04",
+  "viewBox": "0 0 24 24",
+  "strokeWidth": 1.6,
+  "color": "#A8BBD2",
+  "tiers": {
+    "Common": "#BAC8DC",
+    "Uncommon": "#00D9F5",
+    "Rare": "#A78BFA",
+    "Epic": "#FFD166",
+    "Legendary": "#FF5C7A"
+  },
+  "icons": [
+    {
+      "id": "life-code",
+      "label": "コード・データ操作",
+      "shape": "括弧とスラッシュ",
+      "reason": "実行・制作・検証・SQL・表計算を含むコードとデータの操作。画面枠を使わず映像と区別する。",
+      "files": [
+        "icons/life-code.svg",
+        "icons/life-code-small.svg"
+      ],
+      "usage": "実績名横／六角バッジ中央",
+      "candidateCount": 12,
+      "smallRule": "標準形と同じ"
+    },
+    {
+      "id": "life-rest",
+      "label": "休息・感覚の切り替え",
+      "shape": "開いた円と呼吸の曲線",
+      "reason": "刺激から離れて感覚を切り替える体験。月・Z・時計・停止記号を避け、昼夜や睡眠に限定しない。",
+      "files": [
+        "icons/life-rest.svg",
+        "icons/life-rest-small.svg"
+      ],
+      "usage": "実績名横／六角バッジ中央",
+      "candidateCount": 6,
+      "smallRule": "標準形と同じ"
+    },
+    {
+      "id": "life-video",
+      "label": "映像視聴",
+      "shape": "再生画面",
+      "reason": "映画・アニメの鑑賞と鑑賞後の余韻。再生三角形は輪郭で描き、塗りは使わない。",
+      "files": [
+        "icons/life-video.svg",
+        "icons/life-video-small.svg"
+      ],
+      "usage": "実績名横／六角バッジ中央",
+      "candidateCount": 4,
+      "smallRule": "標準形と同じ"
+    },
+    {
+      "id": "life-ai",
+      "label": "AIとの対話・比較",
+      "shape": "吹き出しと分岐線",
+      "reason": "依頼と応答、複数出力の比較を表す。既存の交流は2つの吹き出し、AIは1つの吹き出しと分岐線で区別。",
+      "files": [
+        "icons/life-ai.svg",
+        "icons/life-ai-small.svg"
+      ],
+      "usage": "実績名横／六角バッジ中央",
+      "candidateCount": 3,
+      "smallRule": "端子の短い横線2本を省略"
+    }
+  ]
+}

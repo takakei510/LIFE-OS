@@ -1,5 +1,6 @@
 "use client";
 
+import { CategoryName } from "@/components/life-icons/life-icon";
 import { useMemo, useState } from "react";
 import type { Quest } from "@/lib/notion/types";
 
@@ -105,7 +106,7 @@ export function QuestBoard({ quests, source }: { quests: Quest[]; source: "notio
                   <span className="questState">{stateText}</span>
                 </div>
                 <div>
-                  <p className="eyebrow">{quest.category ?? "🌍 WORLD"}</p>
+                  <p className="eyebrow"><CategoryName category={quest.category}/></p>
                   <h2>{quest.name || "名前未設定のクエスト"}</h2>
                   <p className="muted">{quest.description || "新しい体験へ向かうクエストです。"}</p>
                 </div>

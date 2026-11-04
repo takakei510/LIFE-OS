@@ -6,7 +6,7 @@
 .achievementBadge[data-tier="rare"] { color: var(--neo-tier-rare); }
 .achievementBadge[data-tier="epic"] { color: var(--neo-tier-epic); }
 .achievementBadge[data-tier="legendary"] { color: var(--neo-tier-legendary); }
-.achievementBadge[data-tier="unknown"] { color: var(--neo-muted); stroke-dasharray: 3 2; }
+.achievementBadge[data-tier="unknown"] { color: var(--neo-muted);  }
 .achievementIdentity { display: flex; align-items: center; gap: 16px; margin-top: 24px; }
 .achievementCard .achievementIdentity h2 { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 .achievementDetailIdentity { display: flex; align-items: center; gap: 24px; margin-block: 24px; }

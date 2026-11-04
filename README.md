@@ -88,3 +88,5 @@ NOTION_ADVENTURE_LOGS_DATA_SOURCE_ID  # 冒険ログを利用する場合
 3. 上達より体験を評価する
 4. 入力負荷を最小にする
 5. 完成ではなく継続的なアップデートを目指す
+
+独自アイコンの仕様とデータ境界は [`独自アイコン組み込み`](docs/architecture/approved-icon-system.md) を参照してください。

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { categoryLabel } from "@/components/life-icons/presentation";
+import { AchievementName, TierName, PlayerRank, LogTypeIcon, CategoryName } from "@/components/life-icons/life-icon";
 import { NeoIcon } from "@/components/ui/neo-icon";
 import { AdventureLogPhoto } from "./adventure-logs/adventure-log-photo";
 
@@ -10,7 +12,6 @@ import { HomeHero } from "./home/home-hero";
 import { CollectionBadge } from "./home/collection-badge";
 import { getCollections, isHiddenAchievement } from "./home/collections";
 import { AchievementBadge } from "@/components/brand/achievement-badge";
-import { badgeTier } from "@/components/brand/badge-policy";
 import { StellarCompass } from "@/components/brand/stellar-compass";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
@@ -41,13 +42,6 @@ function dailyScore(value: string, seed: string): number {
   return hash >>> 0;
 }
 
-function adventureLogIcon(logTypes: string[]): string {
-  if (logTypes.includes("Photo")) return "📸";
-  if (logTypes.includes("Audio")) return "🎤";
-  if (logTypes.includes("Text")) return "📝";
-  if (logTypes.includes("Place")) return "📍";
-  return "✨";
-}
 
 export default async function HomePage() {
   const snapshot = await getLifeOsSnapshot();
@@ -106,7 +100,7 @@ export default async function HomePage() {
           <div className="homeProgressTrack" aria-label="レベルの進み具合" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}><span style={{ width: `${progress}%` }}/></div>
           <p>次のレベルまで {Math.max(0, nextLevelXp).toLocaleString()} XP</p>
         </div>
-        <Link className="homeStatusLink" href="/status"><span>{rank}</span><NeoIcon name="arrow" size={18}/><span className="homeSrOnly">ステータスを見る</span></Link>
+        <Link className="homeStatusLink" href="/status"><PlayerRank rank={rank}/><NeoIcon name="arrow" size={18}/><span className="homeSrOnly">ステータスを見る</span></Link>
         {snapshot.warning ? <p className="homeSyncWarning">{snapshot.warning}</p> : null}
       </section>
 
@@ -118,7 +112,7 @@ export default async function HomePage() {
           {collections.map((collection) => (
             <Link className="homeCollection" href={collection.category ? `/achievements?category=${encodeURIComponent(collection.category)}` : "/achievements"} key={collection.category ?? "uncategorized"}>
               <CollectionBadge category={collection.category ?? "未分類"}/>
-              <strong>{collection.category?.replace(/^[^\p{L}\p{N}]+/u, "") || "未分類"}</strong>
+              <strong>{categoryLabel(collection.category)}</strong>
               <span><b>{collection.unlocked}</b> / {collection.total}<small>解除済み</small></span>
             </Link>
           ))}
@@ -132,9 +126,9 @@ export default async function HomePage() {
         {recentAchievements.length > 0 ? <div className="homeRecentList">
           {recentAchievements.map((achievement) => (
             <Link className="homeRecentItem" href={`/achievements/${achievement.id}`} key={achievement.id}>
-              <AchievementBadge tier={achievement.tier} domains={achievement.domains} size={60}/>
-              <div className="homeItemCopy"><p className="homeItemDate">{formatActivityDate(achievement.unlockedAt)}</p><h3>{achievement.name}</h3><p>{achievement.requirement || achievement.flavorText || "この体験が、あなたの記録に加わりました。"}</p></div>
-              <div className="homeItemMeta"><span className="homeTier" data-tier={badgeTier(achievement.tier)}>{achievement.tier ?? "Tier未設定"}</span><strong>+{achievement.xp} XP</strong></div>
+              <AchievementBadge tier={achievement.tier} domains={achievement.domains} size={48} achievementId={achievement.id} achievementName={achievement.name}/>
+              <div className="homeItemCopy"><p className="homeItemDate">{formatActivityDate(achievement.unlockedAt)}</p><h3><AchievementName achievement={achievement} size={16}/></h3><p>{achievement.requirement || achievement.flavorText || "この体験が、あなたの記録に加わりました。"}</p></div>
+              <div className="homeItemMeta"><TierName tier={achievement.tier}/><strong>+{achievement.xp} XP</strong></div>
             </Link>
           ))}
         </div> : <p className="homeEmpty">解除日時のある実績が、ここに並びます。記録は自分のペースで。</p>}
@@ -146,8 +140,8 @@ export default async function HomePage() {
         {dailyExplorationPicks.length > 0 ? <div className="homeDiscoveryGrid">
           {dailyExplorationPicks.map((achievement) => (
             <Link className="homeDiscovery" href={`/achievements/${achievement.id}`} key={achievement.id}>
-              <div className="homeDiscoveryArt"><AchievementBadge tier={achievement.tier} domains={achievement.domains} size={80}/><span>{achievement.category ?? "未分類"}</span></div>
-              <div className="homeDiscoveryCopy"><h3>{achievement.name}</h3><p>{achievement.flavorText || achievement.requirement || "まだ触れていない世界がある。"}</p><span className="homeDiscoveryLink">体験をのぞく <NeoIcon name="arrow" size={16}/></span></div>
+              <div className="homeDiscoveryArt"><AchievementBadge tier={achievement.tier} domains={achievement.domains} size={64} achievementId={achievement.id} achievementName={achievement.name}/><CategoryName category={achievement.category}/></div>
+              <div className="homeDiscoveryCopy"><h3><AchievementName achievement={achievement} size={16}/></h3><p>{achievement.flavorText || achievement.requirement || "まだ触れていない世界がある。"}</p><span className="homeDiscoveryLink">体験をのぞく <NeoIcon name="arrow" size={16}/></span></div>
             </Link>
           ))}
         </div> : <p className="homeEmpty">いま表示できる未解除の通常実績はありません。</p>}
@@ -159,7 +153,7 @@ export default async function HomePage() {
           {recentAdventureLogs.map((log) => (
             <a className="homeMemory" href={log.url} key={log.id} target="_blank" rel="noreferrer">
               <AdventureLogPhoto media={log.media} compact/>
-              <div className="homeItemCopy"><p className="homeItemDate">{formatActivityDate(log.loggedAt)} · {adventureLogIcon(log.logTypes)} {log.logTypes.join(" · ") || "Memory"}</p><h3>{log.name}</h3><p>{log.memo || log.location || "この冒険の思い出が残されています。"}</p></div>
+              <div className="homeItemCopy"><p className="homeItemDate">{formatActivityDate(log.loggedAt)} · <LogTypeIcon logTypes={log.logTypes}/> {log.logTypes.join(" · ") || "Memory"}</p><h3>{log.name}</h3><p>{log.memo || log.location || "この冒険の思い出が残されています。"}</p></div>
               <NeoIcon name="arrow" size={18}/><span className="homeSrOnly">Notionで開く（新しいタブ）</span>
             </a>
           ))}

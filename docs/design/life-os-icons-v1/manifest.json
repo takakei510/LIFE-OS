@@ -1,0 +1,110 @@
+{
+  "version": "1.0",
+  "icons": [
+    {
+      "id": "life-music",
+      "label": "音楽",
+      "motif": "音符",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": false
+    },
+    {
+      "id": "life-discovery",
+      "label": "発見・気づき",
+      "motif": "ひらめき",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": true
+    },
+    {
+      "id": "life-window",
+      "label": "光・窓",
+      "motif": "光の入る窓",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": true
+    },
+    {
+      "id": "life-nature",
+      "label": "自然",
+      "motif": "山",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": true
+    },
+    {
+      "id": "life-cafe",
+      "label": "カフェ",
+      "motif": "カップ",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": true
+    },
+    {
+      "id": "life-cooking",
+      "label": "料理",
+      "motif": "フライパン",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": true
+    },
+    {
+      "id": "life-photo",
+      "label": "写真",
+      "motif": "カメラ",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": false
+    },
+    {
+      "id": "life-reading",
+      "label": "読書",
+      "motif": "開いた本",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": false
+    },
+    {
+      "id": "life-journey",
+      "label": "散歩・旅",
+      "motif": "道と地平線",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": false
+    },
+    {
+      "id": "life-creation",
+      "label": "創作",
+      "motif": "鉛筆",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": false
+    },
+    {
+      "id": "life-research",
+      "label": "学び・研究",
+      "motif": "フラスコ",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": true
+    },
+    {
+      "id": "life-connection",
+      "label": "人との交流",
+      "motif": "向かい合う吹き出し",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": false
+    },
+    {
+      "id": "life-general",
+      "label": "未分類",
+      "motif": "開いた円と点",
+      "usage": "実績名の隣／六角バッジ中央",
+      "smallDetailRemoved": false
+    },
+    {
+      "id": "life-rank-beginner",
+      "label": "Beginner",
+      "motif": "芽",
+      "usage": "プレイヤーランクの隣",
+      "smallDetailRemoved": false
+    }
+  ],
+  "tiers": {
+    "Common": "#BAC8DC",
+    "Uncommon": "#00D9F5",
+    "Rare": "#A78BFA",
+    "Epic": "#FFD166",
+    "Legendary": "#FF5C7A"
+  }
+}
