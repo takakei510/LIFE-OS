@@ -14,14 +14,14 @@ function SubmitButton({ release }: { release: boolean }) {
   </NeoButton>;
 }
 
-export function QuestControls({ quest, enabled }: { quest: Quest; enabled: boolean }) {
+export function QuestControls({ quest, enabled, compact = false }: { quest: Quest; enabled: boolean; compact?: boolean }) {
   const [result, action] = useActionState(changeQuestAction, null);
   const router = useRouter();
   const release = quest.canRelease;
   const actionable = quest.canAccept || release;
   return (
-    <section className="questControls" aria-label="受注操作">
-      <p>受注は任意です。取り消してもXPは減りません。</p>
+    <section className={`questControls${compact ? " questControls--compact" : ""}`} aria-label={`${quest.name}の受注操作`}>
+      {!compact ? <p>受注は任意です。取り消してもXPは減りません。</p> : null}
       {result ? <p role={result.ok ? "status" : "alert"}>{result.message}</p> : null}
       {enabled && actionable ? <form action={action}>
         <input type="hidden" name="questId" value={quest.id} />
@@ -30,7 +30,7 @@ export function QuestControls({ quest, enabled }: { quest: Quest; enabled: boole
         <SubmitButton release={release} />
       </form> : <p className="muted">{!enabled ? "Webからの受注は準備中です。" : quest.state === "Completed" ? "このクエストは完了しています。" : "現在の状態では受注できません。"}</p>}
       {result && !result.ok ? <NeoButton variant="secondary" onClick={() => router.refresh()}>最新の状態を確認する</NeoButton> : null}
-      <p className="muted">達成の記録はNotionで行えます。実績の解除は、ご自身で条件を確認して選べます。</p>
+      {!compact ? <p className="muted">達成の記録はNotionで行えます。実績の解除は、ご自身で条件を確認して選べます。</p> : null}
     </section>
   );
 }

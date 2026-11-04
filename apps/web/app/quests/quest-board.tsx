@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import type { Quest } from "@/lib/notion/types";
 import Link from "next/link";
 import { questStateLabel } from "@/lib/life-os/quests/policy";
+import { QuestControls } from "./quest-controls";
 
 const ALL = "すべて";
 const AVAILABLE = "挑戦可能";
@@ -12,7 +13,7 @@ const ACCEPTED = "受注中";
 const COMPLETED = "完了";
 const typeOrder = ["Daily", "Weekly", "Monthly", "Event"];
 
-export function QuestBoard({ quests, source, initialState = ALL }: { quests: Quest[]; source: "notion" | "fallback"; initialState?: string }) {
+export function QuestBoard({ quests, source, actionsEnabled, initialState = ALL }: { quests: Quest[]; source: "notion" | "fallback"; actionsEnabled: boolean; initialState?: string }) {
   const [query, setQuery] = useState("");
   const [type, setType] = useState(ALL);
   const [state, setState] = useState(initialState);
@@ -87,7 +88,7 @@ export function QuestBoard({ quests, source, initialState = ALL }: { quests: Que
         <section className="emptyState">
           <p className="eyebrow">NO QUEST FOUND</p>
           <h2>{source !== "notion" ? "クエストを読み込めませんでした。" : state === ACCEPTED ? "受注中のクエストはありません。" : "条件に合う冒険が見つかりません。"}</h2>
-          <p className="muted">{source !== "notion" ? "時間をおいて再読み込みしてください。" : state === ACCEPTED ? "気になる体験が見つかったら、詳細から受注できます。急がず、自分のペースで。" : "検索語や絞り込み条件を変えてみてください。"}</p>
+          <p className="muted">{source !== "notion" ? "時間をおいて再読み込みしてください。" : state === ACCEPTED ? "気になる体験が見つかったら、一覧から受注できます。急がず、自分のペースで。" : "検索語や絞り込み条件を変えてみてください。"}</p>
         </section>
       ) : (
         <section className="questGrid">
@@ -109,7 +110,10 @@ export function QuestBoard({ quests, source, initialState = ALL }: { quests: Que
                   <span>{quest.completionCondition || "達成条件はNotionで設定します"}</span>
                   <strong>達成報酬 {quest.rewardXp} XP</strong>
                 </div>
-                <div className="questCardActions"><Link href={`/quests/${quest.id}`}>詳細を見る →</Link><a href={quest.url} target="_blank" rel="noreferrer">Notionで開く ↗</a></div>
+                <div>
+                  <QuestControls quest={quest} enabled={actionsEnabled} compact />
+                  <div className="questCardActions"><Link href={`/quests/${quest.id}`}>詳細を見る →</Link><a href={quest.url} target="_blank" rel="noreferrer">Notionで開く ↗</a></div>
+                </div>
               </article>
             );
           })}

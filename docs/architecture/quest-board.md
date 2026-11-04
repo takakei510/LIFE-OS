@@ -28,7 +28,7 @@ UI → Server Action → Application Service → Repository → Notion API。
 
 Repositoryはページ送りで読み取り、Active・単一PLAYER所属だけをDTOへ正規化する。既存Available From / Due Atが設定されている場合だけ受注期間を検証。日付のみの値は日本時間の開始/終了として扱う。新しい期限や自動失効は作らない。Skipped / Expired / 未知状態を挑戦可能へ補完しない。
 
-- `/quests`は検索・種類/状態の絞り込みと詳細リンク。
+- `/quests`は検索・種類/状態の絞り込み、カードから直接受注/取り消し、詳細リンク。詳細と同じQuestControls/Server Actionを再利用し、検証条件を維持。送信中は対象カードだけ無効化。
 - `/quests?state=accepted`は受注中タブ。検索と絞り込みは引き続き使用可能。
 - `/quests/[id]`は説明・達成条件・既存達成報酬・受注操作。読込失敗は404と区別。
 - `Available → Accepted`で受注。`Accepted → Available`で取り消し。
