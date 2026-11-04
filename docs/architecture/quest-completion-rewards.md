@@ -43,5 +43,16 @@ NotionにCASがないため、既存の非公開Blobに`life-os-quest-operations
 
 実Service/Repository/Actionのテストで確認・再送・並行・古い状態・所属・部分失敗・State+Completed At限定更新を検証。永続テスト記録は作らない。実環境の完了→報酬再表示はユーザーが残したい体験で実施する。
 
+2026-11-04に既存の認証付きNotion接続を通してSchemaを読取確認した。完了前にもFormula/Rollupと必要型を再検証し、想定外なら書込前に停止する。healthは検証結果のBooleanだけを返す。
+
+- Earned XP: `if(prop("State") == "Completed", prop("Reward XP"), 0)`
+- Is Completed: `prop("State") == "Completed"`
+- Total XP: `prop("Achievement XP") + prop("Quest XP")`
+- Quest XP: Quests → Earned XPのsum
+- Achievement XP: Achievements → Earned XPのsum
+- Completed Quests: Quests → Is Completedのchecked
+
+Notion非接続・メモリ保存だけのローカル検証で、実QuestControls/Boardと実Serviceを使用し、確認チェック必須、操作中の全ボタン無効化、完了後の獲得25XP/模擬合計65→90、再読込後も更新1回を確認。390/320pxで横はみ出しなし。模擬保存用のimport差し替え・検証Route・設定・仮データは削除し、公開コードに含めない。この確認は実際のNotion書込や集計の完了を意味しない。
+
 Depends on: #67 (merged)
 Blocks: Quest completion production approval

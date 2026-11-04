@@ -6,6 +6,7 @@ export type QuestRepository = {
   readContext: (id: string) => Promise<{ record: QuestRecord; dataSourceId: string; playerId: string }>;
   setState: (id: string, state: QuestState) => Promise<void>;
   complete: (id: string, completedAt: string) => Promise<void>;
+  validateCompletionConfiguration: () => Promise<void>;
 };
 
 export async function changeQuestState(repository: QuestRepository, input: { id: unknown; operation: unknown; revision: unknown; confirmed?: unknown }, now: number, coordinate: QuestCoordinator) {
@@ -31,6 +32,7 @@ export async function changeQuestState(repository: QuestRepository, input: { id:
     const { record } = fresh;
     if (input.operation === "complete") {
       if (!planQuestCompletion(record, input.revision as string)) return { state: "Completed", changed: false };
+      await repository.validateCompletionConfiguration();
       markWriteStarted();
       await repository.complete(id, new Date(now).toISOString());
       return { state: "Completed", changed: true };

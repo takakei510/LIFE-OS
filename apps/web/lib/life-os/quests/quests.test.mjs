@@ -27,7 +27,7 @@ const base = { id, dataSourceId: ds, playerIds: [playerId], lifecycle: "Active",
 function memory(record = {}) {
   let current = { ...base, ...record };
   const writes = [];
-  return { writes, current: () => current, complete: async (pageId, completedAt) => { writes.push({ pageId, state: "Completed", completedAt }); current = { ...current, state: "Completed", completedAt }; }, readContext: async () => ({ record: current, dataSourceId: ds, playerId }), setState: async (pageId, state) => { writes.push({ pageId, state }); current = { ...current, state, revision: "2026-11-04T03:00:00.000Z" }; } };
+  return { writes, validateCompletionConfiguration: async () => {}, current: () => current, complete: async (pageId, completedAt) => { writes.push({ pageId, state: "Completed", completedAt }); current = { ...current, state: "Completed", completedAt }; }, readContext: async () => ({ record: current, dataSourceId: ds, playerId }), setState: async (pageId, state) => { writes.push({ pageId, state }); current = { ...current, state, revision: "2026-11-04T03:00:00.000Z" }; } };
 }
 const input = (operation = "accept", overrides = {}) => ({ id, revision, operation, ...(operation === "complete" ? { confirmed: "yes" } : {}), ...overrides });
 
@@ -108,7 +108,7 @@ function page(overrides = {}) {
 }
 function sdk(pages = [page()], players = [{ object: "page", id: playerId, properties: {}, archived: false, in_trash: false }]) {
   const calls = [];
-  return { calls, dataSources: { query: async (args) => { calls.push(args); return { results: args.data_source_id === "status-source" ? players : args.start_cursor ? [] : pages, has_more: args.data_source_id === ds && !args.start_cursor, next_cursor: "cursor-2" }; } }, pages: { retrieve: async () => pages[0], update: async (args) => { calls.push(args); pages[0].properties = { ...pages[0].properties, ...args.properties }; return pages[0]; } } };
+  return { calls, dataSources: { retrieve: async (args) => ({ properties: args.data_source_id === "status-source" ? { "Total XP": { type: "formula", formula: { expression: 'prop("Achievement XP") + prop("Quest XP")' } }, "Quest XP": { type: "rollup", rollup: { function: "sum", relation_property_name: "Quests", rollup_property_name: "Earned XP" } }, "Achievement XP": { type: "rollup", rollup: { function: "sum", relation_property_name: "Achievements", rollup_property_name: "Earned XP" } }, "Completed Quests": { type: "rollup", rollup: { function: "checked", relation_property_name: "Quests", rollup_property_name: "Is Completed" } } } : { State: { type: "select", select: { options: [{name:"Completed"}] } }, "Reward XP": { type: "number" }, "Completed At": { type: "date" }, "Earned XP": { type: "formula", formula: { expression: 'if(prop("State") == "Completed", prop("Reward XP"), 0)' } }, "Is Completed": { type: "formula", formula: { expression: 'prop("State") == "Completed"' } } } }), query: async (args) => { calls.push(args); return { results: args.data_source_id === "status-source" ? players : args.start_cursor ? [] : pages, has_more: args.data_source_id === ds && !args.start_cursor, next_cursor: "cursor-2" }; } }, pages: { retrieve: async () => pages[0], update: async (args) => { calls.push(args); pages[0].properties = { ...pages[0].properties, ...args.properties }; return pages[0]; } } };
 }
 test("real repository paginates, normalizes DTO and excludes non-owner/inactive records", async () => {
   const bad = page({ Player: { type: "relation", relation: [{ id }] } });
@@ -348,4 +348,15 @@ test("real Blob adapter uses private conditional creation and the same key acros
     if (token === undefined) delete process.env.BLOB_READ_WRITE_TOKEN; else process.env.BLOB_READ_WRITE_TOKEN = token;
     if (env === undefined) delete process.env.VERCEL_ENV; else process.env.VERCEL_ENV = env;
   }
+});
+
+test("unexpected reward schema is refused before write and releases the fence", async () => {
+  const client = sdk([page({ State: { type: "select", select: { name: "Accepted" } } })]);
+  const retrieve = client.dataSources.retrieve;
+  client.dataSources.retrieve = async (args) => { const schema = await retrieve(args); if (args.data_source_id === ds) schema.properties["Earned XP"].formula.expression = "1000000"; return schema; };
+  transport.use(client);
+  const mutex = memoryCoordinator();
+  await assert.rejects(runQuestChange(questRepository, input("complete"), now, mutex.coordinate), /集計設定/);
+  assert.equal(client.calls.some((call) => call.properties), false);
+  assert.equal(mutex.locks.size, 0);
 });

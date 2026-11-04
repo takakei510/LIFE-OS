@@ -65,7 +65,35 @@ export async function readQuests(): Promise<Quest[]> {
   });
 }
 
+export async function getQuestRewardHealth() {
+  const notion = getNotionClient();
+  const env = getServerEnv();
+  if (!notion || !env) throw new Error("Notionが設定されていません。");
+  const [quests, player] = await Promise.all([
+    notion.dataSources.retrieve({ data_source_id: env.NOTION_QUESTS_DATA_SOURCE_ID }),
+    notion.dataSources.retrieve({ data_source_id: env.NOTION_STATUS_DATA_SOURCE_ID }),
+  ]);
+  if (!("properties" in quests) || !("properties" in player)) throw new Error("Incomplete schema");
+  const q = quests.properties;
+  const p = player.properties;
+  const checks = {
+    state: q.State?.type === "select" && q.State.select.options.some((option) => option.name === "Completed"),
+    rewardXp: q["Reward XP"]?.type === "number",
+    completedAt: q["Completed At"]?.type === "date",
+    earnedXp: q["Earned XP"]?.type === "formula" && q["Earned XP"].formula.expression.trim() === 'if(prop("State") == "Completed", prop("Reward XP"), 0)',
+    isCompleted: q["Is Completed"]?.type === "formula" && q["Is Completed"].formula.expression.trim() === 'prop("State") == "Completed"',
+    totalXp: p["Total XP"]?.type === "formula" && p["Total XP"].formula.expression.trim() === 'prop("Achievement XP") + prop("Quest XP")',
+    questXp: p["Quest XP"]?.type === "rollup" && p["Quest XP"].rollup.function === "sum" && p["Quest XP"].rollup.relation_property_name === "Quests" && p["Quest XP"].rollup.rollup_property_name === "Earned XP",
+    achievementXp: p["Achievement XP"]?.type === "rollup" && p["Achievement XP"].rollup.function === "sum" && p["Achievement XP"].rollup.relation_property_name === "Achievements" && p["Achievement XP"].rollup.rollup_property_name === "Earned XP",
+    completedQuests: p["Completed Quests"]?.type === "rollup" && p["Completed Quests"].rollup.function === "checked" && p["Completed Quests"].rollup.relation_property_name === "Quests" && p["Completed Quests"].rollup.rollup_property_name === "Is Completed",
+  };
+  return { ok: Object.values(checks).every(Boolean), checks };
+}
+
 export const questRepository: QuestRepository = {
+  async validateCompletionConfiguration() {
+    if (!(await getQuestRewardHealth()).ok) throw new Error("報酬の集計設定を確認できません。Notionの設定を確認してください。");
+  },
   async readContext(id) {
     const { notion, dataSourceId, playerId } = await context();
     const page = await notion.pages.retrieve({ page_id: id });
