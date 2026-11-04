@@ -70,14 +70,6 @@ export default async function StatusPage() {
 
   return (
     <main>
-      <nav className="pageNav" aria-label="Primary navigation">
-        <Link href="/">HOME</Link>
-        <Link href="/achievements">ACHIEVEMENTS</Link>
-        <Link href="/quests">QUESTS</Link>
-        <Link href="/titles">TITLES</Link>
-        <Link className="pageNavActive" href="/status">STATUS</Link>
-      </nav>
-
       <header className="pageHeader compactHero">
         <p className="eyebrow">PLAYER STATUS</p>
         <h1>いま立っている場所</h1>

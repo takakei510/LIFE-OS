@@ -2,23 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NeoIcon, type NeoIconName } from "@/components/ui/neo-icon";
 
-const items = [
-  { href: "/", label: "ホーム", icon: "⌂" },
-  { href: "/achievements", label: "実績", icon: "🏆" },
-  { href: "/quests", label: "クエスト", icon: "✦" },
-  { href: "/adventure-logs", label: "冒険ログ", icon: "📸" },
-  { href: "/titles", label: "称号", icon: "♛" },
-  { href: "/status", label: "ステータス", icon: "◉" },
+const items: {href: string; label: string; icon: NeoIconName}[] = [
+  { href: "/", label: "ホーム", icon: "home" },
+  { href: "/achievements", label: "実績", icon: "achievement" },
+  { href: "/quests", label: "クエスト", icon: "quest" },
+  { href: "/adventure-logs", label: "冒険ログ", icon: "memory" },
+  { href: "/titles", label: "称号", icon: "title" },
+  { href: "/status", label: "ステータス", icon: "status" },
 ];
 
 export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="mobileBottomNav" aria-label="モバイルナビゲーション">
+    <nav className="mobileBottomNav" aria-label="メインナビゲーション">
+      <Link href="/" className="neoBrand" aria-label="LIFE OS ホーム"><NeoIcon name="planet" size={30} /><span>LIFE OS</span></Link>
+      <div className="neoNavItems">
       {items.map((item) => {
-        const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+        const active = item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link
             key={item.href}
@@ -26,11 +29,12 @@ export function MobileBottomNav() {
             className={active ? "mobileBottomNavItem mobileBottomNavItem--active" : "mobileBottomNavItem"}
             aria-current={active ? "page" : undefined}
           >
-            <span className="mobileBottomNavIcon" aria-hidden="true">{item.icon}</span>
+            <NeoIcon name={item.icon} className="mobileBottomNavIcon" size={22} />
             <span>{item.label}</span>
           </Link>
         );
       })}
+      </div>
     </nav>
   );
 }

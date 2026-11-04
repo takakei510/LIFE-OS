@@ -1,4 +1,4 @@
-import Link from "next/link";
+
 
 import { TitleCollection } from "./title-collection";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
@@ -16,13 +16,6 @@ export default async function TitlesPage() {
 
   return (
     <main>
-      <nav className="pageNav" aria-label="Primary navigation">
-        <Link href="/">HOME</Link>
-        <Link href="/achievements">ACHIEVEMENTS</Link>
-        <Link href="/quests">QUESTS</Link>
-        <Link className="pageNavActive" href="/titles">TITLES</Link>
-      </nav>
-
       <header className="pageHeader compactHero">
         <p className="eyebrow">TITLE COLLECTION</p>
         <h1>触れてきた世界の呼び名</h1>

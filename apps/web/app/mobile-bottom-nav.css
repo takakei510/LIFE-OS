@@ -1,60 +1,21 @@
-.mobileBottomNav {
-  display: none;
-}
-
+/* The same six destinations on desktop and mobile. No new feature routes. */
+.mobileBottomNav { position: fixed; z-index: 1000; top: 16px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: space-between; gap: 24px; width: min(1000px, calc(100% - 32px)); padding: 8px 12px; border: 1px solid var(--neo-line); border-radius: var(--neo-radius-md); background: rgb(11 18 32 / 96%); box-shadow: var(--neo-shadow); backdrop-filter: blur(16px); }
+.neoBrand { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 12px; min-height: 44px; color: var(--neo-text); font: 700 1.15rem/1 var(--neo-font-display); letter-spacing: .12em; text-decoration: none; }
+.neoBrand svg { color: var(--neo-primary); }
+.neoNavItems { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
+.mobileBottomNavItem { position: relative; display: flex; min-width: 0; min-height: 48px; align-items: center; justify-content: center; gap: 7px; padding: 8px 10px; border: 1px solid transparent; border-radius: var(--neo-radius-sm); color: var(--muted); font-size: .72rem; font-weight: 600; line-height: 1.4; text-decoration: none; white-space: nowrap; transition: color var(--neo-duration) var(--neo-ease), background var(--neo-duration) var(--neo-ease); }
+.mobileBottomNavIcon { flex-shrink: 0; }
+.mobileBottomNavItem:hover { color: var(--neo-text); background: rgb(167 139 250 / 8%); }
+.mobileBottomNavItem--active { border-color: rgb(0 217 245 / 40%); color: var(--neo-primary); background: rgb(0 217 245 / 9%); box-shadow: inset 0 0 16px rgb(0 217 245 / 7%); }
+.mobileBottomNavItem--active::after { content: ''; position: absolute; bottom: 2px; width: 16px; height: 2px; border-radius: 2px; background: var(--neo-primary); }
+@media (max-width: 880px) and (min-width: 641px) { .mobileBottomNav { gap: 12px; }.mobileBottomNavItem { padding: 6px; flex-direction: column; gap: 4px; font-size: .65rem; }.neoNavItems { flex: 1; } }
 @media (max-width: 640px) {
-  body {
-    padding-bottom: calc(78px + env(safe-area-inset-bottom));
-  }
-
-  main {
-    padding-bottom: 36px;
-  }
-
-  .pageNav {
-    display: none;
-  }
-
-  .mobileBottomNav {
-    position: fixed;
-    z-index: 1000;
-    right: 10px;
-    bottom: 10px;
-    left: 10px;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
-    border: 1px solid rgba(143, 167, 255, 0.25);
-    border-radius: 22px;
-    background: rgba(12, 15, 22, 0.92);
-    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(18px);
-  }
-
-  .mobileBottomNavItem {
-    display: flex;
-    min-width: 0;
-    min-height: 54px;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    border-radius: 15px;
-    color: var(--muted);
-    font-size: 0.58rem;
-    font-weight: 800;
-    line-height: 1;
-    text-decoration: none;
-    flex-direction: column;
-  }
-
-  .mobileBottomNavIcon {
-    font-size: 1.15rem;
-    line-height: 1;
-  }
-
-  .mobileBottomNavItem--active {
-    background: rgba(143, 167, 255, 0.14);
-    color: var(--text);
-    box-shadow: inset 0 0 0 1px rgba(143, 167, 255, 0.24);
-  }
+  body { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+  html { scroll-padding-top: 16px; scroll-padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  main { padding-top: 36px; padding-bottom: 24px; }
+  .pageNav { display: none; }
+  .mobileBottomNav { top: auto; right: max(8px, env(safe-area-inset-right)); bottom: 0; left: max(8px, env(safe-area-inset-left)); transform: none; width: auto; display: block; padding: 6px 4px max(8px, env(safe-area-inset-bottom)); border-radius: 18px 18px 0 0; border-color: rgb(0 217 245 / 28%); }
+  .neoBrand { display: none; }
+  .neoNavItems { gap: 2px; }
+  .mobileBottomNavItem { min-width: 44px; min-height: 58px; flex-direction: column; gap: 4px; padding: 5px 0; font-size: .59rem; letter-spacing: -.03em; }
 }
