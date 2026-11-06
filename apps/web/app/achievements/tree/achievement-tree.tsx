@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, useId } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { AchievementBadge } from "@/components/brand/achievement-badge";
 import { CategoryName, TierName } from "@/components/life-icons/life-icon";
 import { achievementPresentation, categoryLabel } from "@/components/life-icons/presentation";
 import { NeoButton } from "@/components/ui/neo-button";
-import { layoutTree, NODE_HEIGHT, NODE_WIDTH, treeStateLabel } from "@/lib/life-os/achievement-tree/model";
+import { treeStateLabel } from "@/lib/life-os/achievement-tree/model";
+import { edgePath, layoutTree, NODE_HEIGHT, NODE_WIDTH } from "@/lib/life-os/achievement-tree/radial-layout";
 import type { TreeModel, TreeNode } from "@/lib/life-os/achievement-tree/model";
 
 const nodeName = (node: TreeNode) => node.masked ? "？？？" : achievementPresentation(node).name;
@@ -19,6 +20,7 @@ const mobileSnapshot = () => window.matchMedia("(max-width: 640px)").matches;
 const serverSnapshot = () => false;
 
 export function AchievementTree({ model, initialCategory }: { model: TreeModel; initialCategory?: string }) {
+  const edgeMarker = useId();
   const isMobile = useSyncExternalStore(subscribeMobile, mobileSnapshot, serverSnapshot);
   const categories = useMemo(() => [...new Set(model.nodes.map((node) => node.category).filter((value): value is string => value !== null))].sort(), [model.nodes]);
   const [scope, setScope] = useState(initialCategory ?? "auto");
@@ -99,7 +101,7 @@ export function AchievementTree({ model, initialCategory }: { model: TreeModel; 
       <label>実績を探す<input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="名前・条件を検索" /></label>
       <label>実績を選ぶ<select aria-label="実績を選ぶ" value={selected && matches.has(selected.id) ? selected.id : ""} onChange={(event) => focusNode(event.target.value)}><option value="">{query ? `${matches.size}件の検索結果` : "ノードへ移動"}</option>{layout.nodes.filter((node) => matches.has(node.id)).map((node, index) => <option key={node.id} value={node.id}>{node.masked ? `未発見の実績 ${index + 1}` : nodeName(node)} · {treeStateLabel(node.state)}</option>)}</select></label>
     </div>
-    <p className="treeSummary">{layout.nodes.length} / {model.nodes.length} 実績 · {layout.edges.length} 本の前提関係</p>
+    <p className="treeSummary">{layout.nodes.length} / {model.nodes.length} 実績 · {layout.edges.length} 本の前提関係 · {layout.clusters.length} 個のまとまり</p>
     <div className="treeLegend"><span data-state="unlocked">解除済み</span><span data-state="available">挑戦可能</span><span data-state="locked">未発見</span><span data-state="review">関係を確認中</span></div>
     <div className="treeWorkspace">
       <section className="treeMapSection" aria-label="実績のつながり">
@@ -112,13 +114,17 @@ export function AchievementTree({ model, initialCategory }: { model: TreeModel; 
         <p className="treeHint" id="tree-instructions">ドラッグで移動・2本指で拡大縮小。PCはCtrl＋スクロールでも拡大できます。実績を選ぶと内容を表示します。</p>
         <div ref={viewport} className="treeViewport" tabIndex={0} aria-label="実績ツリー" aria-describedby="tree-instructions" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onKeyDown={(event) => { if (event.target !== event.currentTarget) return; const movement: Record<string, [number, number]> = { ArrowLeft: [100, 0], ArrowRight: [-100, 0], ArrowUp: [0, 100], ArrowDown: [0, -100] }; if (movement[event.key]) { event.preventDefault(); pan(...movement[event.key]); } }}>
           {layout.nodes.length === 0 ? <p className="treeEmpty">表示できる実績がありません。</p> : <div className="treeCamera" data-compact={view.scale < .42} style={{ width: layout.width, height: layout.height, transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})` }}>
-            <svg className="treeEdges" width={layout.width} height={layout.height} aria-hidden="true">{layout.edges.map((edge) => { const from = positions.get(edge.from)!; const to = positions.get(edge.to)!; const x1 = from.x + NODE_WIDTH, y1 = from.y + NODE_HEIGHT / 2, x2 = to.x, y2 = to.y + NODE_HEIGHT / 2; return <path key={`${edge.from}:${edge.to}`} d={`M${x1},${y1} C${x1 + 40},${y1} ${x2 - 40},${y2} ${x2},${y2}`} data-active={from.state === "unlocked"} />; })}</svg>
-            {layout.nodes.map((node) => <button type="button" key={node.id} data-node-id={node.id} data-state={node.state} className={`treeNode${selectedId === node.id ? " isSelected" : ""}${query && !matches.has(node.id) ? " isDimmed" : ""}`} style={{ left: node.x, top: node.y, width: NODE_WIDTH, height: NODE_HEIGHT }} aria-label={`${node.masked ? "未発見の実績" : nodeName(node)}、${treeStateLabel(node.state)}`} aria-pressed={selectedId === node.id} onClick={(event) => { if (event.detail === 0) focusNode(node.id); }} onFocus={() => { if (!pointers.current.size) focusNode(node.id); }}>
+            <svg className="treeEdges" width={layout.width} height={layout.height} aria-hidden="true">
+              <defs><marker id={edgeMarker} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" className="treeArrow" /></marker></defs>
+              {layout.clusters.filter(cluster => cluster.count > 1).map(cluster => <circle key={cluster.id} className="treeClusterBoundary" cx={cluster.x} cy={cluster.y} r={cluster.radius} />)}
+              {layout.edges.map(edge => <path key={`${edge.from}:${edge.to}`} d={edgePath(positions.get(edge.from)!, positions.get(edge.to)!)} markerEnd={`url(#${edgeMarker})`} data-active={positions.get(edge.from)!.state === "unlocked"} />)}
+            </svg>
+            {layout.nodes.map((node) => <button type="button" key={node.id} data-node-id={node.id} data-state={node.state} data-root={node.isRoot} className={`treeNode${selectedId === node.id ? " isSelected" : ""}${query && !matches.has(node.id) ? " isDimmed" : ""}`} style={{ left: node.x, top: node.y, width: NODE_WIDTH, height: NODE_HEIGHT }} aria-label={`${node.masked ? "未発見の実績" : nodeName(node)}、${treeStateLabel(node.state)}`} aria-pressed={selectedId === node.id} onClick={(event) => { if (event.detail === 0) focusNode(node.id); }} onFocus={() => { if (!pointers.current.size) focusNode(node.id); }}>
               <AchievementBadge tier={node.tier} domains={node.domains} achievementId={node.masked ? undefined : node.id} achievementName={node.name} /><span className="treeNodeName">{nodeName(node)}</span><span className="treeNodeState">{node.masked ? "未発見" : treeStateLabel(node.state)}</span>
             </button>)}
           </div>}
         </div>
-        <p className="treeHint">線はNotionに登録された前提関係です。独立した実績も並べています。カテゴリ外・非公開の関係はこの表示には含めません。</p>
+        <p className="treeHint">線はNotionに登録された前提関係です。複数の起点から放射状に広がります。輪は表示上のまとまりで、解除条件ではありません。カテゴリ外・非公開の関係はこの表示には含めません。</p>
       </section>
       <aside className="treeDetail" aria-label="選択した実績">
         {selected ? <><p className="eyebrow">{treeStateLabel(selected.state)}</p><h2>{nodeName(selected)}</h2><p><CategoryName category={selected.category} /></p>
@@ -130,5 +136,3 @@ export function AchievementTree({ model, initialCategory }: { model: TreeModel; 
     <p role="status" className="treeSelectionStatus">{selected ? `${selected.masked ? "未発見の実績" : nodeName(selected)}を選択しました。` : ""}</p>
   </>;
 }
-
-

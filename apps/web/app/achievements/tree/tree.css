@@ -27,6 +27,9 @@
 .treeEdges { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
 .treeEdges path { stroke: var(--muted); stroke-width: 2; fill: none; opacity: .35; }
 .treeEdges path[data-active="true"] { stroke: var(--neo-primary); opacity: .65; }
+.treeEdges .treeArrow { fill: var(--muted); stroke: none; opacity: .8; }
+.treeClusterBoundary { fill: rgb(124 225 255 / 2%); stroke: var(--line); stroke-width: 1; stroke-dasharray: 8 12; }
+.treeNode[data-root="true"]::after { content: ""; position: absolute; top: 8px; right: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--muted); }
 .treeNode { position: absolute; display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 8px; text-align: left; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--text); font: inherit; cursor: pointer; user-select: none; }
 .treeNode .achievementBadge { grid-row: 1 / span 2; }
 .treeNode[data-state="unlocked"] { border-color: var(--neo-primary); }

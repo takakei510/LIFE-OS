@@ -9,7 +9,8 @@ function moduleUrl(path, imports = {}) {
   return `data:text/javascript;base64,${Buffer.from(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText).toString("base64")}`;
 }
 const modelUrl = moduleUrl("./model.ts");
-const { buildTreeModel, publicTreeAchievements, layoutTree, NODE_WIDTH, NODE_HEIGHT } = await import(modelUrl);
+const { buildTreeModel, publicTreeAchievements } = await import(modelUrl);
+const { layoutTree, edgePath, NODE_WIDTH, NODE_HEIGHT } = await import(moduleUrl("./radial-layout.ts"));
 function record(id, prerequisites = [], overrides = {}, relationComplete = true) {
   return { achievement: { id, name: `Secret ${id}`, category: "探索", domains: ["photo"], tier: "Rare", xp: 30, requirement: `Condition ${id}`, flavorText: `Flavor ${id}`, unlocked: false, unlockedAt: null, visibility: "Visible", url: `https://notion.so/${id}`, ...overrides }, prerequisites, relationComplete };
 }
@@ -62,8 +63,42 @@ test("layout preserves real topology, fits all nodes and never overlaps disconne
     for (const b of layout.nodes) if (a.id !== b.id) assert.ok(a.x + NODE_WIDTH <= b.x || b.x + NODE_WIDTH <= a.x || a.y + NODE_HEIGHT <= b.y || b.y + NODE_HEIGHT <= a.y);
   }
   const positions = new Map(layout.nodes.map(n => [n.id, n]));
-  assert.ok(positions.get("join").x > positions.get("left").x && positions.get("left").x > positions.get("root").x);
+  assert.equal(positions.get("root").depth, 0);
+  assert.equal(positions.get("join").depth, 2);
   assert.deepEqual(layoutTree({ nodes: [], edges: [] }).nodes, []);
+});
+
+test("a single root is central, shared descendants appear once outside both roots", () => {
+  const single = layoutTree(buildTreeModel([record("root"), record("leaf", ["root"])], true));
+  const root = single.nodes.find(n => n.id === "root");
+  assert.equal(root.x + NODE_WIDTH / 2, single.clusters[0].x);
+  assert.equal(root.y + NODE_HEIGHT / 2, single.clusters[0].y);
+  assert.equal(root.isRoot, true);
+  const shared = layoutTree(buildTreeModel([record("r1"), record("r2"), record("join", ["r1", "r2"])], true));
+  assert.equal(shared.clusters.length, 1);
+  assert.equal(shared.clusters[0].roots, 2);
+  assert.equal(shared.nodes.filter(n => n.id === "join").length, 1);
+  assert.equal(shared.nodes.find(n => n.id === "join").depth, 1);
+  assert.equal(shared.edges.length, 2);
+  for (const edge of shared.edges) assert.ok(!edgePath(shared.nodes.find(n => n.id === edge.from), shared.nodes.find(n => n.id === edge.to)).match(/NaN|Infinity/));
+});
+
+test("layout does not depend on API page order and never invents roots for hidden references", () => {
+  const records = [record("a"), record("b", ["a"]), record("c"), record("d", ["c"]), record("unknown", ["absent"])];
+  assert.deepEqual(layoutTree(buildTreeModel(records, true)).nodes, layoutTree(buildTreeModel([...records].reverse(), true)).nodes);
+  const unknown = layoutTree(buildTreeModel(records, true)).nodes.find(n => n.id === "unknown");
+  assert.equal(unknown.isRoot, false);
+});
+
+test("wide rings and 1000 independent achievements remain finite without overlapping labels", () => {
+  const model = buildTreeModel([record("root"), ...Array.from({ length: 48 }, (_, i) => record(`child-${i}`, ["root"]))], true);
+  const layout = layoutTree(model);
+  for (const a of layout.nodes) for (const b of layout.nodes) if (a.id !== b.id) assert.ok(a.x + NODE_WIDTH <= b.x || b.x + NODE_WIDTH <= a.x || a.y + NODE_HEIGHT <= b.y || b.y + NODE_HEIGHT <= a.y);
+  const many = layoutTree(buildTreeModel(Array.from({ length: 1000 }, (_, i) => record(`independent-${i}`)), true));
+  assert.equal(many.nodes.length, 1000);
+  assert.equal(many.clusters.length, 1000);
+  assert.equal(many.edges.length, 0);
+  assert.ok(many.nodes.every(n => Number.isFinite(n.x) && Number.isFinite(n.y)));
 });
 
 // Exercise the actual repository with an SDK transport double, never live Notion.
