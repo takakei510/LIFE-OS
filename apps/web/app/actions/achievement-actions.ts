@@ -21,6 +21,7 @@ export async function unlockAchievementAction(
     await unlockAchievementPage(achievementId, unlockedAt);
     revalidatePath("/");
     revalidatePath("/achievements");
+    revalidatePath("/achievements/tree");
     revalidatePath(`/achievements/${achievementId}`);
     revalidatePath("/status");
     return { ok: true, unlockedAt };

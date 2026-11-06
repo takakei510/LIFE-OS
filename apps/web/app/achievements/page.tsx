@@ -1,4 +1,6 @@
 import { AchievementLibrary } from "./achievement-library";
+import Link from "next/link";
+import "./tree/tree.css";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
 export default async function AchievementsPage({ searchParams }: { searchParams: Promise<{ category?: string | string[] }> }) {
@@ -17,6 +19,7 @@ export default async function AchievementsPage({ searchParams }: { searchParams:
         <h1>世界に触れた記録</h1>
         <p className="lead">上手さではなく、初めて・挑戦・発見を集める実績図鑑。</p>
       </header>
+      <nav className="achievementViews" aria-label="実績の表示方法"><Link href="/achievements" aria-current="page">一覧</Link><Link href={initialCategory === "すべて" ? "/achievements/tree" : `/achievements/tree?category=${encodeURIComponent(initialCategory)}`}>ツリー</Link></nav>
       <AchievementLibrary key={initialCategory} achievements={visible} source={snapshot.source} initialCategory={initialCategory}/>
     </main>
   );

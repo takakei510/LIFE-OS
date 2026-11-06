@@ -1,0 +1,48 @@
+.treePage { width: min(1440px, calc(100% - 32px)); }
+.achievementViews { display: flex; gap: 10px; margin: 20px 0; }
+.achievementViews a { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 20px; border: 1px solid var(--line); border-radius: 10px; text-decoration: none; }
+.achievementViews a[aria-current="page"] { color: var(--cyan); border-color: var(--cyan); background: var(--panel); }
+.treeFilters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 24px 0 16px; }
+.treeFilters label { display: grid; gap: 8px; font-size: .85rem; color: var(--muted); }
+.treeFilters input, .treeFilters select { width: 100%; min-width: 0; min-height: 44px; font: inherit; color: var(--text); background: var(--panel); padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
+.treeSummary { color: var(--muted); }
+.treeLegend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 18px; font-size: .8rem; }
+.treeLegend span::before { content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 6px; border: 1px solid var(--muted); border-radius: 50%; }
+.treeLegend [data-state="unlocked"]::before { background: var(--cyan); border-color: var(--cyan); }
+.treeLegend [data-state="available"]::before { border-color: var(--neo-purple); }
+.treeLegend [data-state="locked"]::before { border-style: dashed; }
+.treeLegend [data-state="review"]::before { border-color: #ffd08a; }
+.treeWorkspace { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 18px; align-items: start; }
+.treeMapSection, .treeDetail { min-width: 0; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); overflow: hidden; }
+.treeControls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 12px; }
+.treeControls button { padding: 8px 12px; min-width: 44px; }
+.treeControls > span { font-family: var(--neo-font-display); color: var(--muted); font-size: .8rem; }
+.treePanControls { display: flex; gap: 4px; margin-left: auto; }
+.treeHint { color: var(--muted); font-size: .75rem; line-height: 1.7; padding: 0 14px; }
+.treeViewport { position: relative; width: 100%; height: min(62vh, 680px); min-height: 380px; overflow: hidden; touch-action: none; cursor: grab; background-color: var(--bg); background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 24px 24px; }
+.treeViewport:active { cursor: grabbing; }
+.treeCamera { position: absolute; inset: 0 auto auto 0; transform-origin: 0 0; }
+.treeEdges { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.treeEdges path { stroke: var(--muted); stroke-width: 2; fill: none; opacity: .35; }
+.treeEdges path[data-active="true"] { stroke: var(--cyan); opacity: .65; }
+.treeNode { position: absolute; display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 8px; text-align: left; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--text); font: inherit; cursor: pointer; user-select: none; }
+.treeNode .achievementBadge { grid-row: 1 / span 2; }
+.treeNode[data-state="unlocked"] { border-color: var(--cyan); }
+.treeNode[data-state="available"] { border-color: rgb(167 139 250 / 65%); }
+.treeNode[data-state="locked"] { border-style: dashed; }
+.treeNode[data-state="review"] { border-color: #b6a477; }
+.treeNodeName { font-size: .84rem; line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.treeNodeState { font-size: .68rem; color: var(--muted); }
+.treeNode.isSelected, .treeNode:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
+.treeNode.isDimmed { opacity: .25; }
+.treeCamera[data-compact="true"] .treeNodeName, .treeCamera[data-compact="true"] .treeNodeState { visibility: hidden; }
+.treeCamera[data-compact="true"] .treeNode { grid-template-columns: 1fr; justify-items: center; }
+.treeDetail { padding: 22px; overflow-wrap: anywhere; }
+.treeDetail h2 { font-size: 1.25rem; line-height: 1.5; }
+.treeDetail h3 { font-size: .9rem; margin-top: 24px; }
+.treeDetail p { line-height: 1.8; }
+.treeDetail .notionLink { display: inline-block; padding: 12px 0; }
+.treeSelectionStatus { min-height: 1.5em; font-size: .8rem; color: var(--muted); margin-top: 12px; }
+.treeEmpty { padding: 24px; color: var(--muted); }
+@media (max-width: 900px) { .treeWorkspace { grid-template-columns: minmax(0, 1fr); } .treeDetail { min-height: 140px; } }
+@media (max-width: 640px) { .treeFilters { grid-template-columns: minmax(0, 1fr); } .treeViewport { height: 55vh; min-height: 340px; } .treePanControls { margin-left: 0; flex-basis: 100%; } .treeControls { gap: 6px; } }

@@ -8,7 +8,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test:photos": "node --experimental-strip-types --test lib/life-os/adventure-logs/*.test.mjs",
-    "test:quests": "node --experimental-strip-types --test lib/life-os/quests/*.test.mjs"
+    "test:quests": "node --experimental-strip-types --test lib/life-os/quests/*.test.mjs",
+    "test:tree": "node --experimental-strip-types --test lib/life-os/achievement-tree/*.test.mjs"
   },
   "dependencies": {
     "@fontsource-variable/noto-sans-jp": "^5.3.1",

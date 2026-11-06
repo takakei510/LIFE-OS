@@ -34,3 +34,6 @@ jobs:
 
       - name: Build web app
         run: npm run build
+
+      - name: Test achievement tree privacy and prerequisite boundaries
+        run: npm run test:tree --workspace apps/web

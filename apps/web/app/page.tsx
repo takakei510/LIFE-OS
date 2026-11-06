@@ -67,7 +67,7 @@ export default async function HomePage() {
     day: "numeric",
   }).format(new Date());
   const dailyExplorationPicks = snapshot.achievements
-    .filter((achievement) => !achievement.unlocked && !isHiddenAchievement(achievement.visibility))
+    .filter((achievement) => !achievement.unlocked && !achievement.lockedByChain && !isHiddenAchievement(achievement.visibility))
     .sort((a, b) => dailyScore(a.id, todaySeed) - dailyScore(b.id, todaySeed))
     .slice(0, 3);
 

@@ -7,20 +7,18 @@ import { getServerEnv } from "@/lib/env";
 import { getNotionClient } from "@/lib/notion/client";
 import {
   checkbox,
-  date,
   formulaNumber,
   formulaString,
-  multiSelect,
-  number,
   richText,
   rollupNumber,
   select,
   title,
 } from "@/lib/notion/properties";
+import { readAchievementTreeRecords } from "@/lib/notion/repositories/achievement-tree";
+import { publicTreeAchievements } from "@/lib/life-os/achievement-tree/model";
 import { readQuests } from "@/lib/notion/repositories/quests";
 import { readAdventureLogs } from "@/lib/notion/repositories/adventure-logs";
 import type {
-  Achievement,
   LifeOsSnapshot,
   PlayerStatus,
   Title,
@@ -49,24 +47,6 @@ async function queryAll(dataSourceId: string): Promise<PageObjectResponse[]> {
   } while (cursor);
 
   return pages;
-}
-
-function achievement(page: PageObjectResponse): Achievement {
-  const p = page.properties;
-  return {
-    id: page.id,
-    name: title(p, "Name"),
-    category: select(p, "Category"),
-    domains: multiSelect(p, "Domain"),
-    tier: select(p, "Tier"),
-    xp: number(p, "XP"),
-    requirement: richText(p, "Requirement"),
-    flavorText: richText(p, "Flavor Text"),
-    unlocked: checkbox(p, "Unlocked"),
-    unlockedAt: date(p, "Unlocked At"),
-    visibility: select(p, "Visibility"),
-    url: page.url,
-  };
 }
 
 function gameTitle(page: PageObjectResponse): Title {
@@ -117,7 +97,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
 
   try {
     const [achievementPages, titlePages, quests, statusPages, adventureLogs] = await Promise.all([
-      queryAll(env.NOTION_ACHIEVEMENTS_DATA_SOURCE_ID),
+      readAchievementTreeRecords(),
       queryAll(env.NOTION_TITLES_DATA_SOURCE_ID),
       readQuests(),
       queryAll(env.NOTION_STATUS_DATA_SOURCE_ID),
@@ -125,7 +105,7 @@ export async function getLifeOsSnapshot(): Promise<LifeOsSnapshot> {
     ]);
 
     return {
-      achievements: achievementPages.map(achievement),
+      achievements: publicTreeAchievements(achievementPages),
       titles: titlePages.map(gameTitle),
       quests,
       adventureLogs,

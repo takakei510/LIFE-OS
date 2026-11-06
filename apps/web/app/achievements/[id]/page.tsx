@@ -12,6 +12,7 @@ export default async function AchievementDetailPage({ params }: { params: Promis
   const achievement = snapshot.achievements.find((item) => item.id === id);
 
   if (!achievement || (achievement.visibility === "Hidden" && !achievement.unlocked)) notFound();
+  if (achievement.lockedByChain) return <main><Link className="backLink" href="/achievements">← 実績ライブラリへ戻る</Link><article className="achievementDetail"><p className="eyebrow">未発見</p><h1>？？？</h1><p>前提実績を解除すると、この体験の内容が明らかになります。</p><Link href="/achievements/tree">ツリーでつながりを見る →</Link></article></main>;
 
   return (
     <main>
