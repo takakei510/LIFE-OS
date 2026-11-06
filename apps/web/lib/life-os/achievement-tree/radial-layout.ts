@@ -70,7 +70,7 @@ export function layoutTree(model: TreeModel): RadialLayout {
       radius = Math.max(radius + SPACING, ringRadius);
       for (let i = 0; i < ring.length; i++) {
         const id = ring[i];
-        const angle = -Math.PI / 2 + i * Math.PI * 2 / ring.length;
+        const angle = i * Math.PI * 2 / ring.length;
         points.push({ ...byId.get(id)!, x: Math.cos(angle) * radius - NODE_WIDTH / 2,
           y: Math.sin(angle) * radius - NODE_HEIGHT / 2, depth,
           isRoot: parents.get(id)!.size === 0 && byId.get(id)!.prerequisiteCount === 0 && byId.get(id)!.state !== "review" });

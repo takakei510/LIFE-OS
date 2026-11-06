@@ -25,23 +25,33 @@
 .treeViewport:active { cursor: grabbing; }
 .treeCamera { position: absolute; inset: 0 auto auto 0; transform-origin: 0 0; }
 .treeEdges { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
-.treeEdges path { stroke: var(--muted); stroke-width: 2; fill: none; opacity: .35; }
+.treeEdges path { stroke: #a8bbd2; stroke-width: 2; fill: none; opacity: .85; vector-effect: non-scaling-stroke; }
 .treeEdges path[data-active="true"] { stroke: var(--neo-primary); opacity: .65; }
 .treeEdges .treeArrow { fill: var(--muted); stroke: none; opacity: .8; }
 .treeClusterBoundary { fill: rgb(124 225 255 / 2%); stroke: var(--line); stroke-width: 1; stroke-dasharray: 8 12; }
 .treeNode[data-root="true"]::after { content: ""; position: absolute; top: 8px; right: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--muted); }
-.treeNode { position: absolute; display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 8px; text-align: left; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--text); font: inherit; cursor: pointer; user-select: none; }
+.treeNode { position: absolute; display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 8px; text-align: left; padding: 14px; border: 2px solid #91a8c8; border-radius: 12px; background: #18263d; color: var(--text); font: inherit; cursor: pointer; user-select: none; }
 .treeNode .achievementBadge { grid-row: 1 / span 2; }
 .treeNode[data-state="unlocked"] { border-color: var(--neo-primary); }
-.treeNode[data-state="available"] { border-color: rgb(167 139 250 / 65%); }
-.treeNode[data-state="locked"] { border-style: dashed; }
+.treeNode[data-state="available"] { border-color: #91a8c8; }
+.treeNode[data-state="locked"] { border-style: dashed; border-color: #91a8c8; }
 .treeNode[data-state="review"] { border-color: #b6a477; }
-.treeNodeName { font-size: .84rem; line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
-.treeNodeState { font-size: .68rem; color: var(--muted); }
+.treeNodeName { font-size: 1rem; font-weight: 600; line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.treeNodeState { font-size: .75rem; color: #c6d5e8; }
 .treeNode.isSelected, .treeNode:focus-visible { outline: 3px solid var(--neo-primary); outline-offset: 4px; }
 .treeNode.isDimmed { opacity: .25; }
-.treeCamera[data-compact="true"] .treeNodeName, .treeCamera[data-compact="true"] .treeNodeState { visibility: hidden; }
-.treeCamera[data-compact="true"] .treeNode { grid-template-columns: 1fr; justify-items: center; }
+.treeCamera[data-compact="true"] .treeNode { visibility: hidden; pointer-events: none; }
+.treeOverviewPoint { position: absolute; z-index: 1; width: 20px; height: 20px; padding: 0; transform: translate(-50%, -50%); border: 2px solid #b9cbe2; border-radius: 50%; background: #253d5b; cursor: pointer; }
+.treeOverviewPoint[data-state="unlocked"] { background: var(--neo-primary); border-color: var(--neo-primary); }
+.treeOverviewPoint[data-state="locked"] { border-style: dashed; background: #18263d; }
+.treeOverviewPoint:focus-visible { outline: 3px solid var(--neo-primary); outline-offset: 3px; }
+.treeBrowseModes { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+.treeBrowseModes button, .treeJumpList button { min-height: 44px; border: 1px solid #7187a3; border-radius: 10px; padding: 10px 14px; background: #18263d; color: var(--text); font: inherit; cursor: pointer; text-align: left; }
+.treeBrowseModes button[aria-pressed="true"] { border-color: var(--neo-primary); background: #163747; }
+.treeBrowseModes span { margin-left: 6px; color: #bdd1e9; }
+.treeJumpList { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; max-height: 180px; overflow-y: auto; }
+.treeJumpList button { font-size: .85rem; }
+.treePagination { display: flex; gap: 12px; align-items: center; margin: 12px 0; }
 .treeDetail { padding: 22px; overflow-wrap: anywhere; }
 .treeDetail h2 { font-size: 1.25rem; line-height: 1.5; }
 .treeDetail h3 { font-size: .9rem; margin-top: 24px; }
