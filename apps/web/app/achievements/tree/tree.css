@@ -31,18 +31,28 @@
 .treeClusterBoundary { fill: rgb(124 225 255 / 2%); stroke: var(--line); stroke-width: 1; stroke-dasharray: 8 12; }
 .treeNode[data-root="true"]::after { content: ""; position: absolute; top: 8px; right: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--muted); }
 .treeNode { position: absolute; display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 8px; text-align: left; padding: 14px; border: 2px solid #91a8c8; border-radius: 12px; background: #18263d; color: var(--text); font: inherit; cursor: pointer; user-select: none; }
-.treeNode .achievementBadge { grid-row: 1 / span 2; }
-.treeNode[data-state="unlocked"] { border-color: var(--neo-primary); }
+.treeNode { row-gap: 4px; }
+.treeNode .achievementBadge { grid-row: 1 / span 3; }
+.treeNode[data-state="unlocked"] { border-color: #54e6c7; background: #12332f; box-shadow: inset 4px 0 #54e6c7; }
+.treeNode[data-state="unlocked"] .treeNodeState { display: inline-flex; align-items: center; gap: 4px; width: fit-content; padding: 2px 6px; border-radius: 5px; background: #54e6c7; color: #09221b; font-weight: 800; }
+.treeNodeTier { font-size: .72rem; line-height: 1.3; }
+.treeColorHint { color: var(--muted); font-size: .8rem; line-height: 1.7; }
 .treeNode[data-state="available"] { border-color: #91a8c8; }
 .treeNode[data-state="locked"] { border-style: dashed; border-color: #91a8c8; }
 .treeNode[data-state="review"] { border-color: #b6a477; }
-.treeNodeName { font-size: 1rem; font-weight: 600; line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.treeNodeName { font-size: 1rem; font-weight: 600; line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
 .treeNodeState { font-size: .75rem; color: #c6d5e8; }
 .treeNode.isSelected, .treeNode:focus-visible { outline: 3px solid var(--neo-primary); outline-offset: 4px; }
 .treeNode.isDimmed { opacity: .25; }
 .treeCamera[data-compact="true"] .treeNode { visibility: hidden; pointer-events: none; }
 .treeOverviewPoint { position: absolute; z-index: 1; width: 20px; height: 20px; padding: 0; transform: translate(-50%, -50%); border: 2px solid #b9cbe2; border-radius: 50%; background: #253d5b; cursor: pointer; }
-.treeOverviewPoint[data-state="unlocked"] { background: var(--neo-primary); border-color: var(--neo-primary); }
+.treeOverviewPoint[data-tier="common"] { border-color: var(--neo-tier-common); }
+.treeOverviewPoint[data-tier="uncommon"] { border-color: var(--neo-tier-uncommon); }
+.treeOverviewPoint[data-tier="rare"] { border-color: var(--neo-tier-rare); }
+.treeOverviewPoint[data-tier="epic"] { border-color: var(--neo-tier-epic); }
+.treeOverviewPoint[data-tier="legendary"] { border-color: var(--neo-tier-legendary); }
+.treeOverviewPoint[data-state="unlocked"] { background: #54e6c7; color: #09221b; outline: 2px solid #54e6c7; outline-offset: 3px; }
+.treeOverviewPoint svg { display: block; width: 14px; height: 14px; }
 .treeOverviewPoint[data-state="locked"] { border-style: dashed; background: #18263d; }
 .treeOverviewPoint:focus-visible { outline: 3px solid var(--neo-primary); outline-offset: 3px; }
 .treeBrowseModes { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
