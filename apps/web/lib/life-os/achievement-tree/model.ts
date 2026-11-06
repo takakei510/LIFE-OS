@@ -91,7 +91,7 @@ export function layoutTree(model: TreeModel): { nodes: PositionedNode[]; edges: 
   }
   components.sort((a, b) => b.length - a.length || a[0].localeCompare(b[0]));
   const result: PositionedNode[] = [];
-  const packWidth = Math.max(900, Math.ceil(Math.sqrt(model.nodes.length || 1)) * 140);
+  const packWidth = Math.max(900, Math.ceil(Math.sqrt((model.nodes.length || 1) * (NODE_WIDTH + 96) * (NODE_HEIGHT + 72) * 1.7)));
   let cursorX = 24, cursorY = 24, rowHeight = 0, width = 0;
   for (const component of components) {
     const remaining = new Map(component.map((id) => [id, (parents.get(id) ?? []).length]));
@@ -118,3 +118,4 @@ export function layoutTree(model: TreeModel): { nodes: PositionedNode[]; edges: 
   }
   return { nodes: result, edges: model.edges.filter((e) => byId.has(e.from) && byId.has(e.to)), width: Math.max(360, width + 24), height: Math.max(240, cursorY + rowHeight + 24) };
 }
+
