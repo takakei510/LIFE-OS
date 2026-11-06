@@ -5,10 +5,12 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { AchievementBadge } from "@/components/brand/achievement-badge";
 import { CategoryName, TierName } from "@/components/life-icons/life-icon";
-import { categoryLabel } from "@/components/life-icons/presentation";
+import { achievementPresentation, categoryLabel } from "@/components/life-icons/presentation";
 import { NeoButton } from "@/components/ui/neo-button";
 import { layoutTree, NODE_HEIGHT, NODE_WIDTH, treeStateLabel } from "@/lib/life-os/achievement-tree/model";
-import type { TreeModel } from "@/lib/life-os/achievement-tree/model";
+import type { TreeModel, TreeNode } from "@/lib/life-os/achievement-tree/model";
+
+const nodeName = (node: TreeNode) => node.masked ? "？？？" : achievementPresentation(node).name;
 
 type View = { x: number; y: number; scale: number };
 type Point = { x: number; y: number };
@@ -95,7 +97,7 @@ export function AchievementTree({ model, initialCategory }: { model: TreeModel; 
     <div className="treeFilters">
       <label>表示する世界<select aria-label="表示する世界" value={category} onChange={(event) => { setScope(event.target.value); setSelectedId(null); }}><option value="all">すべての実績</option>{categories.map((value) => <option key={value} value={value}>{categoryLabel(value)}</option>)}</select></label>
       <label>実績を探す<input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="名前・条件を検索" /></label>
-      <label>実績を選ぶ<select aria-label="実績を選ぶ" value={selected && matches.has(selected.id) ? selected.id : ""} onChange={(event) => focusNode(event.target.value)}><option value="">{query ? `${matches.size}件の検索結果` : "ノードへ移動"}</option>{layout.nodes.filter((node) => matches.has(node.id)).map((node, index) => <option key={node.id} value={node.id}>{node.masked ? `未発見の実績 ${index + 1}` : node.name} · {treeStateLabel(node.state)}</option>)}</select></label>
+      <label>実績を選ぶ<select aria-label="実績を選ぶ" value={selected && matches.has(selected.id) ? selected.id : ""} onChange={(event) => focusNode(event.target.value)}><option value="">{query ? `${matches.size}件の検索結果` : "ノードへ移動"}</option>{layout.nodes.filter((node) => matches.has(node.id)).map((node, index) => <option key={node.id} value={node.id}>{node.masked ? `未発見の実績 ${index + 1}` : nodeName(node)} · {treeStateLabel(node.state)}</option>)}</select></label>
     </div>
     <p className="treeSummary">{layout.nodes.length} / {model.nodes.length} 実績 · {layout.edges.length} 本の前提関係</p>
     <div className="treeLegend"><span data-state="unlocked">解除済み</span><span data-state="available">挑戦可能</span><span data-state="locked">未発見</span><span data-state="review">関係を確認中</span></div>
@@ -111,21 +113,22 @@ export function AchievementTree({ model, initialCategory }: { model: TreeModel; 
         <div ref={viewport} className="treeViewport" tabIndex={0} aria-label="実績ツリー" aria-describedby="tree-instructions" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onKeyDown={(event) => { if (event.target !== event.currentTarget) return; const movement: Record<string, [number, number]> = { ArrowLeft: [100, 0], ArrowRight: [-100, 0], ArrowUp: [0, 100], ArrowDown: [0, -100] }; if (movement[event.key]) { event.preventDefault(); pan(...movement[event.key]); } }}>
           {layout.nodes.length === 0 ? <p className="treeEmpty">表示できる実績がありません。</p> : <div className="treeCamera" data-compact={view.scale < .42} style={{ width: layout.width, height: layout.height, transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})` }}>
             <svg className="treeEdges" width={layout.width} height={layout.height} aria-hidden="true">{layout.edges.map((edge) => { const from = positions.get(edge.from)!; const to = positions.get(edge.to)!; const x1 = from.x + NODE_WIDTH, y1 = from.y + NODE_HEIGHT / 2, x2 = to.x, y2 = to.y + NODE_HEIGHT / 2; return <path key={`${edge.from}:${edge.to}`} d={`M${x1},${y1} C${x1 + 40},${y1} ${x2 - 40},${y2} ${x2},${y2}`} data-active={from.state === "unlocked"} />; })}</svg>
-            {layout.nodes.map((node) => <button type="button" key={node.id} data-node-id={node.id} data-state={node.state} className={`treeNode${selectedId === node.id ? " isSelected" : ""}${query && !matches.has(node.id) ? " isDimmed" : ""}`} style={{ left: node.x, top: node.y, width: NODE_WIDTH, height: NODE_HEIGHT }} aria-label={`${node.masked ? "未発見の実績" : node.name}、${treeStateLabel(node.state)}`} aria-pressed={selectedId === node.id} onClick={(event) => { if (event.detail === 0) focusNode(node.id); }} onFocus={() => { if (!pointers.current.size) focusNode(node.id); }}>
-              <AchievementBadge tier={node.tier} domains={node.domains} achievementId={node.masked ? undefined : node.id} achievementName={node.name} /><span className="treeNodeName">{node.name}</span><span className="treeNodeState">{node.masked ? "未発見" : treeStateLabel(node.state)}</span>
+            {layout.nodes.map((node) => <button type="button" key={node.id} data-node-id={node.id} data-state={node.state} className={`treeNode${selectedId === node.id ? " isSelected" : ""}${query && !matches.has(node.id) ? " isDimmed" : ""}`} style={{ left: node.x, top: node.y, width: NODE_WIDTH, height: NODE_HEIGHT }} aria-label={`${node.masked ? "未発見の実績" : nodeName(node)}、${treeStateLabel(node.state)}`} aria-pressed={selectedId === node.id} onClick={(event) => { if (event.detail === 0) focusNode(node.id); }} onFocus={() => { if (!pointers.current.size) focusNode(node.id); }}>
+              <AchievementBadge tier={node.tier} domains={node.domains} achievementId={node.masked ? undefined : node.id} achievementName={node.name} /><span className="treeNodeName">{nodeName(node)}</span><span className="treeNodeState">{node.masked ? "未発見" : treeStateLabel(node.state)}</span>
             </button>)}
           </div>}
         </div>
         <p className="treeHint">線はNotionに登録された前提関係です。独立した実績も並べています。カテゴリ外・非公開の関係はこの表示には含めません。</p>
       </section>
       <aside className="treeDetail" aria-label="選択した実績">
-        {selected ? <><p className="eyebrow">{treeStateLabel(selected.state)}</p><h2>{selected.name}</h2><p><CategoryName category={selected.category} /></p>
+        {selected ? <><p className="eyebrow">{treeStateLabel(selected.state)}</p><h2>{nodeName(selected)}</h2><p><CategoryName category={selected.category} /></p>
           {selected.masked ? <p>前提実績を解除すると、名前と条件が明らかになります。参照先の欠損・循環がある場合は、Notionの関係を確認してください。</p> : <><p>{selected.flavorText}</p><h3>達成条件</h3><p>{selected.requirement || "達成条件は未設定です。"}</p><p><TierName tier={selected.tier} /> · {selected.xp} XP</p>{selected.href ? <Link className="notionLink" href={selected.href}>実績の詳細へ →</Link> : null}</>}
           <p className="muted">前提実績 {selected.prerequisiteCount} 件</p>
         </> : <><h2>気になる実績を選ぶ</h2><p>ノードをタップするか「実績を選ぶ」から探せます。まだ触れていない世界とのつながりを眺めてみましょう。</p></>}
       </aside>
     </div>
-    <p role="status" className="treeSelectionStatus">{selected ? `${selected.masked ? "未発見の実績" : selected.name}を選択しました。` : ""}</p>
+    <p role="status" className="treeSelectionStatus">{selected ? `${selected.masked ? "未発見の実績" : nodeName(selected)}を選択しました。` : ""}</p>
   </>;
 }
+
 
