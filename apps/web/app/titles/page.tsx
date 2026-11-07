@@ -36,7 +36,11 @@ export default async function TitlesPage() {
         </section>
       ) : null}
 
-      <TitleCollection titles={snapshot.titles} source={snapshot.source} />
+      <TitleCollection
+        titles={snapshot.titles}
+        source={snapshot.source}
+        equipmentEnabled={snapshot.source === "notion" && Boolean(process.env.BLOB_READ_WRITE_TOKEN)}
+      />
     </main>
   );
 }
