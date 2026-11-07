@@ -161,7 +161,13 @@ export default async function HomePage() {
         </div> : <p className="homeEmpty">写真・音・一言。残したくなった冒険だけが、ここに並びます。</p>}
       </section>
 
-      <footer className="homeFooter"><span className="homeSyncState">{snapshot.source === "notion" ? "NOTION SYNC" : "DEMO MODE"}</span><div>{stats.map((stat) => <Link href={stat.href} key={stat.label}>{stat.label} <b>{stat.value}</b><span> / {stat.total}</span></Link>)}</div></footer>
+      <footer className="homeFooter">
+        <span className="homeSyncState">{snapshot.source === "notion" ? "NOTION SYNC" : "DEMO MODE"}</span>
+        <div>
+          {stats.map((stat) => <Link href={stat.href} key={stat.label}>{stat.label} <b>{stat.value}</b><span> / {stat.total}</span></Link>)}
+          <Link href="/install">ホーム画面に追加</Link>
+        </div>
+      </footer>
     </main>
   );
 }
