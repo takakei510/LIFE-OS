@@ -6,7 +6,9 @@ const cooldowns = new Map<string, number>();
 const json = (data: unknown, status = 200) => Response.json(data, { status, headers: { "Cache-Control": "no-store" } });
 export async function POST(request: Request) {
   if (request.headers.get("origin") !== new URL(request.url).origin) return json({ error: "この画面からもう一度お試しください。" }, 403);
-  if (process.env.GUIDE_ENABLED !== "true" || process.env.GUIDE_FREE_CREDITS_VERIFIED !== "true") return json({ error: "案内人は準備中です。AIの無料利用設定を確認してから開始します。" }, 503);
+  if (process.env.VERCEL_ENV !== "preview" || process.env.GUIDE_ENABLED !== "true" || process.env.GUIDE_FREE_CREDITS_VERIFIED !== "true") {
+    return json({ error: "案内人は準備中です。AIの無料利用設定を確認してから開始します。" }, 503);
+  }
   if (!request.headers.get("content-type")?.startsWith("application/json")) return json({ error: "入力形式を確認してください。" }, 415);
   let input;
   try {
