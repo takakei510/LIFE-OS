@@ -6,8 +6,10 @@ import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
 
 export const dynamic = "force-dynamic";
 
-export default async function QuestsPage({ searchParams }: { searchParams: Promise<{ state?: string }> }) {
-  const acceptedOnly = (await searchParams).state === "accepted";
+export default async function QuestsPage({ searchParams }: { searchParams: Promise<{ state?: string; q?: string }> }) {
+  const { state, q } = await searchParams;
+  const acceptedOnly = state === "accepted";
+  const query = typeof q === "string" ? q.slice(0, 120) : "";
   const snapshot = await getLifeOsSnapshot();
 
   return (
@@ -23,7 +25,8 @@ export default async function QuestsPage({ searchParams }: { searchParams: Promi
         <Link href="/quests?state=accepted" aria-current={acceptedOnly ? "page" : undefined}>受注中 {snapshot.quests.filter((quest) => quest.state === "Accepted").length}件</Link>
       </nav>
       <p className="muted">一覧から受注できます。取り消しも自由で、XPは減りません。</p>
-      <QuestBoard key={acceptedOnly ? "accepted" : "all"} quests={snapshot.quests} source={snapshot.source} actionsEnabled={process.env.QUEST_ACTIONS_ENABLED === "true"} initialState={acceptedOnly ? "受注中" : "すべて"} />
+      <Link className="notionLink" href="/guide">探索案内人に相談 →</Link>
+      <QuestBoard initialQuery={query} key={JSON.stringify([acceptedOnly, query])} quests={snapshot.quests} source={snapshot.source} actionsEnabled={process.env.QUEST_ACTIONS_ENABLED === "true"} initialState={acceptedOnly ? "受注中" : "すべて"} />
     </main>
   );
 }

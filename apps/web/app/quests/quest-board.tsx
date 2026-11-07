@@ -13,8 +13,8 @@ const ACCEPTED = "受注中";
 const COMPLETED = "完了";
 const typeOrder = ["Daily", "Weekly", "Monthly", "Event"];
 
-export function QuestBoard({ quests, source, actionsEnabled, initialState = ALL }: { quests: Quest[]; source: "notion" | "fallback"; actionsEnabled: boolean; initialState?: string }) {
-  const [query, setQuery] = useState("");
+export function QuestBoard({ quests, source, actionsEnabled, initialState = ALL, initialQuery = "" }: { quests: Quest[]; source: "notion" | "fallback"; actionsEnabled: boolean; initialState?: string; initialQuery?: string }) {
+  const [query, setQuery] = useState(initialQuery);
   const [type, setType] = useState(ALL);
   const [state, setState] = useState(initialState);
 
