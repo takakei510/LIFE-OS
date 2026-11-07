@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { LifeIcon } from "@/components/life-icons/life-icon";
 import type { AdventureLogMedia } from "@/lib/notion/types";
 import "./adventure-log-photo.css";
 
@@ -8,7 +9,7 @@ function Photo({ src, name, count, compact }: { src: string; name: string; count
   const [failed, setFailed] = useState(false);
   return (
     <span className={`adventurePhoto${compact ? " adventurePhoto--compact" : ""}`}>
-      {failed ? <span className="adventurePhotoFallback">📸<span>写真を読み込めませんでした。<br />ページを再読み込みすると再取得できます。</span></span> : <img src={src} alt={name} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setFailed(true)} />}
+      {failed ? <span className="adventurePhotoFallback"><LifeIcon name="life-photo" size={24}/><span>写真を読み込めませんでした。<br />ページを再読み込みすると再取得できます。</span></span> : <img src={src} alt={name} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setFailed(true)} />}
       {count > 1 ? <span className="adventurePhotoCount">写真 {count}枚</span> : null}
     </span>
   );

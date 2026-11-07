@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { categoryLabel, tierLabel } from "@/components/life-icons/presentation";
+import { AchievementName, TierName, CategoryName } from "@/components/life-icons/life-icon";
+import { AchievementBadge } from "@/components/brand/achievement-badge";
 import { useMemo, useState } from "react";
 import type { Achievement } from "@/lib/notion/types";
 
@@ -8,9 +11,9 @@ const ALL = "すべて";
 const UNLOCKED = "解除済み";
 const UNDISCOVERED = "未解除";
 
-export function AchievementLibrary({ achievements, source }: { achievements: Achievement[]; source: "notion" | "fallback" }) {
+export function AchievementLibrary({ achievements, source, initialCategory = ALL }: { achievements: Achievement[]; source: "notion" | "fallback"; initialCategory?: string }) {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState(ALL);
+  const [category, setCategory] = useState(initialCategory);
   const [tier, setTier] = useState(ALL);
   const [state, setState] = useState(ALL);
 
@@ -54,17 +57,17 @@ export function AchievementLibrary({ achievements, source }: { achievements: Ach
         />
       </label>
       <div className="filterGrid">
-        <label>カテゴリ<select value={category} onChange={(e) => setCategory(e.target.value)}>{categories.map((v) => <option key={v}>{v}</option>)}</select></label>
-        <label>Tier<select value={tier} onChange={(e) => setTier(e.target.value)}>{tiers.map((v) => <option key={v}>{v}</option>)}</select></label>
+        <label>カテゴリ<select value={category} onChange={(e) => setCategory(e.target.value)}>{categories.map((v) => <option key={v} value={v}>{v === ALL ? ALL : categoryLabel(v)}</option>)}</select></label>
+        <label>Tier<select value={tier} onChange={(e) => setTier(e.target.value)}>{tiers.map((v) => <option key={v} value={v}>{v === ALL ? ALL : tierLabel(v)}</option>)}</select></label>
         <label>解除状態<select value={state} onChange={(e) => setState(e.target.value)}><option>{ALL}</option><option>{UNLOCKED}</option><option>{UNDISCOVERED}</option></select></label>
       </div>
       <section className="achievementGrid">
         {filtered.map((achievement) => (
           <Link className={`achievementCard ${achievement.unlocked ? "isUnlocked" : "isLocked"}`} href={`/achievements/${achievement.id}`} key={achievement.id}>
-            <div className="achievementMeta"><span>{achievement.category ?? "未分類"}</span><span>{achievement.tier ?? "Tier未設定"}</span></div>
-            <h2>{achievement.name}</h2>
-            <p>{achievement.flavorText || "まだ触れていない世界がある。"}</p>
-            <div className="achievementFooter"><strong>{achievement.xp} XP</strong><span>{achievement.unlocked ? "解除済み" : "未解除"}</span></div>
+            <div className="achievementMeta"><CategoryName category={achievement.category}/><span>{achievement.lockedByChain ? "未発見" : <TierName tier={achievement.tier}/>}</span></div>
+            <div className="achievementIdentity"><AchievementBadge tier={achievement.tier} domains={achievement.domains} achievementId={achievement.lockedByChain ? undefined : achievement.id} achievementName={achievement.name}/><h2>{achievement.lockedByChain ? "？？？" : <AchievementName achievement={achievement} size={20}/>}</h2></div>
+            <p>{achievement.lockedByChain ? "前提実績を解除すると、この体験が明らかになります。" : achievement.flavorText || "まだ触れていない世界がある。"}</p>
+            <div className="achievementFooter"><strong>{achievement.lockedByChain ? "未発見" : `${achievement.xp} XP`}</strong><span>{achievement.unlocked ? "解除済み" : achievement.lockedByChain ? "前提未解除" : "未解除"}</span></div>
           </Link>
         ))}
       </section>

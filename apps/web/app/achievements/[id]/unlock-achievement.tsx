@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { NeoButton } from "@/components/ui/neo-button";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { unlockAchievementAction } from "@/app/actions/achievement-actions";
 
 function UnlockButton() {
   const { pending } = useFormStatus();
-  return <button disabled={pending} type="submit">{pending ? "解除中…" : "実績を解除する"}</button>;
+  return <NeoButton disabled={pending} type="submit">{pending ? "解除中…" : "実績を解除する"}</NeoButton>;
 }
 
 export function UnlockAchievement({ achievementId, achievementName }: { achievementId: string; achievementName: string }) {

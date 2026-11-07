@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { achievementPresentation } from "@/components/life-icons/presentation";
+import { NeoButton } from "@/components/ui/neo-button";
 import { useActionState, useCallback, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createAdventureLogAction } from "@/app/actions/adventure-log-actions";
@@ -9,7 +11,7 @@ import { toJstLocalDateTime } from "@/lib/life-os/adventure-logs/date-time";
 
 function SubmitButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
-  return <button className="adventureLogSubmit" disabled={pending || disabled} type="submit">{pending ? "保存中…" : "保存する"}</button>;
+  return <NeoButton className="adventureLogSubmit" disabled={pending || disabled} type="submit">{pending ? "保存中…" : "保存する"}</NeoButton>;
 }
 
 export function AdventureLogForm({
@@ -48,7 +50,7 @@ export function AdventureLogForm({
       <input name="achievementName" type="hidden" value={achievementName ?? ""} />
       <input name="photoGrant" type="hidden" value={photoState.count ? photoState.grant : ""} />
       {state && !state.ok ? <p className="adventureLogFormError" role="alert">{state.message}</p> : null}
-      {achievementName ? <p className="adventureLogPrivacy">Related Achievement：{achievementName}</p> : null}
+      {achievementName ? <p className="adventureLogPrivacy">Related Achievement：{achievementPresentation({ id: relatedAchievementId ?? "", name: achievementName, domains: [] }).name}</p> : null}
       <label><span>タイトル <small>任意</small></span><input name="name" maxLength={120} value={fields.name} onChange={(event) => setFields({ ...fields, name: event.target.value })} />{errors?.name ? <em>{errors.name}</em> : null}</label>
       <PhotoPicker requestId={requestId} onStateChange={handlePhotoState} />
       {photoState.count > 0 && !photoState.ready ? <p role="status">写真をアップロードしてから保存してください。写真を削除してテキストだけでも保存できます。</p> : null}

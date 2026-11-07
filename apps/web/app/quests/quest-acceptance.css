@@ -1,0 +1,16 @@
+.questTabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 22px 0; }
+.questTabs a { padding: 12px 18px; min-height: 44px; border: 1px solid var(--line); border-radius: 12px; text-decoration: none; color: var(--muted); }
+.questTabs a[aria-current="page"] { border-color: var(--cyan); color: var(--text); background: var(--panel); }
+.questDetail { overflow-wrap: anywhere; }
+.questDetail h1 { font-size: clamp(1.5rem, 5vw, 2.4rem); line-height: 1.5; }
+.questDescription { white-space: pre-wrap; }
+.questControls { display: grid; gap: 14px; margin: 28px 0; padding: 20px; border: 1px solid var(--line); border-radius: 16px; }
+.questControls p { margin: 0; line-height: 1.8; }
+.questControls button { max-width: 100%; white-space: normal; }
+.questControls.questControls--compact { margin: 0; padding: 0; border: 0; border-radius: 0; }
+.questCardActions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; }
+.questCardActions a { color: var(--cyan); }
+.questCard h2 a { color: inherit; text-decoration: none; }
+.questCard h2 a:hover { text-decoration: underline; }
+.questCard { min-width: 0; overflow-wrap: anywhere; gap: 18px; }
+@media (max-width: 420px) { .questControls { padding: 16px; } .questTabs a { flex: 1; text-align: center; padding-inline: 12px; } }

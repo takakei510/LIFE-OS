@@ -1,4 +1,5 @@
 "use client";
+import { LifeIcon } from "@/components/life-icons/life-icon";
 
 import Link from "next/link";
 import { useEffect } from "react";
@@ -17,7 +18,7 @@ export default function ErrorPage({
   return (
     <main style={{ display: "grid", minHeight: "100vh", placeItems: "center", paddingBottom: 120 }}>
       <section className="panel" role="alert" style={{ width: "min(680px, 100%)", padding: 40 }}>
-        <div aria-hidden="true" style={{ marginBottom: 22, fontSize: "3rem" }}>🛰️</div>
+        <div aria-hidden="true" style={{ marginBottom: 22, fontSize: "3rem" }}><LifeIcon name="life-general" size={24}/></div>
         <p className="eyebrow">SYNC INTERRUPTED</p>
         <h1 style={{ fontSize: "clamp(2.2rem, 7vw, 4.4rem)" }}>世界の記録を読み込めませんでした。</h1>
         <p className="lead">

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import Link from "next/link";
+import { achievementPresentation } from "@/components/life-icons/presentation";
 
 import { AdventureLogForm } from "./adventure-log-form";
 import "./new-adventure-log.css";
@@ -10,6 +11,7 @@ export default async function NewAdventureLogPage({
   searchParams: Promise<{ achievementId?: string; achievementName?: string; loggedAt?: string }>;
 }) {
   const query = await searchParams;
+  const displayName = achievementPresentation({ id: query.achievementId ?? "", name: query.achievementName ?? "", domains: [] }).name;
   return (
     <main>
       <nav className="pageNav" aria-label="Primary navigation">
@@ -18,7 +20,7 @@ export default async function NewAdventureLogPage({
       <section className="newAdventureLogHero">
         <p className="eyebrow">NEW ADVENTURE LOG</p>
         <h1>この冒険から、何を持ち帰る？</h1>
-        <p>{query.achievementName ? `「${query.achievementName}」の思い出を任意で残せます。` : "証拠ではありません。残したいものだけを保存できます。"}</p>
+        <p>{query.achievementName ? `「${displayName}」の思い出を任意で残せます。` : "証拠ではありません。残したいものだけを保存できます。"}</p>
       </section>
       <AdventureLogForm requestId={randomUUID()} relatedAchievementId={query.achievementId} achievementName={query.achievementName} initialLoggedAt={query.loggedAt} />
     </main>

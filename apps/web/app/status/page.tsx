@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { NeoIcon } from "@/components/ui/neo-icon";
+import { categoryLabel } from "@/components/life-icons/presentation";
+import { PlayerRank, CategoryName } from "@/components/life-icons/life-icon";
 
 import "./status-category-progress.css";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
@@ -70,14 +73,6 @@ export default async function StatusPage() {
 
   return (
     <main>
-      <nav className="pageNav" aria-label="Primary navigation">
-        <Link href="/">HOME</Link>
-        <Link href="/achievements">ACHIEVEMENTS</Link>
-        <Link href="/quests">QUESTS</Link>
-        <Link href="/titles">TITLES</Link>
-        <Link className="pageNavActive" href="/status">STATUS</Link>
-      </nav>
-
       <header className="pageHeader compactHero">
         <p className="eyebrow">PLAYER STATUS</p>
         <h1>いま立っている場所</h1>
@@ -91,8 +86,8 @@ export default async function StatusPage() {
             <strong className="statusLevel">{level}</strong>
           </div>
           <div>
-            <p className="eyebrow">{rank}</p>
-            <h2>{equippedTitle ? `👑 ${equippedTitle.name}` : "称号未装備"}</h2>
+            <p className="eyebrow"><PlayerRank rank={rank}/></p>
+            <h2>{equippedTitle ? <><NeoIcon name="title" size={20}/> {equippedTitle.name}</> : "称号未装備"}</h2>
             <p className="muted">累計 {totalXp.toLocaleString()} XP</p>
           </div>
         </div>
@@ -145,13 +140,13 @@ export default async function StatusPage() {
             {categoryProgress.map((item) => (
               <Link className="categoryProgressItem" href={`/achievements?category=${encodeURIComponent(item.category)}`} key={item.category}>
                 <div className="categoryProgressTop">
-                  <strong>{item.category}</strong>
+                  <strong><CategoryName category={item.category}/></strong>
                   <span>{item.unlocked} / {item.total}件 · {item.xp} XP</span>
                 </div>
                 <div
                   className="categoryProgressTrack"
                   role="progressbar"
-                  aria-label={`${item.category} ${item.percent}%`}
+                  aria-label={`${categoryLabel(item.category)} ${item.percent}%`}
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={item.percent}

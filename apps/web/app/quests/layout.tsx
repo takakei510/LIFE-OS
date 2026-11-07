@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./quest-acceptance.css";
 
 export const metadata: Metadata = {
   title: "Quest Board | LIFE OS",

@@ -1,0 +1,47 @@
+/* B1 NEO SYSTEM shared foundation. Preserve the public legacy aliases below. */
+:root {
+  color-scheme: dark;
+  --neo-bg: #0b1220;
+  --neo-surface: #111b2e;
+  --neo-surface-raised: #18263d;
+  --neo-primary: #00d9f5;
+  --neo-purple: #a78bfa;
+  --neo-success: #54e6c7;
+  --neo-tier-common: #bac8dc;
+  --neo-tier-uncommon: #00d9f5;
+  --neo-tier-rare: #a78bfa;
+  --neo-tier-epic: #ffd166;
+  --neo-tier-legendary: #ff5c7a;
+  --neo-legendary: var(--neo-tier-legendary);
+  --neo-text: #edf5ff;
+  --neo-muted: #acbdd4;
+  --neo-line: #314965;
+  --neo-control-line: #7187a3;
+  --neo-on-primary: #061523;
+  --neo-radius-sm: 10px;
+  --neo-radius-md: 16px;
+  --neo-radius-lg: 22px;
+  --neo-space-1: 4px;
+  --neo-space-2: 8px;
+  --neo-space-3: 12px;
+  --neo-space-4: 16px;
+  --neo-space-6: 24px;
+  --neo-space-8: 32px;
+  --neo-font-body: "Sora Variable", "Noto Sans JP Variable", system-ui, sans-serif;
+  --neo-font-display: "Sora Variable", "Noto Sans JP Variable", system-ui, sans-serif;
+  --neo-panel-fill: linear-gradient(145deg, #18283e, #111b2e 65%);
+  --neo-shadow: inset 0 1px 0 rgb(180 221 255 / 8%), 0 12px 32px rgb(0 0 0 / 20%);
+  --neo-glow-cyan: 0 0 20px rgb(0 217 245 / 13%);
+  --neo-glow-purple: 0 0 20px rgb(167 139 250 / 13%);
+  --neo-duration: 160ms;
+  --neo-ease: cubic-bezier(.2, .7, .2, 1);
+  /* Existing pages and PR #57 continue using these names. */
+  --bg: var(--neo-bg);
+  --panel: var(--neo-surface);
+  --panel-strong: var(--neo-surface-raised);
+  --text: var(--neo-text);
+  --muted: var(--neo-muted);
+  --line: var(--neo-line);
+  --border: var(--neo-line);
+  --accent: var(--neo-primary);
+}

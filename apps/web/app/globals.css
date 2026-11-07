@@ -1,28 +1,17 @@
-:root {
-  color-scheme: dark;
-  --bg: #090b10;
-  --panel: #11151d;
-  --panel-strong: #171c26;
-  --text: #f5f7fb;
-  --muted: #9ba6b5;
-  --line: #263041;
-  --accent: #8fa7ff;
-}
-
 * { box-sizing: border-box; }
-html { background: var(--bg); }
-body { margin: 0; min-height: 100vh; background: radial-gradient(circle at top right, rgba(143, 167, 255, 0.14), transparent 34rem), var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+html { background: var(--bg); scroll-padding-top: 108px; }
+body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 90% 0%, rgb(0 217 245 / 7%), transparent 36rem), radial-gradient(ellipse at 0% 36rem, rgb(167 139 250 / 6%), transparent 40rem), var(--bg); color: var(--text); font-family: var(--neo-font-body); }
 a { color: inherit; }
-main { width: min(960px, calc(100% - 32px)); margin: 0 auto; padding: 72px 0; }
+main { width: min(960px, calc(100% - 32px)); margin: 0 auto; padding: 120px 0 72px; }
 .hero, .pageHeader { max-width: 760px; margin-bottom: 40px; }
 .compactHero { margin-bottom: 28px; }
 h1, h2, p { margin-top: 0; }
-h1 { max-width: 760px; margin-bottom: 18px; font-size: clamp(2.5rem, 7vw, 5.5rem); line-height: 0.98; letter-spacing: -0.055em; }
+h1 { max-width: 760px; margin-bottom: 18px; font-family: var(--neo-font-display); font-size: clamp(2rem, 6vw, 4rem); line-height: 1.2; letter-spacing: -0.035em; }
 h2 { margin-bottom: 10px; font-size: 1.45rem; }
 .eyebrow { margin-bottom: 14px; color: var(--accent); font-size: 0.76rem; font-weight: 800; letter-spacing: 0.16em; }
 .lead, .muted { color: var(--muted); line-height: 1.75; }
 .lead { max-width: 680px; font-size: 1.05rem; }
-.playerCard, .panel, .statCard { border: 1px solid var(--line); background: linear-gradient(145deg, rgba(23, 28, 38, 0.94), rgba(14, 18, 25, 0.94)); box-shadow: 0 22px 70px rgba(0, 0, 0, 0.22); }
+.playerCard, .panel, .statCard { border: 1px solid var(--line); background: var(--neo-panel-fill); box-shadow: var(--neo-shadow); }
 .playerCard, .panel { padding: 28px; border-radius: 22px; }
 .playerCardHeader, .xpRow, .libraryToolbar, .achievementMeta, .achievementFooter, .detailTopline { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .playerTitle { margin-bottom: 0; color: var(--muted); }
@@ -32,7 +21,7 @@ h2 { margin-bottom: 10px; font-size: 1.45rem; }
 .xpRow { margin-top: 30px; color: var(--muted); }
 .xpRow strong { color: var(--text); font-size: 1.15rem; }
 .progressTrack { height: 9px; margin-top: 12px; overflow: hidden; border-radius: 999px; background: #252b36; }
-.progressValue { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #718cff, #b1c0ff); transition: width 420ms ease; }
+.progressValue { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--neo-primary), var(--neo-purple)); transition: width 420ms ease; }
 .syncWarning { margin: 16px 0 0; color: #ffd08a; font-size: 0.85rem; line-height: 1.6; }
 .statsGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
 .statCard { display: flex; min-height: 140px; padding: 22px; border-radius: 18px; flex-direction: column; justify-content: space-between; }
@@ -123,3 +112,20 @@ h2 { margin-bottom: 10px; font-size: 1.45rem; }
   .equippedTitleCard, .statusIdentity { grid-template-columns: 1fr; }
   .statusHero { padding: 24px; }
 }
+
+/* Common interaction defaults, including existing controls not yet migrated. */
+button, input, textarea, select { font-family: inherit; }
+input, textarea, select { max-width: 100%; }
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), textarea, select { border-color: var(--neo-control-line); }
+:where(a, button, input, textarea, select, summary):focus-visible { outline: 2px solid var(--neo-primary); outline-offset: 4px; }
+#main-content:focus { outline: none; }
+.skipLink { position: fixed; z-index: 2000; left: 16px; top: 8px; transform: translateY(-160%); padding: 12px 18px; border-radius: var(--neo-radius-sm); background: var(--neo-primary); color: var(--neo-on-primary); font-weight: 700; }
+.skipLink:focus { transform: none; }
+.achievementCard, .questCard, .titleCard, .achievementDetail { background: var(--neo-panel-fill); box-shadow: var(--neo-shadow); }
+@media (max-width: 640px) { input, textarea, select { font-size: 16px; } }
+/* Keep status changes immediate and remove decorative motion across all routes. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .achievementCard:hover { transform: none; }
+}
+@media (forced-colors: active) { :where(a, button, input, textarea, select):focus-visible { outline-color: Highlight; }.mobileBottomNavItem--active { border-color: Highlight; } }

@@ -29,5 +29,14 @@ jobs:
       - name: Type-check web app
         run: npm run typecheck --workspace apps/web
 
+      - name: Test quest state transitions and repository boundaries
+        run: npm run test:quests --workspace apps/web
+
       - name: Build web app
         run: npm run build
+
+      - name: Test adventure guide filters and export
+        run: npm run test:guide --workspace apps/web
+
+      - name: Test achievement tree privacy and prerequisite boundaries
+        run: npm run test:tree --workspace apps/web
