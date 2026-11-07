@@ -89,6 +89,7 @@ export default async function StatusPage() {
             <p className="eyebrow"><PlayerRank rank={rank}/></p>
             <h2>{equippedTitle ? <><NeoIcon name="title" size={20}/> {equippedTitle.name}</> : "称号未装備"}</h2>
             <p className="muted">累計 {totalXp.toLocaleString()} XP</p>
+            {player?.achievementXp !== null && player?.achievementXp !== undefined && player?.questXp !== null && player?.questXp !== undefined ? <p className="muted">実績 {player.achievementXp.toLocaleString()} XP · クエスト {player.questXp.toLocaleString()} XP</p> : null}
           </div>
         </div>
 
