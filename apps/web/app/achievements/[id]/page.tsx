@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { UnlockAchievement } from "./unlock-achievement";
 import { getLifeOsSnapshot } from "@/lib/notion/snapshot";
+import { readAchievementEvidence } from "@/lib/notion/repositories/achievements";
 
 export default async function AchievementDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -13,6 +14,8 @@ export default async function AchievementDetailPage({ params }: { params: Promis
 
   if (!achievement || (achievement.visibility === "Hidden" && !achievement.unlocked)) notFound();
   if (achievement.lockedByChain) return <main><Link className="backLink" href="/achievements">← 実績ライブラリへ戻る</Link><article className="achievementDetail"><p className="eyebrow">未発見</p><h1>？？？</h1><p>前提実績を解除すると、この体験の内容が明らかになります。</p><Link href="/achievements/tree">ツリーでつながりを見る →</Link></article></main>;
+
+  const evidence = await readAchievementEvidence(achievement.id);
 
   return (
     <main>
@@ -38,6 +41,15 @@ export default async function AchievementDetailPage({ params }: { params: Promis
         ) : (
           <UnlockAchievement achievementId={achievement.id} achievementName={achievement.name} />
         )}
+        {evidence ? (
+          <section className="detailSection" aria-label="冒険の豆知識">
+            <p className="eyebrow">冒険の豆知識</p>
+            <h2>{evidence.headline}</h2>
+            <p>{evidence.note}</p>
+            {evidence.strength ? <p className="muted">{evidence.strength}</p> : null}
+            {evidence.source ? <a href={evidence.source} target="_blank" rel="noopener noreferrer">出典を読む ↗</a> : null}
+          </section>
+        ) : null}
         <a className="notionLink" href={achievement.url} target="_blank" rel="noreferrer">Notionの記録を開く ↗</a>
       </article>
     </main>

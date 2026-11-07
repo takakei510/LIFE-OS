@@ -108,7 +108,7 @@ const transport = await import(transportUrl);
 const propertiesUrl = moduleUrl("../../notion/properties.ts", { "./media": moduleUrl("../../notion/media.ts") });
 const readerUrl = moduleUrl("../../notion/repositories/achievement-tree.ts", { "@/lib/env": transportUrl, "@/lib/notion/client": transportUrl, "@/lib/notion/properties": propertiesUrl });
 const { readAchievementTreeRecords } = await import(readerUrl);
-const { unlockAchievementPage } = await import(moduleUrl("../../notion/repositories/achievements.ts", { "@/lib/env": transportUrl, "@/lib/notion/client": transportUrl, "./achievement-tree": readerUrl, "@/lib/life-os/achievement-tree/model": modelUrl }));
+const { unlockAchievementPage } = await import(moduleUrl("../../notion/repositories/achievements.ts", { "@/lib/env": transportUrl, "@/lib/notion/client": transportUrl, "./achievement-tree": readerUrl, "@/lib/notion/properties": propertiesUrl, "@/lib/life-os/achievement-tree/model": modelUrl }));
 function page(id = "a", overrides = {}, extra = {}) {
   return { object: "page", id, parent: { type: "data_source_id", data_source_id: ds }, archived: false, in_trash: false, url: "https://notion.so/example", properties: {
     Name: { type: "title", title: [{ plain_text: `Name ${id}` }] }, Lifecycle: { type: "select", select: { name: "Active" } },
