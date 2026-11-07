@@ -3,6 +3,8 @@ import "server-only";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { getServerEnv } from "@/lib/env";
 import { getNotionClient } from "@/lib/notion/client";
+import { readAchievementTreeRecords } from "./achievement-tree";
+import { buildTreeModel, treeId } from "@/lib/life-os/achievement-tree/model";
 
 function pageResult(value: unknown): PageObjectResponse | null {
   return value && typeof value === "object" && "object" in value && value.object === "page"
@@ -39,6 +41,9 @@ export async function unlockAchievementPage(pageId: string, unlockedAt: string):
   }
   const unlocked = current.properties.Unlocked;
   if (unlocked?.type === "checkbox" && unlocked.checkbox) return current;
+  const model = buildTreeModel(await readAchievementTreeRecords(), true);
+  const candidate = model.nodes.find((node) => treeId(node.id) === treeId(pageId));
+  if (current.archived || current.in_trash || !candidate || candidate.state !== "available") throw new Error("Prerequisite achievement is not available.");
   const updated = await notion.pages.update({
     page_id: pageId,
     properties: {

@@ -13,6 +13,8 @@ export type Achievement = {
   unlockedAt: string | null;
   visibility: string | null;
   url: string;
+  lockedByChain?: boolean;
+  prerequisiteState?: "unlocked" | "available" | "locked" | "review";
 };
 
 export type Quest = {

@@ -21,6 +21,8 @@ HOME更新（本番公開済み）の構成・フォント比較・データ境�
 
 ## Architecture
 
+実績ツリー（プレビュー）の操作・秘密表示・前提条件の扱いは [`実績ツリー仕様`](docs/architecture/achievement-tree.md) を参照してください。
+
 - **Notion** — セーブデータと公式仕様書
 - **AI Game Master（計画・Draft）** — 提案などの補助。現在の実績解除は本人判断
 - **Web App** — プレイヤーが触れるゲーム画面

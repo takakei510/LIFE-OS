@@ -64,10 +64,10 @@ export function AchievementLibrary({ achievements, source, initialCategory = ALL
       <section className="achievementGrid">
         {filtered.map((achievement) => (
           <Link className={`achievementCard ${achievement.unlocked ? "isUnlocked" : "isLocked"}`} href={`/achievements/${achievement.id}`} key={achievement.id}>
-            <div className="achievementMeta"><CategoryName category={achievement.category}/><span><TierName tier={achievement.tier}/></span></div>
-            <div className="achievementIdentity"><AchievementBadge tier={achievement.tier} domains={achievement.domains} achievementId={achievement.id} achievementName={achievement.name}/><h2><AchievementName achievement={achievement} size={20}/></h2></div>
-            <p>{achievement.flavorText || "まだ触れていない世界がある。"}</p>
-            <div className="achievementFooter"><strong>{achievement.xp} XP</strong><span>{achievement.unlocked ? "解除済み" : "未解除"}</span></div>
+            <div className="achievementMeta"><CategoryName category={achievement.category}/><span>{achievement.lockedByChain ? "未発見" : <TierName tier={achievement.tier}/>}</span></div>
+            <div className="achievementIdentity"><AchievementBadge tier={achievement.tier} domains={achievement.domains} achievementId={achievement.lockedByChain ? undefined : achievement.id} achievementName={achievement.name}/><h2>{achievement.lockedByChain ? "？？？" : <AchievementName achievement={achievement} size={20}/>}</h2></div>
+            <p>{achievement.lockedByChain ? "前提実績を解除すると、この体験が明らかになります。" : achievement.flavorText || "まだ触れていない世界がある。"}</p>
+            <div className="achievementFooter"><strong>{achievement.lockedByChain ? "未発見" : `${achievement.xp} XP`}</strong><span>{achievement.unlocked ? "解除済み" : achievement.lockedByChain ? "前提未解除" : "未解除"}</span></div>
           </Link>
         ))}
       </section>
