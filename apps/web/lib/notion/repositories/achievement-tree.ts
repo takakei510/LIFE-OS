@@ -8,6 +8,18 @@ import type { TreeRecord } from "@/lib/life-os/achievement-tree/model";
 const isPage = (value: unknown): value is PageObjectResponse => Boolean(value && typeof value === "object" && "object" in value && value.object === "page" && "properties" in value);
 
 export async function readAchievementTreeRecords(): Promise<TreeRecord[]> {
+  if (!process.env.LIFE_OS_CLUSTER_RULES?.trim()) return readRawAchievementTreeRecords();
+  return (await readAchievementAccess()).records;
+}
+
+export async function readAchievementAccess(persist = false) {
+  const records = await readRawAchievementTreeRecords();
+  if (!process.env.LIFE_OS_CLUSTER_RULES?.trim()) return { records, canDiscover: false, clusters: [] };
+  const { resolveClusterAccess } = await import("./cluster-discovery");
+  return resolveClusterAccess(records, persist);
+}
+
+async function readRawAchievementTreeRecords(): Promise<TreeRecord[]> {
   const notion = getNotionClient(); const env = getServerEnv();
   if (!notion || !env) throw new Error("Notion is not configured.");
   const pages: PageObjectResponse[] = [];
