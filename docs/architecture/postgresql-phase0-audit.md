@@ -191,3 +191,51 @@ Notion Query Data SourceのSQL/rowsモードのワークスペース利用枠に
 ### 現時点の判定
 
 Phase 0：**継続中**。前提辺の完全性、式本文、全データのスナップショット、未認証アクセスの実地検査、写真ファイルの永続性の確認が未完了。データベース本番切替の承認条件は満たしていない。
+
+## 10. 認証・写真・読取経路の詳細静的監査（継続調査）
+
+### 10.1 書込経路と保護境界
+
+| 操作 | サーバー側の検査 | 未確定リスク |
+| --- | --- | --- |
+| `unlockAchievementAction` | FormDataの実績ID、Notion親データソース、Active、前提AND・非公開状態を検査 | **アプリ固有のログイン/プレイヤー認証なし**。Vercel SSO保護を信頼。並列解除の競合はDB移行時にトランザクション化 |
+| `changeQuestAction` | `QUEST_ACTIONS_ENABLED`、所属PLAYER・Active・revision・期間・状態遷移 | Vercel SSO前提。個別ユーザー認証・認可は未実装 |
+| `createAdventureLogAction` | 入力検証、解除済み関連実績、Request ID重複チェック、写真grant | Vercel SSO前提。プレイヤーIDはサーバー側で固定・解決 |
+| `/api/adventure-logs/photos` | Origin、Feature flag、署名grant、Cookie、一時保存制限 | 同一オリジンとCookieは**本人認証の代替ではない**。DB移行後はplayer_idへ結びつける |
+| `/api/adventure-logs/photos/cleanup` | CRON_SECRET Bearerをtiming-safeで比較 | シークレット保管・ローテーション・スケジュール監査 |
+| `/api/guide` | Previewのみ・二重Feature flag・Origin・サイズ・クールダウン | 本番有効化しない前提を継承 |
+| `/api/guide/export` | Origin・入力形式・公開候補のRepositoryフィルタ | フィルタ漏れによるHidden漏えいを回帰テスト |
+| `/api/notion-health`、`/api/adventure-logs/health` | 構成と接続状況を返す | 認証経路の実地確認と、不要なメタ情報公開を防ぐ |
+
+**判断**：現在の単一プレイヤー設計では、アプリ独自のユーザー認証ではなくVercel Authentication（SSO）に強く依存する。PostgreSQLの複数ユーザー化時にこの前提を持ち込まない。ユーザー所有権のDB制約とServer Action側の認可が必要。
+
+### 10.2 写真のライフサイクル（コード確認）
+
+1. ブラウザのアップロードを`/api/adventure-logs/photos`で検証し、Vercel Blobの**private staging**へ置く。
+2. サーバー側でサイズ・Content-Typeを再検証し、`notion.fileUploads.create/send`へ転送。
+3. Notion `Media` propertyにアップロード済みファイルを関連付ける。
+4. `vercel.json`のcron `0 18 * * *`で一時Blobをクリーンアップ（`CRON_SECRET`検証）。
+
+**移行方針の修正提案**：Notion Mediaの署名付き/期限付きURLをPostgresに永久URLとしてコピーしない。移行先の**長期保管用オブジェクトストレージ**（Supabase Storage private bucketなど）にオリジナルファイルを移し、DBには安定したオブジェクトキー、所有者、MIME、サイズ、順序を保存する。画像取得時は短命署名URL等で配信する。Notion上のMediaを破棄する前に画像実体の照合を必須とする。
+
+### 10.3 Notionの読取整合性
+
+- `readAchievementTreeRecords`はActiveのみページングし、Relationが100件超ならproperty paginationを利用。Relation取得失敗は`relationComplete=false`として解除を防ぐ。
+- `getLifeOsSnapshot`はツリー、称号、クエスト、PLAYER、ログを並列取得する。いずれかのエラーでfallbackの**全件空配列**を返す。DB移行の件数検証ではこのfallbackを正常データと混同しない。
+- `queryAll`（称号・PLAYER）はカーソル再訪・`has_more`でnext_cursor欠損の検知がない。移行用exportでは**独立した堅牢なページング処理**を使用。
+- `unlockAchievementPage`はNotion側のUnlockedを先に確認し、既存解除ならそのまま返す。Action側はその場合も新規に作成した`unlockedAt`を返すため、UIに返す時刻とNotionの実際の解除日時が異なりうる。DB移行時に**既存解除時刻を返す**契約へ改善する（移行と別PRで変更）。
+- `achievement-tree/model.ts`はHidden未解除の内容を公開DTOで隠す。DB移行では**DBからの取得段階で全情報を返さないAPI契約**を設ける。
+
+### 10.4 本番での実地検査が必要な項目
+
+- 未ログインのブラウザからproduction/preview/独自ドメインへのGET、POST、Server Actions呼出しが遮断されること。
+- 認証済みであっても他プレイヤーのIDを送信した操作が拒否されること（複数ユーザー化後）。
+- Hidden/未発見実績がAPI JSON・ページソース・検索・AI Guide・health経由で漏れないこと。
+- 画像URLの有効期限・権限、アップロード途中の障害復旧、staging削除後の永続表示。
+- Vercel SSOの`all_except_custom_domains`が運用するすべてのドメインに期待通り適用されること。**未認証アクセス試験はまだ実施していない**。
+
+### 10.5 調査の制約
+
+NotionのSQL/rows Query Data Sourceは再び利用枠上限で実行不可。**前提39本の完全な辺照合・循環検査は未実施**。FormulaはNotionスキーマ上の`formulaCode://`参照のみ確認でき、式本文の取得を試みたがfetchではvalidation_error。Notion UI/公式API経由での式本文確認が必要。
+
+**判定**：Phase 0は部分完了。認可の実地検証、Formula本文、前提Relationの全件照合、写真実体の移行可能性を未解決として維持。
