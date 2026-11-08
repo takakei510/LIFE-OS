@@ -239,3 +239,25 @@ Phase 0：**継続中**。前提辺の完全性、式本文、全データのス
 NotionのSQL/rows Query Data Sourceは再び利用枠上限で実行不可。**前提39本の完全な辺照合・循環検査は未実施**。FormulaはNotionスキーマ上の`formulaCode://`参照のみ確認でき、式本文の取得を試みたがfetchではvalidation_error。Notion UI/公式API経由での式本文確認が必要。
 
 **判定**：Phase 0は部分完了。認可の実地検証、Formula本文、前提Relationの全件照合、写真実体の移行可能性を未解決として維持。
+
+## 11. Notion SQL再開後のRelation検証（2026-11-08）
+
+Notion Query Data SourceのSQLモードが再度使用可能になったため、前回保留していた**実績前提グラフの完全性検査**を実施した。
+
+| 検査 | 結果 |
+| --- | ---: |
+| 実績総件数 | 303 |
+| `Prerequisites`の辺数 | 39 |
+| 参照先が実績テーブルに存在しない辺 | 0 |
+| 自己参照辺 | 0 |
+| `Prerequisites`に対する逆`Unlocks`欠落 | 0 |
+| 逆`Unlocks`にしか存在しない辺 | 0 |
+| 循環 | 0 |
+| 前提を持つ実績数 | 39 |
+| 1実績あたりの直接前提最大数 | 1 |
+
+**検査方法**：Notion SQLでRelation JSONを`json_each`展開し、全実績の`url`とのLEFT JOIN、逆Relationとの双方向差集合を照合。39辺の`child,parent`一覧を読み取り、ローカルなDFS（訪問状態を管理）で循環を検査。再帰CTEはNotion側でvalidation_errorとなったため使用していない。
+
+**判定**：現時点の実績前提Relationの欠損・自己参照・逆リンク不一致・循環は検出されず、**グラフ整合性検査は完了**。ただしこの結果は取得時点のスナップショットであり、移行直前に再照合する。複数前提ANDの機能要件は現在の実データ（最大1件）では実証できないため、専用テストデータで検証する。
+
+**引き続き未完了**：Formula/Rollupの式本文、PLAYERの実値照合、未認証アクセス実地検査、写真の永続ストレージ移行可能性。Phase 0全体は未完了。
