@@ -19,6 +19,10 @@ LIFE OSは、人生を管理するためではなく、実績・称号・クエ�
 
 HOME更新（プレビュー段階）の構成・フォント比較・データ境界は [`HOMEデザイン仕様`](docs/architecture/home-experience-design.md) を参照してください。
 
+## Achievement Design
+
+実績の企画・追加・Tier/XP・累計マイルストーン・専門ツリー・前提条件の**最新共通ルール**は [`実績設計仕様 v2.0`](docs/spec/achievement-design-v2.md) を参照してください。実績ツリーの画面・API・秘密表示の実装仕様は [`実績ツリー仕様`](docs/architecture/achievement-tree.md) で管理します。
+
 ## Architecture
 
 実績ツリー（プレビュー）の操作・秘密表示・前提条件の扱いは [`実績ツリー仕様`](docs/architecture/achievement-tree.md) を参照してください。
