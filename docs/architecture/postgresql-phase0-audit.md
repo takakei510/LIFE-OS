@@ -1,7 +1,7 @@
 # LIFE OS｜Phase 0 現状監査報告 v0.1
 
 > 2026-11-08／監査対象：GitHub main と接続済みNotionの**スキーマ**。  
-> 状態：**部分完了（データ全件監査・本番設定の照合は未完了）**。このPRはドキュメントのみ。  
+> 状態：**部分完了（件数・主要Vercel設定確認済み。全件Relation/式・認可実地検証は未完了）**。このPRはドキュメントのみ。  
 > 関連：`docs/architecture/postgresql-migration-plan.md`（PR #78、未マージ）
 
 ## 1. 監査の目的と範囲
@@ -122,3 +122,48 @@ Notion Logs ─────────┘
 1. 読取専用でNotionの全件・Relation・Formula定義を取得し、**個人データを外部公開しない監査集計**を作る。Notion Query Data Sourceの利用枠が回復した時点で実施可能。
 2. 未読のAPIルート・写真処理・Vercel保護設定を監査し、リスクを更新する。
 3. 監査結果を反映して移行設計v1.0の論理スキーマを具体的なSQL migrationsへ落とす（別PR・別承認）。
+
+## 8. 追加監査（2026-11-08）
+
+### 8.1 Notion SQL集計：実データ件数（読取専用）
+
+| Data source | 合計 | 内訳 |
+| --- | ---: | --- |
+| Achievements | **303** | Active/Visible/未解除234、Active/Visible/解除済6、Archived/Visible/未解除63 |
+| Titles | **27** | Active/未解除/未装備27 |
+| Quests | **115** | Active/Available115 |
+| PLAYER STATUS | **1** | 1行 |
+| Adventure Logs | **2** | Active/Private2 |
+| **合計** | **448** | 取得時点のスナップショット |
+
+実績のXP列合計：Active/Visible/未解除6,675、Active/Visible/解除済65、Archived/Visible/未解除855。**これらはXP定義の合計であり、PLAYERのTotal XPやクエストXPではない。** 集計ではHidden行が返らなかったが、後日の追加・別ソースの可能性を前提にHidden対応は維持する。SQLの件数確認と**全件エクスポートの完全性検証は別**。
+
+### 8.2 Vercelプロジェクト設定（秘密値は取得・記録しない）
+
+- プロジェクト：`life-os-web-m3ds`（Vercel接続で確認）。
+- `ssoProtection.enabled = true`、`deploymentType = all_except_custom_domains`。Password Protectionはfalse。
+- **重要**：カスタムドメインへの適用は上記設定では例外。現時点で表示されたドメインがすべて保護されるか、ブラウザからの未認証アクセス検証は未実施。Vercelプロジェクトの`live=false`と最新deploymentの`READY`は異なる指標であり、公開可否を推測しない。
+- 本番・Previewに`NOTION_TOKEN`、Achievements/Titles/Quests/StatusのData Source IDが設定済み。Adventure Logs IDは本番とPreviewに設定済み。値の一致は未確認。
+- `BLOB_READ_WRITE_TOKEN`はproduction/preview/development、`CRON_SECRET`はproduction/previewに設定済み。
+- `QUEST_ACTIONS_ENABLED`、`PHOTO_UPLOADS_ENABLED`の本番設定が存在。Previewはブランチ別設定あり。**設定の存在は全経路の認可・安全性を保証しない。**
+
+### 8.3 API/写真/ガイドの追加コード監査
+
+- `app/api/adventure-logs/photos/route.ts`：Originチェック、`PHOTO_UPLOADS_ENABLED`・Blobトークン、Cookie/署名grantによる制御。Vercel Authenticationの保護を前提にしている。DB移行後のプレイヤー所有者との結びつけが必要。
+- `app/api/adventure-logs/photos/cleanup/route.ts`：`CRON_SECRET` Bearerトークンをタイミング安全比較し、期限切れの一時Blobを削除。
+- `lib/life-os/adventure-logs/photo-storage.ts`：Vercel Blobに一時保存し、Notionのfile uploadへ転送。**NotionのMediaを単にDBのURL文字列へ置換しても写真の永続性は保証されない**。移行前にオリジナルの保存先・有効期限・移行方針を確定する。
+- `app/api/guide/route.ts`：Previewと2つの有効化フラグを必要とし、Origin/入力サイズ/クールダウンを検証。移行後も公開用カタログだけを参照。
+- `app/api/guide/export/route.ts`：OriginとJSONチェック後にNotionの公開候補カタログを読む。公開情報の境界はrepositoryとserviceの両方で維持。
+- `app/api/notion-health/route.ts`：Notion Snapshotの読取結果をhealthとして返す。DB移行後はDB版に置換し、秘密情報や全件詳細を返さない。
+- `lib/life-os/quests/service.ts`：操作対象のID、所有者、状態遷移、revisionを検証。Postgresで楽観ロックを再現する。
+- `lib/life-os/achievement-tree/model.ts`：前提グラフ・未発見マスクを実装。公開DTOをDBアクセスから独立させる必要がある。
+
+### 8.4 Phase 0残作業の優先順位
+
+1. **Critical**：SSO保護がproduction/preview/カスタムドメイン/Server Actions/APIに及ぶか、未認証アクセスの実地テスト。
+2. **High**：NotionのFormula/Rollup定義（Total XP、Level、Progress、Achievement XP、Quest XP等）を完全取得し、移行前後の値の照合基準を確定。
+3. **High**：全303実績の前提Relationの完全性、循環、孤立、逆Relation整合性と解除日時、他4データソースのRelationの全件照合。
+4. **High**：写真のNotion file_upload、Blobステージング、期限・アクセス権の実地監査。
+5. **Medium**：Notion実行環境変数のID一致確認（秘密値を記録しない）と残る画面/APIの網羅的静的依存監査。
+
+**Phase 0の完了判定は引き続き保留。** 本番DBの作成や移行・切替は行わない。
