@@ -167,3 +167,27 @@ Notion Logs ─────────┘
 5. **Medium**：Notion実行環境変数のID一致確認（秘密値を記録しない）と残る画面/APIの網羅的静的依存監査。
 
 **Phase 0の完了判定は引き続き保留。** 本番DBの作成や移行・切替は行わない。
+
+## 9. 前提Relationと解除履歴の追加集計（2026-11-08）
+
+Notionの読取専用SQL集計で以下を確認した。
+
+| 検査項目 | 結果 | 解釈 |
+| --- | ---: | --- |
+| 実績レコード数 | 303 | 全Lifecycle込み |
+| Notion自動採番IDの異なり数 | 303 | IDの重複は検出されなかった。ただしNULLがないことは別途確認要 |
+| Prerequisites Relation要素数 | 39 | **辺の総数** |
+| Unlocks Relation要素数 | 39 | 逆向きの**辺の総数** |
+| Unlocked=trueでUnlocked At未設定 | 0 | 解除済み6件の日時欠損なし |
+
+**重要**：前提39本と逆Relation39本が同数であっても、各辺が互いに一致する保証はない。孤立・自己参照・循環・逆Relationの差分を抽出するSQLは、NotionのQuery Data Source利用枠上限に達し実行できなかった。実行されていない検査を合格扱いしない。
+
+PLAYER STATUSのFormula/Rollupはschemaに`codeUrl`・`aggregation`が存在することを確認。Formulaの**式本文**はこの接続のfetch/queryから取得できず、Total XP/Level/Next Level XP/Progress/Player Rankの正確な再現は未確定。別途Notion公式APIのproperty schema取得またはNotion UIで式を確認し、実値と併せて記録する。
+
+### ブロッカー
+
+Notion Query Data SourceのSQL/rowsモードのワークスペース利用枠に達したため、残りの完全性検査は実行不可。上限はおおむね60分以内にリセットされる案内。**利用枠を迂回するための推測値や部分抽出を全件結果として扱わない。** 保存済みViewがある場合はViewモードで取得可能だが、適切なview URLの特定と全件性の確認が必要。
+
+### 現時点の判定
+
+Phase 0：**継続中**。前提辺の完全性、式本文、全データのスナップショット、未認証アクセスの実地検査、写真ファイルの永続性の確認が未完了。データベース本番切替の承認条件は満たしていない。
