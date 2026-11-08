@@ -21,7 +21,7 @@ HOME更新（プレビュー段階）の構成・フォント比較・データ�
 
 ## Achievement Design
 
-実績の企画・追加・Tier/XP・累計マイルストーン・専門ツリー・前提条件の**最新共通ルール**は [`実績設計仕様 v2.0`](docs/spec/achievement-design-v2.md) を参照してください。実績ツリーの画面・API・秘密表示の実装仕様は [`実績ツリー仕様`](docs/architecture/achievement-tree.md) で管理します。
+実績の企画・追加・Tier/XP・累計マイルストーン・専門ツリー・前提条件の**最新共通ルール**は [`実績設計仕様 v2.1`](docs/spec/achievement-design-v2.md) を参照してください。実績ツリーの画面・API・秘密表示の実装仕様は [`実績ツリー仕様`](docs/architecture/achievement-tree.md) で管理します。
 
 ## Architecture
 
