@@ -5,6 +5,7 @@ import { getServerEnv } from "@/lib/env";
 import { getNotionClient } from "@/lib/notion/client";
 import { readAchievementTreeRecords } from "./achievement-tree";
 import { buildTreeModel, treeId } from "@/lib/life-os/achievement-tree/model";
+import { richText, select } from "@/lib/notion/properties";
 
 function pageResult(value: unknown): PageObjectResponse | null {
   return value && typeof value === "object" && "object" in value && value.object === "page"
@@ -14,6 +15,32 @@ function pageResult(value: unknown): PageObjectResponse | null {
 
 function isConfiguredAchievement(page: PageObjectResponse, dataSourceId: string): boolean {
   return page.parent.type === "data_source_id" && page.parent.data_source_id === dataSourceId;
+}
+
+export async function readAchievementEvidence(pageId: string) {
+  const notion = getNotionClient();
+  const env = getServerEnv();
+  if (!notion || !env) return null;
+  try {
+    const page = pageResult(await notion.pages.retrieve({ page_id: pageId }));
+    if (!page || !isConfiguredAchievement(page, env.NOTION_ACHIEVEMENTS_DATA_SOURCE_ID) || page.archived || page.in_trash) return null;
+    const properties = page.properties;
+    if (select(properties, "Lifecycle") !== "Active") return null;
+    const headline = richText(properties, "Evidence Headline").trim();
+    const note = richText(properties, "Evidence Note").trim();
+    if (!headline || !note) return null;
+    const source = properties["Evidence Source"];
+    const strength = select(properties, "Evidence Strength");
+    const labels: Record<string, string> = { Mixed: "結果は混在", Emerging: "研究途上", Strong: "研究による支持あり" };
+    return {
+      headline,
+      note,
+      source: source?.type === "url" && source.url?.startsWith("https://") ? source.url : null,
+      strength: strength && Object.hasOwn(labels, strength) ? labels[strength] : null,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function getUnlockedAchievementPage(pageId: string): Promise<PageObjectResponse> {

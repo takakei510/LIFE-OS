@@ -136,6 +136,7 @@ export default async function HomePage() {
 
       <section className="homeSection" aria-labelledby="daily-exploration-heading">
         <div className="homeSectionHeader"><div><p className="homeKicker">DISCOVER SOMETHING NEW · {todayLabel}</p><h2 className="homeSectionTitle" id="daily-exploration-heading">次に出会う体験</h2></div><Link href="/quests">クエストへ <NeoIcon name="arrow" size={16}/></Link></div>
+        <Link className="notionLink" href="/guide">探索案内人に相談 →</Link>
         <p className="homeSectionIntro">まだ触れていない世界から、今日の3つ。気になったときに、ひとつだけでも。</p>
         {dailyExplorationPicks.length > 0 ? <div className="homeDiscoveryGrid">
           {dailyExplorationPicks.map((achievement) => (
@@ -160,7 +161,13 @@ export default async function HomePage() {
         </div> : <p className="homeEmpty">写真・音・一言。残したくなった冒険だけが、ここに並びます。</p>}
       </section>
 
-      <footer className="homeFooter"><span className="homeSyncState">{snapshot.source === "notion" ? "NOTION SYNC" : "DEMO MODE"}</span><div>{stats.map((stat) => <Link href={stat.href} key={stat.label}>{stat.label} <b>{stat.value}</b><span> / {stat.total}</span></Link>)}</div></footer>
+      <footer className="homeFooter">
+        <span className="homeSyncState">{snapshot.source === "notion" ? "NOTION SYNC" : "DEMO MODE"}</span>
+        <div>
+          {stats.map((stat) => <Link href={stat.href} key={stat.label}>{stat.label} <b>{stat.value}</b><span> / {stat.total}</span></Link>)}
+          <Link href="/install">ホーム画面に追加</Link>
+        </div>
+      </footer>
     </main>
   );
 }
