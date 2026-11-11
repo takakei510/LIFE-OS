@@ -14,3 +14,8 @@ Notionの `📜 LIFE OS SPEC` を公式な管理元とし、このディレク�
 - 達成条件はYes / Noで判定できる形にする
 - 入力負荷を最小にする
 - 現実を面白くし、現実逃避の仕組みにしない
+
+## レビュー中の設計案
+
+- [冒険ログ拡張](../architecture/adventure-log-expansion.md)
+- [将来構想](../architecture/future-experiences.md)

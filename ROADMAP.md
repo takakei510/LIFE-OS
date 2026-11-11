@@ -98,20 +98,26 @@ Draftの実装を本番完了とは数えない。公開前に接続・認証・
 
 関連Issue：#35、#36、#37、#38
 
-### v0.4.4 — Adventure Logs 音声対応
+### v0.4.4 — Adventure Logs 記録管理
+
+[冒険ログ拡張の設計案](docs/architecture/adventure-log-expansion.md)。記録管理、ファイルの保存・再生、ブラウザー録音、手動Storyの順に進める。
+
+- [x] 自由ログの作成入口
+- [ ] 冒険ログ詳細
+- [ ] お気に入りの変更・絞り込み
+- [ ] テキスト編集・アーカイブ・復元
+
+### v0.4.5 — Adventure Logs 音声ファイル
 
 - [ ] 音声ファイル選択
 - [ ] MIME・容量検証
 - [ ] Notionへの保存
 - [ ] 再生UI
 
-### v0.5.0 — Adventure Logs 拡張
+### v0.5.0 — Adventure Logs 録音とStory
 
 - [ ] ブラウザ上での直接録音
-- [ ] 自由ログ
-- [ ] Favorite
-- [ ] 編集・Archive
-- [ ] Story連携
+- [ ] ログを選んで並べる手動Story
 
 ## Next Major Theme
 
@@ -129,6 +135,8 @@ Adventure Logs完成後に正式設計する大型アップデート候補。
 - 通常実績との役割分担を明確にする
 
 ## Future
+
+[将来構想の設計案](docs/architecture/future-experiences.md)。各案の最小範囲、着手条件、既存機能との関係を記載。
 
 ### Quest acceptance（プレビュー）
 
