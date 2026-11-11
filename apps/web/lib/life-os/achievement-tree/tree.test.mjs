@@ -11,9 +11,112 @@ function moduleUrl(path, imports = {}) {
 const modelUrl = moduleUrl("./model.ts");
 const { buildTreeModel, publicTreeAchievements } = await import(modelUrl);
 const { layoutTree, edgePath, NODE_WIDTH, NODE_HEIGHT } = await import(moduleUrl("./radial-layout.ts"));
+const { evaluateClusters, parseClusterRules } = await import(moduleUrl("./cluster-policy.ts"));
 function record(id, prerequisites = [], overrides = {}, relationComplete = true) {
   return { achievement: { id, name: `Secret ${id}`, category: "探索", domains: ["photo"], tier: "Rare", xp: 30, requirement: `Condition ${id}`, flavorText: `Flavor ${id}`, unlocked: false, unlockedAt: null, visibility: "Visible", url: `https://notion.so/${id}`, ...overrides }, prerequisites, relationComplete };
 }
+
+const first = "a".repeat(32);
+const second = "b".repeat(32);
+const root = "c".repeat(32);
+const member = "d".repeat(32);
+const clusterConfig = JSON.stringify({
+  sets: [
+    { id: "first", version: 1, achievementIds: [first] },
+    { id: "second", version: 1, achievementIds: [second] },
+  ],
+  clusters: [{ id: "next", name: "Next cluster", members: [root, member], roots: [root], requires: ["first@1", "second@1"] }],
+});
+const rules = parseClusterRules(clusterConfig);
+const earned = key => record(key, [], { unlocked: true });
+
+test("cluster requires every pinned set and hides every undiscovered member from public DTOs", () => {
+  const target = [record(root, [], { visibility: "Hidden" }), record(member, [root], { visibility: "Hidden" })];
+  const partial = evaluateClusters([earned(first), record(second), ...target], rules, new Set());
+  assert.equal(partial.eligible.length, 0);
+  const complete = evaluateClusters([earned(first), earned(second), ...target], rules, new Set());
+  assert.equal(complete.eligible[0].id, "next");
+  assert.deepEqual(buildTreeModel(complete.records, true).nodes.map(node => node.id), [first, second]);
+
+  const persisted = evaluateClusters([earned(first), record(second), ...target], rules, new Set(["next"]));
+  assert.equal(persisted.eligible.length, 0);
+  assert.equal(persisted.discovered[0].name, "Next cluster");
+  assert.deepEqual(buildTreeModel(persisted.records, true).nodes.map(node => node.state), ["unlocked", "available", "available", "locked"]);
+  assert.equal(target[0].achievement.visibility, "Hidden");
+});
+
+test("cluster discovery fails closed on missing, incomplete or circular requirements", () => {
+  const target = [record(root), record(member)];
+  for (const records of [
+    [earned(first), ...target],
+    [earned(first), record(second, [], { unlocked: true }, false), ...target],
+    [earned(first), record(second, [root], { unlocked: true }), ...target],
+  ]) {
+    const result = evaluateClusters(records, rules, new Set());
+    assert.equal(result.eligible.length, 0);
+    assert.ok(!result.records.some(item => item.achievement.id === root));
+  }
+  assert.throws(() => parseClusterRules(JSON.stringify({
+    sets: [{ id: "empty", version: 1, achievementIds: [] }],
+    clusters: [],
+  })), /Invalid cluster list/);
+});
+
+test("concurrent discoveries persist once and later reads keep the cluster open", async () => {
+  const fakeModule = source => `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
+  const player = "e".repeat(32);
+  const notionUrl = fakeModule(`
+    export const getServerEnv = () => ({ NOTION_STATUS_DATA_SOURCE_ID: "status" });
+    export const getNotionClient = () => ({ dataSources: { query: async () => ({
+      results: [{ id: "${player}", object: "page", properties: {}, parent: { type: "data_source_id", data_source_id: "status" } }],
+      has_more: false,
+    }) } });
+  `);
+  const blobUrl = fakeModule(`
+    export const entries = new Map();
+    export const list = async ({ prefix }) => ({
+      blobs: [...entries.keys()].filter(pathname => pathname.startsWith(prefix)).map(pathname => ({ pathname })),
+      hasMore: false,
+    });
+    export const put = async (key, value, options) => {
+      if (options.access !== "private" || options.addRandomSuffix !== false || options.allowOverwrite !== false) {
+        throw new Error("Unsafe write");
+      }
+      if (entries.has(key)) throw new Error("Already saved");
+      entries.set(key, JSON.parse(value));
+    };
+  `);
+  const { resolveClusterAccess } = await import(moduleUrl("../../notion/repositories/cluster-discovery.ts", {
+    "@vercel/blob": blobUrl,
+    "@/lib/env": notionUrl,
+    "@/lib/notion/client": notionUrl,
+    "@/lib/life-os/achievement-tree/cluster-policy": moduleUrl("./cluster-policy.ts"),
+  }));
+  const { entries } = await import(blobUrl);
+  const beforeRules = process.env.LIFE_OS_CLUSTER_RULES;
+  const beforeToken = process.env.BLOB_READ_WRITE_TOKEN;
+  process.env.LIFE_OS_CLUSTER_RULES = clusterConfig;
+  process.env.BLOB_READ_WRITE_TOKEN = "test";
+  try {
+    const targets = [record(root, [], { visibility: "Hidden" }), record(member, [root], { visibility: "Hidden" })];
+    const complete = [earned(first), earned(second), ...targets];
+    assert.equal((await resolveClusterAccess(complete)).canDiscover, true);
+    assert.equal(entries.size, 0);
+    const results = await Promise.all([resolveClusterAccess(complete, true), resolveClusterAccess(complete, true)]);
+    assert.ok(results.every(result => result.clusters.length === 1));
+    assert.equal(entries.size, 1);
+    const saved = entries.get(`life-os-cluster-discoveries/${player}/next.json`);
+    assert.deepEqual(saved.sets, ["first@1", "second@1"]);
+    assert.ok(Number.isFinite(Date.parse(saved.discoveredAt)));
+    assert.equal((await resolveClusterAccess([earned(first), record(second), ...targets])).clusters.length, 1);
+    assert.equal(entries.size, 1);
+  } finally {
+    if (beforeRules === undefined) delete process.env.LIFE_OS_CLUSTER_RULES;
+    else process.env.LIFE_OS_CLUSTER_RULES = beforeRules;
+    if (beforeToken === undefined) delete process.env.BLOB_READ_WRITE_TOKEN;
+    else process.env.BLOB_READ_WRITE_TOKEN = beforeToken;
+  }
+});
 
 test("all prerequisites must be unlocked, with normalized and deduplicated edges", () => {
   const records = [record("AA-AA", [], { unlocked: true }), record("b"), record("c", ["aaaa", "AA-AA", "b"]), record("d", ["AAAA"])];
