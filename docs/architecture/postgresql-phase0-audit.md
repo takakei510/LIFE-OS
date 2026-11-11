@@ -261,3 +261,50 @@ Notion Query Data SourceのSQLモードが再度使用可能になったため�
 **判定**：現時点の実績前提Relationの欠損・自己参照・逆リンク不一致・循環は検出されず、**グラフ整合性検査は完了**。ただしこの結果は取得時点のスナップショットであり、移行直前に再照合する。複数前提ANDの機能要件は現在の実データ（最大1件）では実証できないため、専用テストデータで検証する。
 
 **引き続き未完了**：Formula/Rollupの式本文、PLAYERの実値照合、未認証アクセス実地検査、写真の永続ストレージ移行可能性。Phase 0全体は未完了。
+
+## 12. 2026-11-11 追加検査・Phase 0最終ゲート
+
+### 12.1 Notion全5データソースの追加整合性検査
+
+| 検査 | 結果 |
+| --- | --- |
+| 実績 | 303件、Unlocked 6件、解除済み日時欠損0件、未解除で日時のみ設定0件 |
+| 実績自動採番ID | NULL 0件、ユニーク303件 |
+| 実績XP | **NULL 1件**（ID=1「はじめの一歩」、Active、Unlocked=true、TierもNULL） |
+| 称号 | 27件、Player Relation要素数27 |
+| クエスト | 115件、Player Relation要素数115 |
+| Adventure Logs | 2件、Player Relation要素数2、Media要素数**1**、非空Request IDのユニーク数1 |
+| 前提Relation | 前回の39辺の孤立0、逆不一致0、循環0の検査結果を引き継ぐ |
+
+**重要**：`はじめの一歩`のXP/Tierは現行Notionでは空欄。移行時に推測で補完・正規化せず、元値を維持する。計算式の確定後に仕様上の意図を確認する。Player Relation要素数の一致は、**実際の接続先が唯一のPLAYER行であることを証明しない**ため、参照先の個別照合は残る。
+
+写真1点の存在をNotion `Media`で確認。Notion fetchが返す実ファイルURLはS3の**短命署名URL（X-Amz-Expires=300）**であり、これを永続URLとしてPostgreSQLに保存してはならない。画像実体の長期保管先へのコピー・ハッシュ/バイト照合は未実施。**署名URLそのものを監査文書に記録しない**。
+
+### 12.2 Formula/Rollup取得の限界
+
+- PLAYERのFormula：`Total XP`、`Level`、`Next Level XP`、`Progress`、`Player Rank`はschemaに`formulaCode://`参照があるが、Notion connectorの`fetch`・`rows`は式本文/数値ではなく参照URIを返す。
+- `formulaCode://`を`fetch`で直接解決する方法は`validation_error`。**式本文と計算結果を確定できない**。
+- 必要な対応：NotionのDBプロパティ編集画面で5つの式を確認するか、正式なNotion APIからプロパティ設定を安全に取得し、移行用テストに記録する。実績`Earned XP`、クエスト`Earned XP`/`Is Completed`も対象。
+- `Achievement XP`、`Quest XP`などのRollupはスキーマ上の集計方式・Relationを確認済みだが、式の入力依存関係は未確定。
+
+### 12.3 本番保護の実地確認状況
+
+- Vercel APIで`life-os-web-m3ds`の`ssoProtection.enabled=true`、`deploymentType=all_except_custom_domains`を再確認。
+- プロジェクトの登録ドメインは3つの`vercel.app`ドメイン。**独自ドメインの登録は確認されなかった**。
+- 外部未認証アクセスを試みたが、実行環境ではDNS解決ができず、Web取得経由でもURLにアクセスできなかった。したがって**HTTP 401/403や認証画面へのリダイレクトを確認できていない**。SSOの設定確認を実地検査の代わりとしない。
+- 本番状態変更や未認証POSTは行っていない。本人のブラウザのシークレットウィンドウなど、認証情報のない環境で安全なGETアクセスを確認する必要がある。
+
+### 12.4 Phase 0の完了ゲート（2026-11-11時点）
+
+- [x] データソース5つ・件数・主な状態/所有者Relation件数
+- [x] 実績39辺の参照整合性・循環検査
+- [x] 解除日時・実績ID・XP欠損の検査
+- [x] Server Actions、API、Vercel設定の静的監査
+- [x] 写真保存フローと短命署名URLの確認
+- [ ] **Formulaの式本文とPLAYER実数値の照合**（接続APIでは未取得）
+- [ ] **未認証アクセスの実地確認**（接続環境からアクセス不可）
+- [ ] **写真1点の原本を永続ストレージへ安全に移せることの検証**（本番書込・外部ダウンロード未実施）
+- [ ] Player/Quest/Title/Logの全Relation参照先の完全照合と安全な全件エクスポート・復元テスト
+- [ ] 本番Notion環境変数のID値と監査対象の一致（秘密値の非開示のまま照合）
+
+**判定：Phase 0は監査の主要部分を完了したが、上記5点は未完了。** 未確認事項を推測で埋めて「完了」とはしない。DB移行・本番切替は未実施。
