@@ -30,6 +30,9 @@ export type Quest = {
   revision: string;
   canAccept: boolean;
   canRelease: boolean;
+  canComplete: boolean;
+  earnedXp: number | null;
+  relatedAchievementIds: string[];
   url: string;
 };
 
@@ -76,6 +79,8 @@ export type PlayerStatus = {
   unlockedAchievements: number;
   unlockedTitles: number;
   completedQuests: number;
+  achievementXp: number | null;
+  questXp: number | null;
   url: string;
 };
 

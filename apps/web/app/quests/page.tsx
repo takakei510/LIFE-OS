@@ -26,7 +26,7 @@ export default async function QuestsPage({ searchParams }: { searchParams: Promi
       </nav>
       <p className="muted">一覧から受注できます。取り消しも自由で、XPは減りません。</p>
       <Link className="notionLink" href="/guide">探索案内人に相談 →</Link>
-      <QuestBoard initialQuery={query} key={JSON.stringify([acceptedOnly, query])} quests={snapshot.quests} source={snapshot.source} actionsEnabled={process.env.QUEST_ACTIONS_ENABLED === "true"} initialState={acceptedOnly ? "受注中" : "すべて"} />
+      <QuestBoard initialQuery={query} key={JSON.stringify([acceptedOnly, query])} quests={snapshot.quests} source={snapshot.source} actionsEnabled={process.env.QUEST_ACTIONS_ENABLED === "true"} completionEnabled={process.env.QUEST_COMPLETION_ENABLED === "true"} initialState={acceptedOnly ? "受注中" : "すべて"} />
     </main>
   );
 }

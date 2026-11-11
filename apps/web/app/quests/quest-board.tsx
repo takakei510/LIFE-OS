@@ -13,7 +13,7 @@ const ACCEPTED = "受注中";
 const COMPLETED = "完了";
 const typeOrder = ["Daily", "Weekly", "Monthly", "Event"];
 
-export function QuestBoard({ quests, source, actionsEnabled, initialState = ALL, initialQuery = "" }: { quests: Quest[]; source: "notion" | "fallback"; actionsEnabled: boolean; initialState?: string; initialQuery?: string }) {
+export function QuestBoard({ quests, source, actionsEnabled, completionEnabled, initialState = ALL, initialQuery = "" }: { quests: Quest[]; source: "notion" | "fallback"; actionsEnabled: boolean; completionEnabled: boolean; initialState?: string; initialQuery?: string }) {
   const [query, setQuery] = useState(initialQuery);
   const [type, setType] = useState(ALL);
   const [state, setState] = useState(initialState);
@@ -111,7 +111,7 @@ export function QuestBoard({ quests, source, actionsEnabled, initialState = ALL,
                   <strong>達成報酬 {quest.rewardXp} XP</strong>
                 </div>
                 <div>
-                  <QuestControls quest={quest} enabled={actionsEnabled} compact />
+                  <QuestControls quest={quest} enabled={actionsEnabled} completionEnabled={completionEnabled} compact />
                   <div className="questCardActions"><Link href={`/quests/${quest.id}`}>詳細を見る →</Link><a href={quest.url} target="_blank" rel="noreferrer">Notionで開く ↗</a></div>
                 </div>
               </article>

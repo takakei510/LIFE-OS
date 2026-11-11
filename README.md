@@ -9,22 +9,22 @@ LIFE OSは、人生を管理するためではなく、実績・称号・クエ�
 
 **Production:** https://life-os-web-m3ds.vercel.app
 
-現在の公開機能：**Adventure Logs 写真対応MVP**（従来の閲覧・実績解除を含む）
+現在の公開機能：**写真対応MVP・新HOME/ブランド・独自アイコン・クエスト受注/取り消し**（2026-11-04、main `370936e`）。クエスト完了・報酬連携は次のプレビューで検証中です。
 
 2026-11-02に開発を再開。任意の文章・場所・写真をNotionへ保存し、HOMEと一覧で振り返れます。写真は最大5枚・1枚5MiB以下。日本時間で入力した日時をサーバーで正規化します。
 
 初期設定と公開前の確認は [`docs/MVP_SETUP.md`](docs/MVP_SETUP.md) を参照してください。
 
-ブランド更新（プレビュー段階）の仕様は [`Stellar Compass ブランド設計`](docs/architecture/stellar-compass-brand.md) を参照してください。
+ブランド更新（本番公開済み）の仕様は [`Stellar Compass ブランド設計`](docs/architecture/stellar-compass-brand.md) を参照してください。
 
-HOME更新（プレビュー段階）の構成・フォント比較・データ境界は [`HOMEデザイン仕様`](docs/architecture/home-experience-design.md) を参照してください。
+HOME更新（本番公開済み）の構成・フォント比較・データ境界は [`HOMEデザイン仕様`](docs/architecture/home-experience-design.md) を参照してください。
 
 ## Architecture
 
 実績ツリー（プレビュー）の操作・秘密表示・前提条件の扱いは [`実績ツリー仕様`](docs/architecture/achievement-tree.md) を参照してください。
 
 - **Notion** — セーブデータと公式仕様書
-- **AI Game Master** — 実績判定、提案、ゲーム運営
+- **AI Game Master（計画・Draft）** — 提案などの補助。現在の実績解除は本人判断
 - **Web App** — プレイヤーが触れるゲーム画面
 - **Supabase / PostgreSQL** — 将来の正式データ基盤
 
@@ -46,7 +46,7 @@ Notionの記録を、検索・振り返り・探索提案まで含むゲーム�
 
 - 実績ライブラリ・詳細・横断検索
 - クエスト検索・種類／状態フィルター
-- クエスト詳細・任意の受注／取り消し（プレビュー、初期値は無効）。[仕様と認証条件](docs/architecture/quest-board.md)
+- クエスト詳細・一覧からの任意の受注／取り消し（本番公開済み）。[仕様と認証条件](docs/architecture/quest-board.md)
 - 称号検索・Tier／取得状態フィルター
 - Statusのカテゴリ別実績進捗
 - 最近の冒険ログ
@@ -93,3 +93,7 @@ NOTION_ADVENTURE_LOGS_DATA_SOURCE_ID  # 冒険ログを利用する場合
 5. 完成ではなく継続的なアップデートを目指す
 
 独自アイコンの仕様とデータ境界は [`独自アイコン組み込み`](docs/architecture/approved-icon-system.md) を参照してください。
+
+## クエスト完了・報酬（プレビュー）
+
+受注中のクエストを本人判断で完了し、既存NotionのEarned XP → Quest XP → Total XPを表示へ反映する機能を検証中です。実績は手動解除を維持し、クエストと実績は別報酬です。完了/取消の操作調整には既存の非公開Blobを使用します。詳細は [完了・報酬設計](docs/architecture/quest-completion-rewards.md) を参照してください。

@@ -28,6 +28,8 @@ export type QuestRecord = {
   completedAt: string | null;
   availableFrom: string | null;
   dueAt: string | null;
+  rewardXp: number | null;
+  completionCondition: string;
 };
 
 export function isOwnedActiveQuest(record: QuestRecord, dataSourceId: string, playerId: string): boolean {
@@ -35,6 +37,15 @@ export function isOwnedActiveQuest(record: QuestRecord, dataSourceId: string, pl
     && normalizedId(record.dataSourceId) === normalizedId(dataSourceId)
     && !record.archived && record.lifecycle === "Active"
     && record.playerIds.length === 1 && normalizedId(record.playerIds[0]) === normalizedId(playerId);
+}
+
+export function planQuestCompletion(record: QuestRecord, revision: string): boolean {
+  if (record.state === "Completed") return false;
+  if (record.state !== "Accepted" || record.completedAt !== null) throw new Error("受注中のクエストだけを完了できます。");
+  if (!record.completionCondition.trim()) throw new Error("達成条件が設定されていません。Notionの設定を確認してください。");
+  if (record.revision !== revision) throw new Error("別の画面で記録が更新されました。再読み込みして状態を確認してください。");
+  if (record.rewardXp === null || !Number.isFinite(record.rewardXp) || record.rewardXp < 0) throw new Error("達成報酬の設定を確認できません。Notionの設定を確認してください。");
+  return true;
 }
 
 // Date-only values use the app's Japan time zone. Acceptance creates no deadlines.
