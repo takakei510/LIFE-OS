@@ -1,9 +1,11 @@
 "use client";
 
 import { NeoIcon } from "@/components/ui/neo-icon";
+import { NeoButton } from "@/components/ui/neo-button";
+import { titleEquipmentAction } from "@/app/actions/title-actions";
 import { tierLabel } from "@/components/life-icons/presentation";
 import { TierName } from "@/components/life-icons/life-icon";
-import { useMemo, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
 import type { Title } from "@/lib/notion/types";
 
 const ALL = "すべて";
@@ -12,10 +14,16 @@ const UNLOCKED = "取得済み";
 const LOCKED = "未取得";
 const tierOrder = ["Common", "Uncommon", "Rare", "Epic", "Legendary"];
 
-export function TitleCollection({ titles, source }: { titles: Title[]; source: "notion" | "fallback" }) {
+export function TitleCollection({ titles, source, equipmentEnabled }: {
+  titles: Title[];
+  source: "notion" | "fallback";
+  equipmentEnabled: boolean;
+}) {
   const [query, setQuery] = useState("");
   const [state, setState] = useState(ALL);
   const [tier, setTier] = useState(ALL);
+  const [equipment, submitEquipment, pending] = useActionState(titleEquipmentAction, null);
+  const equipped = titles.filter(title => title.equipped);
 
   const tiers = useMemo(() => Array.from(new Set(titles.map((title) => title.tier).filter((value): value is string => Boolean(value)))).sort((a, b) => {
     const ai = tierOrder.indexOf(a);
@@ -63,6 +71,7 @@ export function TitleCollection({ titles, source }: { titles: Title[]; source: "
       </section>
 
       <div className="titleSummary"><span>{filtered.length} / {titles.length} 称号</span><span>{source === "notion" ? "NOTION同期中" : "デモ表示"}</span></div>
+      {equipment ? <p role={equipment.ok ? "status" : "alert"}>{equipment.message}</p> : null}
 
       {filtered.length ? (
         <section className="titleGrid" aria-label="称号コレクション">
@@ -70,7 +79,21 @@ export function TitleCollection({ titles, source }: { titles: Title[]; source: "
             <article className={`titleCard ${title.equipped ? "titleCard--equipped" : title.unlocked ? "titleCard--unlocked" : "titleCard--locked"}`} key={title.id}>
               <div className="titleCardTop"><span>{title.equipped ? <><NeoIcon name="title" size={16}/> 装備中</> : title.unlocked ? "取得済み" : "未取得"}</span><strong><TierName tier={title.tier}/></strong></div>
               <div><h2>{title.unlocked ? title.name : "未発見の称号"}</h2><p>{title.unlocked ? (title.description || "体験の積み重ねから生まれた称号。") : "まだ名前のない物語が、次の体験を待っています。"}</p></div>
-              {title.unlocked ? <a href={title.url} target="_blank" rel="noreferrer">Notionの記録を開く →</a> : <span className="lockedHint">実績を重ねることで解除</span>}
+              {title.unlocked ? (
+                <div className="titleCardActions">
+                  {equipmentEnabled ? (
+                    <form action={submitEquipment}>
+                      <input type="hidden" name="titleId" value={title.id} />
+                      <input type="hidden" name="operation" value={title.equipped ? "unequip" : "equip"} />
+                      {equipped.map(item => <input key={item.id} type="hidden" name="equippedId" value={item.id} />)}
+                      <NeoButton type="submit" variant={title.equipped ? "secondary" : "primary"} disabled={pending}>
+                        {title.equipped ? "装備を外す" : "装備する"}
+                      </NeoButton>
+                    </form>
+                  ) : null}
+                  <a href={title.url} target="_blank" rel="noreferrer">Notionの記録を開く →</a>
+                </div>
+              ) : <span className="lockedHint">実績を重ねることで解除</span>}
             </article>
           ))}
         </section>

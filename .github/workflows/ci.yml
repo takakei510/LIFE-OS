@@ -32,6 +32,9 @@ jobs:
       - name: Test quest state transitions and repository boundaries
         run: npm run test:quests --workspace apps/web
 
+      - name: Test title equipment switching
+        run: node --experimental-strip-types --test apps/web/lib/life-os/title-equipment.test.mjs
+
       - name: Build web app
         run: npm run build
 
